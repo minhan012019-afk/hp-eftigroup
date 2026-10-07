@@ -1,0 +1,535 @@
+<title>Quản lý công việc</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@300;400;500;600;700&display=swap');
+:root{
+  --win-bg:#f3f3f3;--win-fg:#1b1b1b;--win-fg2:#5d5d5d;--win-fg3:#999;
+  --win-accent:#0067c0;--win-accent2:#0078d4;--win-sel:#cce8ff;--win-sel-border:#99d1ff;
+  --win-titlebar:#eff4f9;--win-titlebar-fg:#000;--win-titlebar-btn:#c42b1c;
+  --win-toolbar:#fbfbfb;--win-toolbar-border:#e5e5e5;
+  --win-tree-bg:#fff;--win-tree-hover:#e5f3ff;--win-tree-active:#cce8ff;
+  --win-content-bg:#fff;--win-row-alt:#fafafa;--win-row-hover:#e5f3ff;
+  --win-border:#e5e5e5;--win-border2:#d1d1d1;
+  --win-input:#fff;--win-card:#fff;
+  --win-green:#107c10;--win-amber:#986f0b;--win-red:#c42b1c;
+  --win-scrollbar:#c2c2c2;--win-scrollbar-bg:#f0f0f0;
+  --win-ctx-bg:#fcfcfc;--win-ctx-hover:#e9e9e9;--win-ctx-border:#e0e0e0;
+  --win-shadow:0 8px 32px rgba(0,0,0,.14),0 0 1px rgba(0,0,0,.1);
+  --win-modal-shadow:0 24px 54px rgba(0,0,0,.18),0 0 1px rgba(0,0,0,.12);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --win-bg:#202020;--win-fg:#fff;--win-fg2:#aaa;--win-fg3:#666;
+  --win-accent:#60cdff;--win-accent2:#4cc2ff;--win-sel:#264b6e;--win-sel-border:#3a7cb8;
+  --win-titlebar:#2d2d2d;--win-titlebar-fg:#fff;--win-titlebar-btn:#c42b1c;
+  --win-toolbar:#2a2a2a;--win-toolbar-border:#3a3a3a;
+  --win-tree-bg:#1e1e1e;--win-tree-hover:#2a3a4a;--win-tree-active:#264b6e;
+  --win-content-bg:#1e1e1e;--win-row-alt:#222;--win-row-hover:#2a3a4a;
+  --win-border:#3a3a3a;--win-border2:#555;
+  --win-input:#2d2d2d;--win-card:#2d2d2d;
+  --win-green:#6ccb5f;--win-amber:#fce100;--win-red:#ff99a4;
+  --win-scrollbar:#555;--win-scrollbar-bg:#2a2a2a;
+  --win-ctx-bg:#2c2c2c;--win-ctx-hover:#3a3a3a;--win-ctx-border:#454545;
+  --win-shadow:0 8px 32px rgba(0,0,0,.36),0 0 1px rgba(0,0,0,.2);
+  --win-modal-shadow:0 24px 54px rgba(0,0,0,.4),0 0 1px rgba(0,0,0,.2);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --win-bg:#202020;--win-fg:#fff;--win-fg2:#aaa;--win-fg3:#666;
+  --win-accent:#60cdff;--win-accent2:#4cc2ff;--win-sel:#264b6e;--win-sel-border:#3a7cb8;
+  --win-titlebar:#2d2d2d;--win-titlebar-fg:#fff;--win-titlebar-btn:#c42b1c;
+  --win-toolbar:#2a2a2a;--win-toolbar-border:#3a3a3a;
+  --win-tree-bg:#1e1e1e;--win-tree-hover:#2a3a4a;--win-tree-active:#264b6e;
+  --win-content-bg:#1e1e1e;--win-row-alt:#222;--win-row-hover:#2a3a4a;
+  --win-border:#3a3a3a;--win-border2:#555;
+  --win-input:#2d2d2d;--win-card:#2d2d2d;
+  --win-green:#6ccb5f;--win-amber:#fce100;--win-red:#ff99a4;
+  --win-scrollbar:#555;--win-scrollbar-bg:#2a2a2a;
+  --win-ctx-bg:#2c2c2c;--win-ctx-hover:#3a3a3a;--win-ctx-border:#454545;
+  --win-shadow:0 8px 32px rgba(0,0,0,.36),0 0 1px rgba(0,0,0,.2);
+  --win-modal-shadow:0 24px 54px rgba(0,0,0,.4),0 0 1px rgba(0,0,0,.2);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--win-bg);color:var(--win-fg);font-family:'Segoe UI Variable','Segoe UI',system-ui,sans-serif;font-size:12px;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden;padding:16px}
+
+/* Window frame */
+.win{width:100%;max-width:1100px;height:100%;max-height:720px;background:var(--win-bg);border:1px solid var(--win-border2);border-radius:8px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--win-shadow)}
+
+/* Title bar */
+.win-title{background:var(--win-titlebar);display:flex;align-items:center;min-height:32px;padding-left:12px;flex-shrink:0;border-bottom:1px solid var(--win-border);user-select:none}
+.win-title .wt-icon{font-size:14px;margin-right:8px}
+.win-title .wt-text{font-size:12px;color:var(--win-titlebar-fg);flex:1}
+.wt-btns{display:flex;height:32px}
+.wt-btn{width:46px;height:32px;border:none;background:transparent;cursor:default;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--win-titlebar-fg)}
+.wt-btn:hover{background:rgba(0,0,0,.06)}
+.wt-btn-close:hover{background:var(--win-titlebar-btn);color:#fff}
+.wt-btn svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.2}
+
+/* Navigation */
+.win-nav{background:var(--win-toolbar);display:flex;align-items:center;padding:4px 8px;gap:4px;border-bottom:1px solid var(--win-toolbar-border);flex-shrink:0;flex-wrap:wrap}
+.nb{width:28px;height:28px;border:none;border-radius:4px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--win-fg2);font-size:13px;flex-shrink:0}
+.nb:hover{background:var(--win-tree-hover)}
+.nb:disabled{opacity:.3;cursor:default}.nb:disabled:hover{background:transparent}
+.addr{flex:1;display:flex;align-items:center;background:var(--win-input);border:1px solid var(--win-border);border-radius:4px;min-height:28px;padding:0 4px;overflow:hidden;min-width:120px}
+.addr:focus-within{border-color:var(--win-accent)}
+.addr-icon{font-size:13px;padding:0 4px;flex-shrink:0;color:var(--win-fg2)}
+.addr-seg{padding:2px 6px;font-size:12px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.addr-seg:hover{background:var(--win-tree-hover)}
+.addr-sep{color:var(--win-fg3);font-size:9px;padding:0 1px}
+.srch{padding:4px 10px;border:1px solid var(--win-border);border-radius:4px;font-size:12px;width:180px;background:var(--win-input);color:var(--win-fg);font-family:inherit;outline:none}
+.srch:focus{border-color:var(--win-accent)}
+
+/* Toolbar */
+.win-bar{background:var(--win-toolbar);display:flex;align-items:center;padding:2px 8px;gap:1px;border-bottom:1px solid var(--win-toolbar-border);flex-shrink:0;overflow-x:auto}
+.tb{padding:4px 10px;border:none;border-radius:4px;background:transparent;cursor:pointer;font-size:12px;font-family:inherit;color:var(--win-fg);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.tb:hover{background:var(--win-tree-hover)}
+.tb .ti{font-size:14px}
+.tb-sep{width:1px;height:18px;background:var(--win-border);margin:0 3px;flex-shrink:0}
+
+/* Body */
+.win-body{flex:1;display:flex;overflow:hidden}
+
+/* Tree pane */
+.tree-pane{width:240px;min-width:180px;background:var(--win-tree-bg);border-right:1px solid var(--win-border);overflow-y:auto;overflow-x:hidden;padding:4px 0;flex-shrink:0}
+.tree-pane::-webkit-scrollbar{width:8px}
+.tree-pane::-webkit-scrollbar-track{background:var(--win-scrollbar-bg)}
+.tree-pane::-webkit-scrollbar-thumb{background:var(--win-scrollbar);border-radius:4px;border:2px solid var(--win-scrollbar-bg)}
+.tr{user-select:none}
+.tr-row{display:flex;align-items:center;height:24px;padding-right:8px;cursor:pointer;border:1px solid transparent;border-radius:3px;margin:0 4px}
+.tr-row:hover{background:var(--win-tree-hover)}
+.tr-row.sel{background:var(--win-tree-active);border-color:var(--win-sel-border)}
+.tr-arrow{width:20px;height:24px;display:flex;align-items:center;justify-content:center;font-size:7px;color:var(--win-fg2);flex-shrink:0}
+.tr-arrow.has:hover{color:var(--win-fg)}
+.tr-ico{font-size:14px;margin-right:5px;flex-shrink:0}
+.tr-lbl{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.tr-cnt{font-size:10px;color:var(--win-fg3);margin-left:auto;padding-left:6px}
+.tr-kids{overflow:hidden}
+
+/* Content pane */
+.ct-pane{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--win-content-bg);min-width:0}
+.ct-scroll{flex:1;overflow:auto}
+.ct-scroll::-webkit-scrollbar{width:8px;height:8px}
+.ct-scroll::-webkit-scrollbar-track{background:var(--win-scrollbar-bg)}
+.ct-scroll::-webkit-scrollbar-thumb{background:var(--win-scrollbar);border-radius:4px;border:2px solid var(--win-scrollbar-bg)}
+
+/* Column header */
+.col-hdr{display:grid;grid-template-columns:minmax(180px,2.5fr) minmax(100px,1.5fr) 110px 90px 100px;position:sticky;top:0;z-index:3;background:var(--win-toolbar);border-bottom:1px solid var(--win-border);min-height:26px}
+.col-hdr span{padding:4px 10px;font-size:11px;color:var(--win-fg2);cursor:pointer;display:flex;align-items:center;border-right:1px solid var(--win-border);user-select:none}
+.col-hdr span:hover{background:var(--win-tree-hover)}
+.col-hdr span:last-child{border-right:none}
+
+/* Row */
+.rw{display:grid;grid-template-columns:minmax(180px,2.5fr) minmax(100px,1.5fr) 110px 90px 100px;min-height:26px;border-bottom:1px solid transparent;cursor:default;align-items:center}
+.rw:nth-child(even){background:var(--win-row-alt)}
+.rw:hover{background:var(--win-row-hover)}
+.rw.rw-sel{background:var(--win-sel);border-color:var(--win-sel-border)}
+.rw>span{padding:3px 10px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .nm{display:flex;align-items:center;gap:6px}
+.rw .nm .fi{font-size:15px;flex-shrink:0}
+.rw .nm .fn{overflow:hidden;text-overflow:ellipsis}
+
+/* Status badges */
+.st{display:inline-flex;align-items:center;gap:3px;font-size:11px}
+.st::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.st-a{color:var(--win-green)}.st-a::before{background:var(--win-green)}
+.st-p{color:var(--win-amber)}.st-p::before{background:var(--win-amber)}
+.st-d{color:var(--win-fg3)}.st-d::before{background:var(--win-fg3)}
+
+.tp{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500;background:var(--win-sel);color:var(--win-accent)}
+
+/* Folder tiles view */
+.folder-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:4px;padding:12px}
+.fv-item{display:flex;flex-direction:column;align-items:center;padding:12px 8px;border-radius:4px;cursor:pointer;border:1px solid transparent;text-align:center}
+.fv-item:hover{background:var(--win-tree-hover)}
+.fv-item.fv-sel{background:var(--win-sel);border-color:var(--win-sel-border)}
+.fv-item .fv-ico{font-size:40px;margin-bottom:4px}
+.fv-item .fv-lbl{font-size:11px;word-break:break-word;line-height:1.3}
+.fv-item .fv-cnt{font-size:10px;color:var(--win-fg3)}
+
+/* Status bar */
+.win-status{background:var(--win-toolbar);border-top:1px solid var(--win-border);padding:2px 10px;display:flex;align-items:center;gap:12px;min-height:22px;font-size:11px;color:var(--win-fg2);flex-shrink:0}
+.win-status .vs{margin-left:auto;display:flex;gap:2px}
+.vs-btn{width:20px;height:18px;border:none;border-radius:2px;background:transparent;cursor:pointer;font-size:10px;color:var(--win-fg2)}
+.vs-btn:hover{background:var(--win-tree-hover)}
+.vs-btn.vs-act{background:var(--win-sel);color:var(--win-accent)}
+
+/* Empty */
+.ct-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center}
+.ct-empty .ei{font-size:48px;opacity:.2;margin-bottom:8px}
+.ct-empty p{color:var(--win-fg3);font-size:12px}
+
+/* Context menu */
+.ctx{position:fixed;z-index:300;background:var(--win-ctx-bg);border:1px solid var(--win-ctx-border);border-radius:8px;padding:4px;min-width:200px;box-shadow:var(--win-shadow);display:none}
+.ctx.show{display:block}
+.ctx-item{display:flex;align-items:center;gap:10px;padding:6px 12px;font-size:12px;cursor:pointer;border-radius:4px;color:var(--win-fg)}
+.ctx-item:hover{background:var(--win-ctx-hover)}
+.ctx-item .ci{width:18px;text-align:center;font-size:13px}
+.ctx-item.ctx-danger{color:var(--win-red)}
+.ctx-sep{height:1px;background:var(--win-ctx-border);margin:4px 8px}
+
+/* Modal dialog */
+.dlg-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:400}
+.dlg-bg.show{display:flex}
+.dlg{background:var(--win-card);border-radius:8px;width:92%;max-width:440px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--win-modal-shadow);border:1px solid var(--win-border)}
+.dlg-hd{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.dlg-hd h3{font-size:14px;font-weight:600}
+.dlg-x{width:28px;height:28px;border:none;border-radius:4px;background:transparent;cursor:pointer;font-size:14px;color:var(--win-fg2)}
+.dlg-x:hover{background:var(--win-tree-hover)}
+.dlg-bd{padding:8px 20px 16px;overflow-y:auto;flex:1}
+.dlg-ft{padding:12px 20px;display:flex;gap:6px;justify-content:flex-end;border-top:1px solid var(--win-border)}
+.ff{margin-bottom:12px}
+.ff label{display:block;font-size:11px;font-weight:600;margin-bottom:4px;color:var(--win-fg2)}
+.ff input,.ff select,.ff textarea{width:100%;padding:5px 10px;border:1px solid var(--win-border);border-radius:4px;font-size:12px;font-family:inherit;background:var(--win-input);color:var(--win-fg);outline:none}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--win-accent)}
+.ff textarea{min-height:52px;resize:vertical}
+.db{padding:5px 16px;border:1px solid var(--win-border);border-radius:4px;cursor:pointer;font-size:12px;font-family:inherit;background:var(--win-card);color:var(--win-fg)}
+.db:hover{background:var(--win-tree-hover)}
+.db-p{background:var(--win-accent2);color:#fff;border-color:var(--win-accent2)}
+.db-p:hover{opacity:.9}
+.db-r{color:var(--win-red);border-color:var(--win-red);background:transparent}
+.db-r:hover{background:rgba(196,43,28,.08)}
+
+@media(max-width:640px){
+  body{padding:0}
+  .win{border-radius:0;max-height:none;height:100%;max-width:none;border:none}
+  .tree-pane{position:fixed;left:0;top:0;bottom:0;z-index:50;width:240px;transform:translateX(-100%);transition:transform .2s;box-shadow:var(--win-shadow);border-radius:0}
+  .tree-pane.tp-open{transform:none}
+  .tp-shade{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:49}
+  .tp-shade.show{display:block}
+  .mob-show{display:flex !important}
+  .col-hdr,.rw{grid-template-columns:minmax(120px,2fr) 90px 80px}
+  .col-hdr span:nth-child(2),.col-hdr span:nth-child(5),.rw>span:nth-child(2),.rw>span:nth-child(5){display:none}
+  .folder-view{grid-template-columns:repeat(3,1fr)}
+}
+@media(min-width:641px){.mob-show{display:none !important}.tp-shade{display:none !important}}
+</style>
+
+<div class="tp-shade" id="tpShade" onclick="closeTP()"></div>
+<div class="ctx" id="ctxMenu"></div>
+
+<div class="win">
+  <!-- Title bar -->
+  <div class="win-title">
+    <span class="wt-icon">📋</span>
+    <span class="wt-text">Quản lý công việc</span>
+    <div class="wt-btns">
+      <button class="wt-btn"><svg viewBox="0 0 10 10"><line x1="1" y1="5" x2="9" y2="5"/></svg></button>
+      <button class="wt-btn"><svg viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1"/></svg></button>
+      <button class="wt-btn wt-btn-close"><svg viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Nav bar -->
+  <div class="win-nav">
+    <button class="nb mob-show" onclick="toggleTP()">☰</button>
+    <button class="nb" id="btnBack" onclick="goBack()" disabled title="Quay lại">←</button>
+    <button class="nb" id="btnFwd" onclick="goFwd()" disabled title="Tiến tới">→</button>
+    <button class="nb" id="btnUp" onclick="goUp()" disabled title="Lên thư mục cha">↑</button>
+    <div class="addr">
+      <span class="addr-icon">📁</span>
+      <div id="addrBar"></div>
+    </div>
+    <input type="text" class="srch" placeholder="🔍 Tìm kiếm" id="searchBox" oninput="doFilter()">
+  </div>
+
+  <!-- Toolbar -->
+  <div class="win-bar">
+    <button class="tb" id="btnNew" onclick="openDlg()"><span class="ti">📄</span>Mới</button>
+    <div class="tb-sep"></div>
+    <button class="tb" id="btnEdit" onclick="editSel()" disabled><span class="ti">✏️</span>Sửa</button>
+    <button class="tb" id="btnDel" onclick="delSel()" disabled><span class="ti">🗑️</span>Xóa</button>
+    <div class="tb-sep"></div>
+    <button class="tb" onclick="refresh()"><span class="ti">🔄</span>Làm mới</button>
+  </div>
+
+  <!-- Body -->
+  <div class="win-body">
+    <div class="tree-pane" id="treePane">
+      <div id="treeEl"></div>
+    </div>
+    <div class="ct-pane">
+      <div class="ct-scroll" id="ctScroll" oncontextmenu="showCtx(event)"></div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="win-status">
+    <span id="stCount">0 mục</span>
+    <div class="vs">
+      <button class="vs-btn" id="vsDetail" onclick="setView('detail')" title="Chi tiết">≡</button>
+      <button class="vs-btn" id="vsTile" onclick="setView('tile')" title="Biểu tượng">⊞</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog -->
+<div class="dlg-bg" id="dlgBg" onclick="if(event.target===this)closeDlg()">
+  <div class="dlg" id="dlgBox"></div>
+</div>
+
+<script>
+const TREE=[
+  {id:'0',label:'Quản lý chung',icon:'📊',children:[]},
+  {id:'1',label:'Xây dựng chương trình',icon:'📁',ficon:'📂',children:[
+    {id:'1.1',label:'Doanh nghiệp',icon:'🏢',type:'dn'},
+    {id:'1.2',label:'Hành chính sự nghiệp',icon:'🏛️',type:'hcsn'},
+    {id:'1.3',label:'Cá nhân',icon:'👤',type:'cn'}
+  ]},
+  {id:'2',label:'Chăm sóc khách hàng',icon:'📁',ficon:'📂',children:[
+    {id:'2.1',label:'Doanh nghiệp',icon:'🏢',type:'dn'},
+    {id:'2.2',label:'Hành chính sự nghiệp',icon:'🏛️',type:'hcsn'},
+    {id:'2.3',label:'Cá nhân',icon:'👤',type:'cn'}
+  ]},
+  {id:'3',label:'Đội ngũ chuyên gia',icon:'🎓',children:[]},
+  {id:'4',label:'Quy trình làm việc',icon:'⚙️',children:[]},
+  {id:'5',label:'Kho hồ sơ lưu trữ',icon:'🗄️',children:[
+    {id:'5.1',label:'Hệ thống văn bản mẫu',icon:'📄',type:'hs'},
+    {id:'5.2',label:'Năm 2026',icon:'📅',type:'hs'},
+    {id:'5.3',label:'Năm 2027',icon:'📅',type:'hs'}
+  ]}
+];
+const TL={dn:'Doanh nghiệp',hcsn:'HCSN',cn:'Cá nhân',cg:'Chuyên gia',hs:'Hồ sơ',qt:'Quy trình'};
+const SL={active:'Hoạt động',pending:'Đang chờ',done:'Hoàn thành'};
+const SLE={active:'Hoạt động',pending:'Chờ xác nhận',done:'Hoàn tất'};
+const SLP={active:'Áp dụng',pending:'Dự thảo',done:'Ngưng'};
+
+let cur='0',data={},selId=null,editId=null,viewMode='detail';
+let hist=[],hIdx=-1,exp={};
+TREE.forEach(n=>{if(n.children?.length)exp[n.id]=true;});
+
+function ld(){try{data=JSON.parse(localStorage.getItem('qlcv_data')||'{}');}catch(e){data={};}}
+function sv(){try{localStorage.setItem('qlcv_data',JSON.stringify(data));}catch(e){}}
+function its(s){return data[s]||[];}
+function setI(s,v){data[s]=v;sv();}
+function gid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function fd(t){return t?new Date(t).toLocaleDateString('vi-VN'):'—';}
+function fn(id){for(const n of TREE){if(n.id===id)return n;if(n.children)for(const c of n.children)if(c.id===id)return c;}return null;}
+function fp(id){for(const n of TREE)if(n.children)for(const c of n.children)if(c.id===id)return n;return null;}
+function cnt(n){let c=its(n.id).length;if(n.children)n.children.forEach(ch=>c+=its(ch.id).length);return c;}
+
+/* Tree */
+function buildTree(){
+  let h='';
+  TREE.forEach(n=>{
+    const has=n.children?.length,isE=exp[n.id],c=cnt(n);
+    h+=`<div class="tr">
+      <div class="tr-row ${cur===n.id?'sel':''}" style="padding-left:8px" onclick="nav('${n.id}')" oncontextmenu="event.preventDefault();nav('${n.id}')">
+        <span class="tr-arrow ${has?'has':''}" onclick="event.stopPropagation();togE('${n.id}')">${has?(isE?'▾':'▸'):''}</span>
+        <span class="tr-ico">${has?(isE?(n.ficon||'📂'):(n.icon||'📁')):n.icon}</span>
+        <span class="tr-lbl">${n.label}</span>
+        ${c?`<span class="tr-cnt">(${c})</span>`:''}
+      </div>`;
+    if(has&&isE){
+      h+=`<div class="tr-kids">`;
+      n.children.forEach(ch=>{
+        const cc=its(ch.id).length;
+        h+=`<div class="tr">
+          <div class="tr-row ${cur===ch.id?'sel':''}" style="padding-left:36px" onclick="nav('${ch.id}')" oncontextmenu="event.preventDefault();nav('${ch.id}')">
+            <span class="tr-ico">${ch.icon}</span>
+            <span class="tr-lbl">${ch.label}</span>
+            ${cc?`<span class="tr-cnt">(${cc})</span>`:''}
+          </div>
+        </div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  });
+  document.getElementById('treeEl').innerHTML=h;
+}
+function togE(id){exp[id]=!exp[id];buildTree();}
+
+/* Navigation */
+function nav(id){
+  if(cur!==id){hist=hist.slice(0,hIdx+1);hist.push(id);hIdx=hist.length-1;}
+  cur=id;selId=null;
+  document.getElementById('searchBox').value='';
+  closeTP();hideCtx();
+  upd();
+}
+function goBack(){if(hIdx>0){hIdx--;cur=hist[hIdx];selId=null;upd();}}
+function goFwd(){if(hIdx<hist.length-1){hIdx++;cur=hist[hIdx];selId=null;upd();}}
+function goUp(){const p=fp(cur);if(p)nav(p.id);else if(cur!=='0')nav('0');}
+
+function buildAddr(){
+  const ab=document.getElementById('addrBar');
+  let segs=[{id:'0',label:'Quản lý công việc'}];
+  const par=fp(cur);
+  if(par)segs.push({id:par.id,label:par.label});
+  const nd=fn(cur);
+  if(nd&&cur!=='0')segs.push({id:nd.id,label:nd.label});
+  ab.innerHTML=segs.map((s,i)=>`${i?'<span class="addr-sep">›</span>':''}<span class="addr-seg" onclick="nav('${s.id}')">${s.label}</span>`).join('');
+  document.getElementById('btnBack').disabled=hIdx<=0;
+  document.getElementById('btnFwd').disabled=hIdx>=hist.length-1;
+  document.getElementById('btnUp').disabled=!fp(cur)&&cur==='0';
+}
+
+/* Main update */
+function upd(){
+  buildTree();buildAddr();render();
+  const nd=fn(cur),i=its(cur);
+  document.getElementById('stCount').textContent=`${i.length} mục`;
+  const nb=document.getElementById('btnNew');
+  if(cur==='0')nb.style.display='none';else{nb.style.display='';nb.innerHTML=cur==='3'?'<span class="ti">📄</span>Chuyên gia mới':cur==='4'?'<span class="ti">📄</span>Quy trình mới':'<span class="ti">📄</span>Mới';}
+  document.getElementById('btnEdit').disabled=!selId;
+  document.getElementById('btnDel').disabled=!selId;
+  document.getElementById('vsDetail').classList.toggle('vs-act',viewMode==='detail');
+  document.getElementById('vsTile').classList.toggle('vs-act',viewMode==='tile');
+}
+
+function setView(m){viewMode=m;upd();}
+function refresh(){upd();}
+
+/* Render content */
+function render(){
+  const el=document.getElementById('ctScroll');
+  if(cur==='0'){el.innerHTML=renderHome();return;}
+  const nd=fn(cur),hasSub=nd?.children?.length;
+  if(hasSub){el.innerHTML=renderFolderSubs(nd);return;}
+  const list=its(cur);
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  const f=q?list.filter(i=>JSON.stringify(i).toLowerCase().includes(q)):list;
+  if(!f.length){el.innerHTML=`<div class="ct-empty"><div class="ei">${nd?nd.icon:'📁'}</div><p>Thư mục này trống.<br>Nhấn "Mới" hoặc chuột phải để thêm.</p></div>`;return;}
+  if(viewMode==='tile'){el.innerHTML=renderTiles(f);return;}
+  el.innerHTML=renderDetail(f);
+}
+
+function renderHome(){
+  const all=[];for(const k in data)(data[k]||[]).forEach(i=>all.push({...i,section:k}));
+  let h=`<div class="folder-view">`;
+  TREE.forEach(n=>{
+    if(n.id==='0')return;
+    const c=cnt(n);
+    h+=`<div class="fv-item" ondblclick="nav('${n.id}')" onclick="nav('${n.id}')"><span class="fv-ico">${n.children?.length?(n.ficon||'📂'):n.icon}</span><span class="fv-lbl">${n.label}</span><span class="fv-cnt">${c} mục</span></div>`;
+  });
+  h+=`</div>`;
+  if(all.length){
+    const recent=all.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,8);
+    h+=`<div style="padding:0 12px 4px;font-size:11px;font-weight:600;color:var(--win-fg2)">Gần đây</div>`;
+    h+=`<div class="col-hdr"><span>Tên</span><span>Danh mục</span><span>Trạng thái</span><span>Loại</span><span>Ngày</span></div>`;
+    recent.forEach(item=>{
+      const st=item.status||'active';const sn=fn(item.section);const sp=fp(item.section);
+      h+=`<div class="rw"><span class="nm"><span class="fi">📄</span><span class="fn">${esc(item.name||'')}</span></span><span>${sp?sp.label+'/':''}${sn?sn.label:''}</span><span><span class="st st-${st[0]}">${SL[st]||st}</span></span><span>${item.type?`<span class="tp">${TL[item.type]||item.type}</span>`:''}</span><span style="color:var(--win-fg3)">${fd(item.updatedAt)}</span></div>`;
+    });
+  }
+  return h;
+}
+
+function renderFolderSubs(nd){
+  let h=`<div class="folder-view">`;
+  nd.children.forEach(ch=>{
+    const cc=its(ch.id).length;
+    h+=`<div class="fv-item" ondblclick="nav('${ch.id}')" onclick="nav('${ch.id}')"><span class="fv-ico">${ch.icon}</span><span class="fv-lbl">${ch.label}</span><span class="fv-cnt">${cc} mục</span></div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+
+function renderTiles(f){
+  let h=`<div class="folder-view">`;
+  f.forEach(item=>{
+    const ico=cur==='3'?'👤':cur==='4'?'📋':'📄';
+    h+=`<div class="fv-item ${selId===item.id?'fv-sel':''}" onclick="sel('${item.id}')" ondblclick="openDlg('${item.id}')" oncontextmenu="event.preventDefault();sel('${item.id}');showItemCtx(event,'${item.id}')"><span class="fv-ico">${ico}</span><span class="fv-lbl">${esc(item.name||'')}</span></div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+
+function renderDetail(f){
+  const isE=cur==='3',isP=cur==='4';
+  const sl=isE?SLE:isP?SLP:SL;
+  let h;
+  if(isE)h=`<div class="col-hdr"><span>Tên</span><span>Lĩnh vực · Đơn vị</span><span>Trạng thái</span><span>Liên hệ</span><span>Cập nhật</span></div>`;
+  else if(isP)h=`<div class="col-hdr"><span>Quy trình</span><span>Phạm vi</span><span>Trạng thái</span><span>Loại</span><span>Cập nhật</span></div>`;
+  else h=`<div class="col-hdr"><span>Tên</span><span>Mô tả</span><span>Trạng thái</span><span>Loại</span><span>Cập nhật</span></div>`;
+  f.forEach(item=>{
+    const st=item.status||'active';const sc=st[0];
+    const ico=isE?'👤':isP?'📋':'📄';
+    h+=`<div class="rw ${selId===item.id?'rw-sel':''}" onclick="sel('${item.id}')" ondblclick="openDlg('${item.id}')" oncontextmenu="event.preventDefault();sel('${item.id}');showItemCtx(event,'${item.id}')">`;
+    h+=`<span class="nm"><span class="fi">${ico}</span><span class="fn">${esc(item.name||'')}</span></span>`;
+    if(isE)h+=`<span>${esc(item.field||'')}${item.org?' · '+esc(item.org):''}</span>`;
+    else if(isP)h+=`<span>${esc(item.scope||'')}</span>`;
+    else h+=`<span>${esc(item.desc||'')}</span>`;
+    h+=`<span><span class="st st-${sc}">${sl[st]||st}</span></span>`;
+    if(isE)h+=`<span style="font-size:11px">${esc(item.contact||'')}</span>`;
+    else h+=`<span>${item.type?`<span class="tp">${TL[item.type]||item.type}</span>`:''}</span>`;
+    h+=`<span style="color:var(--win-fg3)">${fd(item.updatedAt)}</span></div>`;
+  });
+  return h;
+}
+
+/* Selection */
+function sel(id){selId=(selId===id)?null:id;upd();}
+function editSel(){if(selId)openDlg(selId);}
+function delSel(){if(selId)doDel(selId,cur);}
+
+/* Context menu */
+function showCtx(e){
+  e.preventDefault();
+  if(cur==='0')return;
+  const m=document.getElementById('ctxMenu');
+  const lbl=cur==='3'?'chuyên gia':cur==='4'?'quy trình':'mục';
+  m.innerHTML=`<div class="ctx-item" onclick="hideCtx();openDlg()"><span class="ci">📄</span>Thêm ${lbl} mới</div><div class="ctx-sep"></div><div class="ctx-item" onclick="hideCtx();refresh()"><span class="ci">🔄</span>Làm mới</div>`;
+  posCtx(m,e);
+}
+function showItemCtx(e,id){
+  e.preventDefault();e.stopPropagation();
+  const m=document.getElementById('ctxMenu');
+  m.innerHTML=`<div class="ctx-item" onclick="hideCtx();openDlg('${id}')"><span class="ci">✏️</span>Mở / Sửa</div><div class="ctx-sep"></div><div class="ctx-item ctx-danger" onclick="hideCtx();doDel('${id}','${cur}')"><span class="ci">🗑️</span>Xóa</div>`;
+  posCtx(m,e);
+}
+function posCtx(m,e){
+  m.style.left=Math.min(e.clientX,window.innerWidth-220)+'px';
+  m.style.top=Math.min(e.clientY,window.innerHeight-120)+'px';
+  m.classList.add('show');
+  setTimeout(()=>document.addEventListener('click',hideCtx,{once:true}),10);
+}
+function hideCtx(){document.getElementById('ctxMenu').classList.remove('show');}
+
+/* Dialog */
+function openDlg(itemId){
+  editId=itemId||null;
+  const sec=cur,isE=sec==='3',isP=sec==='4';
+  let item=null;
+  if(editId)item=its(sec).find(i=>i.id===editId);
+  let title,body,saveFn;
+  if(isP){
+    title=item?'Sửa quy trình':'Quy trình mới';
+    body=`<div class="ff"><label>Tên quy trình</label><input id="f_n" value="${esc(item?.name||'')}"></div>
+      <div class="ff"><label>Phạm vi áp dụng</label><input id="f_s" value="${esc(item?.scope||'')}"></div>
+      <div class="ff"><label>Mô tả</label><textarea id="f_d">${esc(item?.desc||'')}</textarea></div>
+      <div class="ff"><label>Trạng thái</label><select id="f_st"><option value="active" ${(item?.status||'active')==='active'?'selected':''}>Áp dụng</option><option value="pending" ${item?.status==='pending'?'selected':''}>Dự thảo</option><option value="done" ${item?.status==='done'?'selected':''}>Ngưng</option></select></div>`;
+    saveFn=`svP()`;
+  }else if(isE){
+    title=item?'Sửa chuyên gia':'Chuyên gia mới';
+    body=`<div class="ff"><label>Tên</label><input id="f_n" value="${esc(item?.name||'')}"></div>
+      <div class="ff"><label>Lĩnh vực</label><input id="f_f" value="${esc(item?.field||'')}"></div>
+      <div class="ff"><label>Đơn vị</label><input id="f_o" value="${esc(item?.org||'')}"></div>
+      <div class="ff"><label>Liên hệ</label><input id="f_c" value="${esc(item?.contact||'')}"></div>
+      <div class="ff"><label>Trạng thái</label><select id="f_st"><option value="active" ${(item?.status||'active')==='active'?'selected':''}>Hoạt động</option><option value="pending" ${item?.status==='pending'?'selected':''}>Chờ xác nhận</option><option value="done" ${item?.status==='done'?'selected':''}>Hoàn tất</option></select></div>
+      <div class="ff"><label>Ghi chú</label><textarea id="f_d">${esc(item?.desc||'')}</textarea></div>`;
+    saveFn=`svE()`;
+  }else{
+    title=item?'Sửa mục':'Mục mới';
+    body=`<div class="ff"><label>Tên</label><input id="f_n" value="${esc(item?.name||'')}"></div>
+      <div class="ff"><label>Mô tả</label><textarea id="f_d">${esc(item?.desc||'')}</textarea></div>
+      <div class="ff"><label>Trạng thái</label><select id="f_st"><option value="active" ${(item?.status||'active')==='active'?'selected':''}>Hoạt động</option><option value="pending" ${item?.status==='pending'?'selected':''}>Đang chờ</option><option value="done" ${item?.status==='done'?'selected':''}>Hoàn thành</option></select></div>
+      <div class="ff"><label>Ghi chú</label><textarea id="f_nt">${esc(item?.notes||'')}</textarea></div>`;
+    saveFn=`svI()`;
+  }
+  const del=editId?`<button class="db db-r" onclick="doDel('${editId}','${sec}');closeDlg()">Xóa</button>`:'';
+  document.getElementById('dlgBox').innerHTML=`<div class="dlg-hd"><h3>${title}</h3><button class="dlg-x" onclick="closeDlg()">✕</button></div><div class="dlg-bd">${body}</div><div class="dlg-ft">${del}<span style="flex:1"></span><button class="db" onclick="closeDlg()">Hủy</button><button class="db db-p" onclick="${saveFn}">Lưu</button></div>`;
+  document.getElementById('dlgBg').classList.add('show');
+  setTimeout(()=>document.getElementById('f_n')?.focus(),80);
+}
+function svI(){const n=document.getElementById('f_n').value.trim();if(!n)return;const l=its(cur),nd=fn(cur),o={name:n,desc:document.getElementById('f_d').value.trim(),status:document.getElementById('f_st').value,notes:document.getElementById('f_nt')?.value.trim()||'',type:nd?.type||'',updatedAt:Date.now()};if(editId){const i=l.findIndex(x=>x.id===editId);if(i>=0)l[i]={...l[i],...o};}else{o.id=gid();o.createdAt=Date.now();l.push(o);}setI(cur,l);closeDlg();upd();}
+function svE(){const n=document.getElementById('f_n').value.trim();if(!n)return;const l=its(cur),o={name:n,field:document.getElementById('f_f').value.trim(),org:document.getElementById('f_o').value.trim(),contact:document.getElementById('f_c').value.trim(),status:document.getElementById('f_st').value,desc:document.getElementById('f_d').value.trim(),type:'cg',updatedAt:Date.now()};if(editId){const i=l.findIndex(x=>x.id===editId);if(i>=0)l[i]={...l[i],...o};}else{o.id=gid();o.createdAt=Date.now();l.push(o);}setI(cur,l);closeDlg();upd();}
+function svP(){const n=document.getElementById('f_n').value.trim();if(!n)return;const l=its(cur),o={name:n,scope:document.getElementById('f_s').value.trim(),desc:document.getElementById('f_d').value.trim(),status:document.getElementById('f_st').value,type:'qt',updatedAt:Date.now()};if(editId){const i=l.findIndex(x=>x.id===editId);if(i>=0)l[i]={...l[i],...o};}else{o.id=gid();o.createdAt=Date.now();l.push(o);}setI(cur,l);closeDlg();upd();}
+function doDel(id,sec){setI(sec,its(sec).filter(i=>i.id!==id));selId=null;upd();}
+function closeDlg(){document.getElementById('dlgBg').classList.remove('show');editId=null;}
+function doFilter(){render();}
+function toggleTP(){document.getElementById('treePane').classList.toggle('tp-open');document.getElementById('tpShade').classList.toggle('show');}
+function closeTP(){document.getElementById('treePane').classList.remove('tp-open');document.getElementById('tpShade').classList.remove('show');}
+
+ld();hist.push('0');hIdx=0;upd();
+</script>
