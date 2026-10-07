@@ -154,6 +154,18 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 .bk-info b{color:var(--fg2)}
 .bk-close{float:right;background:none;border:none;font-size:18px;cursor:pointer;color:var(--fg3)}
 .bk-textarea{width:100%;min-height:80px;max-height:200px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-s);font-size:11px;font-family:monospace;background:var(--bg);color:var(--fg);resize:vertical;word-break:break-all}
+.sync-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--fg3);padding:6px 10px;background:var(--bg);border-radius:var(--radius-s);margin-bottom:10px}
+.sync-status .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sync-status .dot.ok{background:var(--green)}.sync-status .dot.warn{background:var(--amber)}.sync-status .dot.off{background:var(--fg3)}
+.sync-mode{display:flex;gap:0;margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius-s);overflow:hidden}
+.sync-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--fg2);border:none}
+.sync-tab.active{background:var(--accent);color:#fff}
+.sync-merge-info{font-size:11px;line-height:1.6;padding:8px;background:var(--bg);border-radius:var(--radius-s);margin-bottom:8px}
+.sync-merge-info b{color:var(--fg)}
+.sync-merge-stat{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sync-merge-stat span{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600}
+.qr-wrap{text-align:center;padding:12px;background:#fff;border-radius:var(--radius-s);margin-bottom:8px}
+.qr-wrap canvas{max-width:200px!important;height:auto!important}
 
 /* Global search */
 .gs-modal{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:10vh 16px 16px}
@@ -453,9 +465,10 @@ body.idea-open .idea-panel{display:flex}
 </div>
 
 <div class="bk-modal" id="bkModal" style="display:none" onclick="if(event.target===this)closeBackup()">
-  <div class="bk-box" style="max-width:480px">
+  <div class="bk-box" style="max-width:520px;max-height:90vh;overflow-y:auto">
     <button class="bk-close" onclick="closeBackup()">✕</button>
     <h3>🛡️ Sao lưu & Đồng bộ</h3>
+    <div id="syncStatusBar"></div>
     <div class="bk-row">
       <button class="bk-btn primary" onclick="exportData()">📥 Xuất file JSON</button>
       <button class="bk-btn" onclick="document.getElementById('importFile').click()">📤 Nhập file JSON</button>
@@ -463,13 +476,26 @@ body.idea-open .idea-panel{display:flex}
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
     <div style="border-top:1px solid var(--border);margin:12px 0;padding-top:12px">
       <div style="font-size:13px;font-weight:600;margin-bottom:8px">📡 Đồng bộ giữa thiết bị</div>
-      <div class="bk-row">
-        <button class="bk-btn" onclick="genSyncCode()">📋 Tạo mã đồng bộ</button>
-        <button class="bk-btn" onclick="showPasteSync()">📲 Nhập mã đồng bộ</button>
+      <div class="sync-mode">
+        <button class="sync-tab active" onclick="switchSyncMode('send',this)">📤 Gửi</button>
+        <button class="sync-tab" onclick="switchSyncMode('receive',this)">📥 Nhận</button>
       </div>
-      <textarea class="bk-textarea" id="syncArea" style="display:none" placeholder="Mã đồng bộ sẽ hiện ở đây..."></textarea>
-      <div id="syncActions" style="display:none;margin-top:6px">
-        <button class="bk-btn primary" id="syncApplyBtn" onclick="applySyncCode()" style="width:100%">Áp dụng mã đồng bộ</button>
+      <div id="syncSend">
+        <div class="bk-row">
+          <button class="bk-btn primary" onclick="genSyncCode()" style="flex:2">📋 Tạo mã & Sao chép</button>
+          <button class="bk-btn" onclick="genSyncQR()">📱 QR</button>
+        </div>
+        <div id="qrContainer" style="display:none" class="qr-wrap"></div>
+        <textarea class="bk-textarea" id="syncArea" style="display:none" placeholder="Mã đồng bộ sẽ hiện ở đây..."></textarea>
+      </div>
+      <div id="syncReceive" style="display:none">
+        <textarea class="bk-textarea" id="syncPasteArea" style="display:block;min-height:100px" placeholder="Dán mã đồng bộ từ thiết bị khác vào đây..."></textarea>
+        <div id="syncPreview" style="display:none"></div>
+        <div style="margin-top:8px" class="bk-row">
+          <button class="bk-btn" onclick="previewSync()">🔍 Xem trước</button>
+          <button class="bk-btn primary" onclick="applySyncMerge()">🔄 Hợp nhất</button>
+          <button class="bk-btn" onclick="applySyncOverwrite()">⚠️ Ghi đè</button>
+        </div>
       </div>
     </div>
     <div class="bk-info" id="bkInfo"></div>
@@ -1743,35 +1769,186 @@ function requestNotifPermission(){
   }
 }
 
-/* ===== Đồng bộ (Sync Code) ===== */
+/* ===== Đồng bộ (Smart Sync) ===== */
+var _syncRemote=null;
+function switchSyncMode(mode,btn){
+  document.querySelectorAll('.sync-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('syncSend').style.display=mode==='send'?'':'none';
+  document.getElementById('syncReceive').style.display=mode==='receive'?'':'none';
+  document.getElementById('syncPreview').style.display='none';
+  _syncRemote=null;
+}
 function genSyncCode(){
-  var raw=JSON.stringify(D);
+  var snap={v:2,ts:Date.now(),deviceId:getDeviceId(),data:D};
+  var raw=JSON.stringify(snap);
   var encoded=btoa(unescape(encodeURIComponent(raw)));
   var area=document.getElementById('syncArea');
   area.style.display='';area.value=encoded;area.select();
-  document.getElementById('syncActions').style.display='none';
+  document.getElementById('qrContainer').style.display='none';
   try{navigator.clipboard.writeText(encoded);toast('Đã sao chép mã đồng bộ');}catch(e){toast('Hãy Ctrl+C để sao chép');}
+  localStorage.setItem('qlcv4_last_sync',String(Date.now()));
+  updateSyncStatus();
 }
-function showPasteSync(){
-  var area=document.getElementById('syncArea');
-  area.style.display='';area.value='';area.placeholder='Dán mã đồng bộ từ thiết bị khác vào đây...';area.focus();
-  document.getElementById('syncActions').style.display='';
+function genSyncQR(){
+  var snap={v:2,ts:Date.now(),deviceId:getDeviceId(),data:D};
+  var raw=JSON.stringify(snap);
+  var encoded=btoa(unescape(encodeURIComponent(raw)));
+  if(encoded.length>2953){
+    toast('Dữ liệu quá lớn cho QR. Hãy dùng mã text.');
+    genSyncCode();return;
+  }
+  var qc=document.getElementById('qrContainer');
+  qc.style.display='';qc.innerHTML='<div style="font-size:12px;color:var(--fg3)">Đang tải...</div>';
+  document.getElementById('syncArea').style.display='none';
+  loadQRLib(function(){
+    qc.innerHTML='';
+    try{
+      new QRCode(qc,{text:encoded,width:200,height:200,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.L});
+      qc.innerHTML+='<div style="font-size:11px;color:var(--fg3);margin-top:6px">Quét QR bằng thiết bị khác</div>';
+    }catch(e){
+      qc.innerHTML='<div style="color:var(--red);font-size:12px">Dữ liệu quá lớn cho QR. Hãy dùng mã text.</div>';
+    }
+  });
 }
-function applySyncCode(){
-  var area=document.getElementById('syncArea');
-  var code=area.value.trim();
-  if(!code){toast('Chưa có mã đồng bộ');return;}
+function getDeviceId(){
+  var id=localStorage.getItem('qlcv4_device_id');
+  if(!id){id='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);localStorage.setItem('qlcv4_device_id',id);}
+  return id;
+}
+function decodeSyncCode(code){
+  if(!code)return null;
   try{
     var raw=decodeURIComponent(escape(atob(code)));
-    var data=JSON.parse(raw);
-    if(typeof data!=='object')throw new Error('invalid');
-    if(!confirm('Áp dụng dữ liệu từ thiết bị khác?\n\nDữ liệu hiện tại sẽ được sao lưu trước khi ghi đè.'))return;
-    autoBackup();
-    D=data;sv();refresh();ideaUpdateCount();
-    closeBackup();toast('Đã đồng bộ dữ liệu thành công');
-  }catch(e){
-    alert('Mã đồng bộ không hợp lệ. Hãy kiểm tra lại.');
+    var obj=JSON.parse(raw);
+    if(obj.v===2&&obj.data)return obj;
+    if(typeof obj==='object')return {v:1,ts:0,deviceId:'unknown',data:obj};
+    return null;
+  }catch(e){return null;}
+}
+function previewSync(){
+  var code=document.getElementById('syncPasteArea').value.trim();
+  var remote=decodeSyncCode(code);
+  if(!remote){toast('Mã đồng bộ không hợp lệ');return;}
+  _syncRemote=remote;
+  var result=calcMerge(D,remote.data);
+  var pv=document.getElementById('syncPreview');
+  pv.style.display='';
+  var h='<div class="sync-merge-info">';
+  h+='<b>Thiết bị nguồn:</b> '+(remote.deviceId||'không rõ');
+  if(remote.ts)h+=' · '+new Date(remote.ts).toLocaleString('vi-VN');
+  h+='<div class="sync-merge-stat" style="margin-top:6px">';
+  h+='<span style="background:var(--green-s);color:var(--green)">+ '+result.added+' mới</span>';
+  h+='<span style="background:var(--accent-s);color:var(--accent)">↑ '+result.updated+' cập nhật</span>';
+  h+='<span style="background:var(--fg3);color:#fff">= '+result.unchanged+' giữ nguyên</span>';
+  h+='</div>';
+  var totalRemote=0;for(var k in remote.data)if(k!=='_folders'&&k!=='_trash'&&Array.isArray(remote.data[k]))totalRemote+=remote.data[k].length;
+  var totalLocal=0;for(var k in D)if(k!=='_folders'&&k!=='_trash'&&Array.isArray(D[k]))totalLocal+=D[k].length;
+  h+='<div style="margin-top:4px">Thiết bị này: <b>'+totalLocal+'</b> mục · Nguồn: <b>'+totalRemote+'</b> mục</div>';
+  h+='</div>';
+  pv.innerHTML=h;
+}
+function calcMerge(local,remote){
+  var added=0,updated=0,unchanged=0;
+  var localMap={};
+  for(var k in local){
+    if(!Array.isArray(local[k]))continue;
+    local[k].forEach(function(it){if(it&&it.id)localMap[it.id]=it;});
   }
+  for(var k in remote){
+    if(!Array.isArray(remote[k]))continue;
+    remote[k].forEach(function(it){
+      if(!it||!it.id)return;
+      var existing=localMap[it.id];
+      if(!existing){added++;}
+      else{
+        var lt=existing.updatedAt||existing.createdAt||0;
+        var rt=it.updatedAt||it.createdAt||0;
+        if(rt>lt)updated++;else unchanged++;
+      }
+    });
+  }
+  return {added:added,updated:updated,unchanged:unchanged};
+}
+function applySyncMerge(){
+  var code=document.getElementById('syncPasteArea').value.trim();
+  var remote=_syncRemote||decodeSyncCode(code);
+  if(!remote){toast('Mã đồng bộ không hợp lệ');return;}
+  autoBackup();
+  var localMap={};
+  for(var k in D){
+    if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(it){if(it&&it.id)localMap[it.id]={sec:k,item:it};});
+  }
+  var added=0,updated=0;
+  var rd=remote.data;
+  for(var k in rd){
+    if(k==='_folders'){
+      var rf=rd._folders||[];
+      if(!D._folders)D._folders=[];
+      rf.forEach(function(f){
+        if(!D._folders.some(function(lf){return lf.id===f.id;})){
+          D._folders.push(f);added++;
+        }
+      });
+      continue;
+    }
+    if(k==='_trash'){
+      var rt=rd._trash||[];
+      if(!D._trash)D._trash=[];
+      var trashIds={};D._trash.forEach(function(t){if(t.item)trashIds[t.item.id]=true;});
+      rt.forEach(function(t){
+        if(t.item&&!trashIds[t.item.id]){D._trash.push(t);added++;}
+      });
+      continue;
+    }
+    if(!Array.isArray(rd[k]))continue;
+    if(!D[k])D[k]=[];
+    rd[k].forEach(function(remoteItem){
+      if(!remoteItem||!remoteItem.id)return;
+      var existing=localMap[remoteItem.id];
+      if(!existing){
+        D[k].push(remoteItem);added++;
+      }else{
+        var lt=existing.item.updatedAt||existing.item.createdAt||0;
+        var rt=remoteItem.updatedAt||remoteItem.createdAt||0;
+        if(rt>lt){
+          var idx=D[existing.sec].findIndex(function(x){return x.id===remoteItem.id;});
+          if(idx>=0)D[existing.sec][idx]=remoteItem;
+          updated++;
+        }
+      }
+    });
+  }
+  sv();refresh();ideaUpdateCount();
+  localStorage.setItem('qlcv4_last_sync',String(Date.now()));
+  updateSyncStatus();
+  closeBackup();
+  toast('Hợp nhất xong: +'+added+' mới, ↑'+updated+' cập nhật');
+}
+function applySyncOverwrite(){
+  var code=document.getElementById('syncPasteArea').value.trim();
+  var remote=_syncRemote||decodeSyncCode(code);
+  if(!remote){toast('Mã đồng bộ không hợp lệ');return;}
+  if(!confirm('GHI ĐÈ toàn bộ dữ liệu bằng dữ liệu từ thiết bị khác?\n\nDữ liệu hiện tại sẽ được sao lưu trước.'))return;
+  autoBackup();
+  D=remote.data;sv();refresh();ideaUpdateCount();
+  localStorage.setItem('qlcv4_last_sync',String(Date.now()));
+  updateSyncStatus();
+  closeBackup();toast('Đã ghi đè dữ liệu từ thiết bị khác');
+}
+function updateSyncStatus(){
+  var bar=document.getElementById('syncStatusBar');
+  if(!bar)return;
+  var last=parseInt(localStorage.getItem('qlcv4_last_sync')||'0');
+  var cls='off',txt='Chưa đồng bộ lần nào';
+  if(last){
+    var ago=Date.now()-last;
+    if(ago<3600000){cls='ok';txt='Đồng bộ '+Math.round(ago/60000)+' phút trước';}
+    else if(ago<86400000){cls='warn';txt='Đồng bộ '+Math.round(ago/3600000)+' giờ trước';}
+    else{cls='warn';txt='Đồng bộ '+Math.round(ago/86400000)+' ngày trước';}
+  }
+  bar.innerHTML='<div class="sync-status"><div class="dot '+cls+'"></div>'+txt+'<span style="margin-left:auto;font-size:10px">ID: '+getDeviceId().slice(0,8)+'</span></div>';
 }
 
 /* ===== Nén dữ liệu (LZ Compression) ===== */
@@ -1809,6 +1986,15 @@ function autoBackup(){
 
 function openBackup(){
   document.getElementById('bkModal').style.display='';
+  updateSyncStatus();
+  document.getElementById('syncPreview').style.display='none';
+  _syncRemote=null;
+  document.querySelectorAll('.sync-tab').forEach(function(t,i){t.classList.toggle('active',i===0);});
+  document.getElementById('syncSend').style.display='';
+  document.getElementById('syncReceive').style.display='none';
+  document.getElementById('syncArea').style.display='none';
+  document.getElementById('qrContainer').style.display='none';
+  document.getElementById('syncPasteArea').value='';
   var backups=[];
   try{backups=JSON.parse(localStorage.getItem(BK_KEY)||'[]');}catch(e){}
   var raw=localStorage.getItem('qlcv4')||'{}';
@@ -1818,8 +2004,8 @@ function openBackup(){
   if(backups.length){
     h+=' (gần nhất: '+new Date(backups[0].ts).toLocaleString('vi-VN')+')';
   }
-  h+='<br><br>⏱ Tự động sao lưu mỗi 5 phút khi có thay đổi.';
-  h+='<br>📱 Dữ liệu lưu trong trình duyệt — <b>xuất file JSON để giữ an toàn</b> khi đổi thiết bị hoặc xóa cache.';
+  h+='<br><br>⏱ Tự động sao lưu mỗi 5 phút · 📱 Dữ liệu lưu trong trình duyệt';
+  h+='<br>🔄 <b>Hợp nhất</b> = giữ cả 2 bên, chỉ cập nhật mục mới hơn · <b>Ghi đè</b> = thay toàn bộ';
   document.getElementById('bkInfo').innerHTML=h;
 }
 
@@ -1860,6 +2046,17 @@ function importData(input){
   };
   reader.readAsText(file);
   input.value='';
+}
+
+/* ===== QR Code (load from CDN on demand) ===== */
+var _qrReady=false;
+function loadQRLib(cb){
+  if(_qrReady){cb();return;}
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  s.onload=function(){_qrReady=true;cb();};
+  s.onerror=function(){toast('Không tải được thư viện QR');};
+  document.head.appendChild(s);
 }
 
 /* ===== Service Worker ===== */
