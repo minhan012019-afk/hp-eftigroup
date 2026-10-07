@@ -166,6 +166,13 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 .sync-merge-stat span{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600}
 .qr-wrap{text-align:center;padding:12px;background:#fff;border-radius:var(--radius-s);margin-bottom:8px}
 .qr-wrap canvas{max-width:200px!important;height:auto!important}
+.cloud-box{border:1px solid var(--border);border-radius:var(--radius-s);padding:12px;margin-bottom:10px;background:var(--bg)}
+.cloud-box h4{font-size:13px;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.cloud-input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-s);font-size:12px;font-family:inherit;background:var(--card);color:var(--fg);outline:none;margin-bottom:6px}
+.cloud-input:focus{border-color:var(--accent)}
+.cloud-connected{display:flex;align-items:center;gap:6px;padding:8px;background:var(--green-s);border-radius:var(--radius-s);font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px}
+.cloud-log{font-size:11px;color:var(--fg3);max-height:80px;overflow-y:auto;padding:4px 0}
+.cloud-log div{padding:2px 0;border-bottom:1px solid var(--border)}
 
 /* Global search */
 .gs-modal{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:10vh 16px 16px}
@@ -498,6 +505,32 @@ body.idea-open .idea-panel{display:flex}
         </div>
       </div>
     </div>
+    <div style="border-top:1px solid var(--border);margin:12px 0;padding-top:12px">
+      <div class="cloud-box" id="cloudSyncBox">
+        <h4>☁️ Cloud Sync — Đồng bộ tự động</h4>
+        <div id="cloudSetup">
+          <div style="font-size:11px;color:var(--fg3);margin-bottom:8px;line-height:1.5">
+            Kết nối Firebase để tự động đồng bộ giữa các thiết bị.<br>
+            <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent)">Tạo Firebase project miễn phí →</a>
+          </div>
+          <input class="cloud-input" id="cfgDbUrl" placeholder="Firebase DB URL (vd: https://myapp-xxxxx-default-rtdb.firebaseio.com)">
+          <input class="cloud-input" id="cfgRoom" placeholder="Mã phòng (tự đặt, vd: team2024)">
+          <div class="bk-row">
+            <button class="bk-btn primary" onclick="cloudConnect()">🔗 Kết nối</button>
+            <button class="bk-btn" onclick="showCloudHelp()">❓ Hướng dẫn</button>
+          </div>
+        </div>
+        <div id="cloudActive" style="display:none">
+          <div class="cloud-connected" id="cloudStatusText">🟢 Đang đồng bộ</div>
+          <div class="cloud-log" id="cloudLog"></div>
+          <div class="bk-row" style="margin-top:6px">
+            <button class="bk-btn" onclick="cloudPushNow()">⬆️ Đẩy lên</button>
+            <button class="bk-btn" onclick="cloudPullNow()">⬇️ Kéo về</button>
+            <button class="bk-btn" style="color:var(--red)" onclick="cloudDisconnect()">✕ Ngắt</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="bk-info" id="bkInfo"></div>
   </div>
 </div>
@@ -538,7 +571,14 @@ let hist=['0'],histIdx=0,sortKey='name',sortAsc=true;
 TREE.forEach(n=>{if(n.children?.length)exp[n.id]=true;});
 
 function ld(){try{D=JSON.parse(localStorage.getItem('qlcv4')||'{}');}catch(e){D={};}}
-function sv(){try{localStorage.setItem('qlcv4',JSON.stringify(D));}catch(e){}}
+var _svCloudDebounce=null;
+function sv(skipCloud){
+  try{localStorage.setItem('qlcv4',JSON.stringify(D));}catch(e){}
+  if(!skipCloud&&_cloudCfg){
+    clearTimeout(_svCloudDebounce);
+    _svCloudDebounce=setTimeout(cloudAutoSync,2000);
+  }
+}
 function its(s){return D[s]||[];}
 function si(s,v){D[s]=v;sv();}
 function gid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -1948,7 +1988,239 @@ function updateSyncStatus(){
     else if(ago<86400000){cls='warn';txt='Đồng bộ '+Math.round(ago/3600000)+' giờ trước';}
     else{cls='warn';txt='Đồng bộ '+Math.round(ago/86400000)+' ngày trước';}
   }
+  if(_cloudCfg){
+    cls='ok';txt='☁️ Cloud Sync đang bật';
+    if(_cloudLastPush){txt+=' · đẩy '+timeAgoShort(_cloudLastPush);}
+  }
   bar.innerHTML='<div class="sync-status"><div class="dot '+cls+'"></div>'+txt+'<span style="margin-left:auto;font-size:10px">ID: '+getDeviceId().slice(0,8)+'</span></div>';
+}
+function timeAgoShort(ts){
+  var ago=Date.now()-ts;
+  if(ago<60000)return 'vừa xong';
+  if(ago<3600000)return Math.round(ago/60000)+'p trước';
+  if(ago<86400000)return Math.round(ago/3600000)+'h trước';
+  return Math.round(ago/86400000)+'d trước';
+}
+
+/* ===== Cloud Sync (Firebase Realtime DB) ===== */
+var _cloudCfg=null;
+var _cloudLastPush=0;
+var _cloudPollTimer=null;
+var _cloudPushing=false;
+
+function loadCloudConfig(){
+  try{
+    var raw=localStorage.getItem('qlcv4_cloud');
+    if(raw){_cloudCfg=JSON.parse(raw);return true;}
+  }catch(e){}
+  return false;
+}
+function saveCloudConfig(cfg){
+  _cloudCfg=cfg;
+  localStorage.setItem('qlcv4_cloud',JSON.stringify(cfg));
+}
+
+function cloudConnect(){
+  var url=document.getElementById('cfgDbUrl').value.trim().replace(/\/$/,'');
+  var room=document.getElementById('cfgRoom').value.trim();
+  if(!url||!room){toast('Nhập đầy đủ URL và mã phòng');return;}
+  if(!/^https:\/\/.+\.firebaseio\.com/.test(url)&&!/^https:\/\/.+\.firebasedatabase\.app/.test(url)){
+    toast('URL Firebase không hợp lệ');return;
+  }
+  room=room.replace(/[^a-zA-Z0-9_-]/g,'');
+  if(!room){toast('Mã phòng chỉ chứa chữ cái, số, - _');return;}
+  var cfg={url:url,room:room};
+  cloudLog('Đang kiểm tra kết nối...');
+  fetch(cfg.url+'/dongdoi/'+cfg.room+'/meta.json')
+    .then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .then(function(meta){
+      saveCloudConfig(cfg);
+      cloudLog('Kết nối thành công!');
+      cloudShowActive();
+      cloudPushNow();
+      startCloudPoll();
+      updateSyncStatus();
+    })
+    .catch(function(e){
+      if(e.message&&e.message.indexOf('401')>=0){
+        toast('Firebase chưa mở quyền truy cập. Kiểm tra Database Rules.');
+      }else{
+        saveCloudConfig(cfg);
+        cloudLog('Kết nối thành công (DB mới)');
+        cloudShowActive();
+        cloudPushNow();
+        startCloudPoll();
+        updateSyncStatus();
+      }
+    });
+}
+
+function cloudShowActive(){
+  document.getElementById('cloudSetup').style.display='none';
+  document.getElementById('cloudActive').style.display='';
+  document.getElementById('cloudStatusText').innerHTML='🟢 Đang đồng bộ — phòng: <b>'+_cloudCfg.room+'</b>';
+}
+
+function cloudShowSetup(){
+  document.getElementById('cloudSetup').style.display='';
+  document.getElementById('cloudActive').style.display='none';
+  if(_cloudCfg){
+    document.getElementById('cfgDbUrl').value=_cloudCfg.url||'';
+    document.getElementById('cfgRoom').value=_cloudCfg.room||'';
+  }
+}
+
+function cloudDisconnect(){
+  _cloudCfg=null;
+  localStorage.removeItem('qlcv4_cloud');
+  if(_cloudPollTimer){clearInterval(_cloudPollTimer);_cloudPollTimer=null;}
+  cloudShowSetup();
+  cloudLog('Đã ngắt kết nối');
+  updateSyncStatus();
+  toast('Đã ngắt Cloud Sync');
+}
+
+function cloudLog(msg){
+  var el=document.getElementById('cloudLog');
+  if(!el)return;
+  var now=new Date().toLocaleTimeString('vi-VN');
+  el.innerHTML='<div>'+now+' — '+msg+'</div>'+el.innerHTML;
+  if(el.children.length>20)el.removeChild(el.lastChild);
+}
+
+function cloudPushNow(){
+  if(!_cloudCfg||_cloudPushing)return;
+  _cloudPushing=true;
+  var payload={
+    data:D,
+    deviceId:getDeviceId(),
+    ts:Date.now()
+  };
+  fetch(_cloudCfg.url+'/dongdoi/'+_cloudCfg.room+'/data.json',{
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  })
+  .then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _cloudLastPush=Date.now();
+    localStorage.setItem('qlcv4_last_sync',String(Date.now()));
+    cloudLog('⬆️ Đã đẩy dữ liệu lên cloud');
+    updateSyncStatus();
+  })
+  .catch(function(e){
+    cloudLog('❌ Lỗi đẩy: '+e.message);
+  })
+  .finally(function(){_cloudPushing=false;});
+}
+
+function cloudPullNow(){
+  if(!_cloudCfg)return;
+  fetch(_cloudCfg.url+'/dongdoi/'+_cloudCfg.room+'/data.json')
+    .then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .then(function(payload){
+      if(!payload||!payload.data){cloudLog('Cloud trống, chưa có dữ liệu');return;}
+      if(payload.deviceId===getDeviceId()&&Date.now()-payload.ts<5000){
+        cloudLog('⬇️ Dữ liệu từ chính thiết bị này, bỏ qua');return;
+      }
+      var result=calcMerge(D,payload.data);
+      if(result.added===0&&result.updated===0){
+        cloudLog('⬇️ Đã cập nhật — không có gì mới');return;
+      }
+      mergeRemoteData(payload.data);
+      localStorage.setItem('qlcv4_last_sync',String(Date.now()));
+      cloudLog('⬇️ Hợp nhất: +'+result.added+' mới, ↑'+result.updated+' cập nhật');
+      updateSyncStatus();
+    })
+    .catch(function(e){
+      cloudLog('❌ Lỗi kéo: '+e.message);
+    });
+}
+
+function mergeRemoteData(rd){
+  var localMap={};
+  for(var k in D){
+    if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(it){if(it&&it.id)localMap[it.id]={sec:k,item:it};});
+  }
+  for(var k in rd){
+    if(k==='_folders'){
+      var rf=rd._folders||[];
+      if(!D._folders)D._folders=[];
+      rf.forEach(function(f){
+        if(!D._folders.some(function(lf){return lf.id===f.id;}))D._folders.push(f);
+      });
+      continue;
+    }
+    if(k==='_trash'){
+      var rt=rd._trash||[];
+      if(!D._trash)D._trash=[];
+      var trashIds={};D._trash.forEach(function(t){if(t.item)trashIds[t.item.id]=true;});
+      rt.forEach(function(t){if(t.item&&!trashIds[t.item.id])D._trash.push(t);});
+      continue;
+    }
+    if(!Array.isArray(rd[k]))continue;
+    if(!D[k])D[k]=[];
+    rd[k].forEach(function(remoteItem){
+      if(!remoteItem||!remoteItem.id)return;
+      var existing=localMap[remoteItem.id];
+      if(!existing){
+        D[k].push(remoteItem);
+      }else{
+        var lt=existing.item.updatedAt||existing.item.createdAt||0;
+        var rt2=remoteItem.updatedAt||remoteItem.createdAt||0;
+        if(rt2>lt){
+          var idx=D[existing.sec].findIndex(function(x){return x.id===remoteItem.id;});
+          if(idx>=0)D[existing.sec][idx]=remoteItem;
+        }
+      }
+    });
+  }
+  sv(true);refresh();ideaUpdateCount();
+}
+
+function startCloudPoll(){
+  if(_cloudPollTimer)clearInterval(_cloudPollTimer);
+  _cloudPollTimer=setInterval(function(){
+    if(!_cloudCfg)return;
+    cloudPullNow();
+  },30000);
+}
+
+function cloudAutoSync(){
+  if(!_cloudCfg)return;
+  cloudPushNow();
+}
+
+function showCloudHelp(){
+  var h='<b>Hướng dẫn thiết lập Cloud Sync:</b><br><br>';
+  h+='1. Truy cập <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a><br>';
+  h+='2. Tạo project mới (miễn phí)<br>';
+  h+='3. Vào Build → Realtime Database → Create Database<br>';
+  h+='4. Chọn vùng gần nhất, chế độ <b>Test mode</b><br>';
+  h+='5. Sao chép URL database (dạng https://xxx.firebaseio.com)<br>';
+  h+='6. Dán URL vào ô trên + đặt mã phòng<br>';
+  h+='7. Dùng cùng URL + mã phòng trên tất cả thiết bị<br><br>';
+  h+='<b>Lưu ý:</b> Test mode hết hạn sau 30 ngày. Để dùng lâu dài, vào Rules và đặt:<br>';
+  h+='<code style="font-size:10px;background:var(--bg);padding:2px 6px;border-radius:3px">{"rules":{".read":true,".write":true}}</code>';
+  var el=document.getElementById('bkInfo');
+  el.innerHTML=h;
+}
+
+function initCloudSync(){
+  if(loadCloudConfig()&&_cloudCfg){
+    cloudShowActive();
+    startCloudPoll();
+    setTimeout(cloudPullNow,3000);
+  }else{
+    cloudShowSetup();
+  }
 }
 
 /* ===== Nén dữ liệu (LZ Compression) ===== */
@@ -2007,6 +2279,7 @@ function openBackup(){
   h+='<br><br>⏱ Tự động sao lưu mỗi 5 phút · 📱 Dữ liệu lưu trong trình duyệt';
   h+='<br>🔄 <b>Hợp nhất</b> = giữ cả 2 bên, chỉ cập nhật mục mới hơn · <b>Ghi đè</b> = thay toàn bộ';
   document.getElementById('bkInfo').innerHTML=h;
+  if(_cloudCfg)cloudShowActive();else cloudShowSetup();
 }
 
 function closeBackup(){document.getElementById('bkModal').style.display='none';}
@@ -2065,7 +2338,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== Init ===== */
-ld();purgeOldTrash();refresh();ideaUpdateCount();autoBackup();scheduleReminders();requestNotifPermission();
+ld();purgeOldTrash();refresh();ideaUpdateCount();autoBackup();scheduleReminders();requestNotifPermission();initCloudSync();
 setInterval(autoBackup,300000);
 setInterval(function(){scheduleReminders();},60000);
 </script>
