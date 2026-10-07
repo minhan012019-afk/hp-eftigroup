@@ -143,6 +143,16 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 .t-cg{background:var(--purple-s);color:var(--purple)}.t-hs{background:var(--teal-s);color:var(--teal)}.t-qt{background:var(--red-s);color:var(--red)}
 .t-folder{background:var(--amber-s);color:var(--amber)}
 .t-idea{background:#fef9c3;color:#a16207}
+.bk-modal{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.bk-box{background:var(--card);border-radius:var(--radius);max-width:420px;width:100%;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.bk-box h3{margin-bottom:12px;font-size:16px}
+.bk-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.bk-btn{flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--card);color:var(--fg);font-size:13px;cursor:pointer;text-align:center;min-width:120px}
+.bk-btn:hover{background:var(--hover)}
+.bk-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bk-info{font-size:12px;color:var(--fg3);margin-top:8px;line-height:1.6}
+.bk-info b{color:var(--fg2)}
+.bk-close{float:right;background:none;border:none;font-size:18px;cursor:pointer;color:var(--fg3)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-idea{background:#2a2410;color:#fbbf24}}
 :root[data-theme="dark"] .t-idea{background:#2a2410;color:#fbbf24}
 
@@ -363,6 +373,19 @@ body.idea-open .idea-panel{display:flex}
   </div>
 </div>
 
+<div class="bk-modal" id="bkModal" style="display:none" onclick="if(event.target===this)closeBackup()">
+  <div class="bk-box">
+    <button class="bk-close" onclick="closeBackup()">✕</button>
+    <h3>🛡️ Sao lưu & Phục hồi dữ liệu</h3>
+    <div class="bk-row">
+      <button class="bk-btn primary" onclick="exportData()">📥 Xuất dữ liệu (JSON)</button>
+      <button class="bk-btn" onclick="document.getElementById('importFile').click()">📤 Nhập dữ liệu</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+    <div class="bk-info" id="bkInfo"></div>
+  </div>
+</div>
+
 <script>
 const TREE=[
   {id:'0',label:'Quản lý chung',icon:'📊',children:[]},
@@ -532,6 +555,7 @@ function updateToolbar(){
     h+='<button class="tb-btn primary" onclick="openModal()">＋ <span>Thêm mới</span></button>';
   }
   h+='<button class="tb-btn" onclick="toggleView()" title="Đổi kiểu xem">'+(viewMode==='tiles'?'📃':'🔲')+'</button>';
+  h+='<button class="tb-btn" onclick="openBackup()" title="Sao lưu & Phục hồi">🛡️</button>';
   ta.innerHTML=h;
 }
 
@@ -1100,8 +1124,88 @@ function ideaUpdateCount(){
   if(active>0){cntEl.textContent=active;cntEl.style.display='';}else{cntEl.style.display='none';}
 }
 
+/* ===== Backup & Restore ===== */
+var BK_KEY='qlcv4_backup';
+var BK_MAX=5;
+
+function autoBackup(){
+  try{
+    var now=Date.now();
+    var last=parseInt(localStorage.getItem('qlcv4_bk_last')||'0');
+    if(now-last<300000)return;
+    var raw=localStorage.getItem('qlcv4');
+    if(!raw)return;
+    var backups=JSON.parse(localStorage.getItem(BK_KEY)||'[]');
+    backups.unshift({ts:now,data:raw});
+    if(backups.length>BK_MAX)backups=backups.slice(0,BK_MAX);
+    localStorage.setItem(BK_KEY,JSON.stringify(backups));
+    localStorage.setItem('qlcv4_bk_last',String(now));
+  }catch(e){}
+}
+
+function openBackup(){
+  document.getElementById('bkModal').style.display='';
+  var backups=[];
+  try{backups=JSON.parse(localStorage.getItem(BK_KEY)||'[]');}catch(e){}
+  var raw=localStorage.getItem('qlcv4')||'{}';
+  var size=(new Blob([raw])).size;
+  var h='<b>Dữ liệu hiện tại:</b> '+Math.round(size/1024)+' KB<br>';
+  h+='<b>Bản sao lưu tự động:</b> '+backups.length+'/'+BK_MAX;
+  if(backups.length){
+    h+=' (gần nhất: '+new Date(backups[0].ts).toLocaleString('vi-VN')+')';
+  }
+  h+='<br><br>⏱ Tự động sao lưu mỗi 5 phút khi có thay đổi.';
+  h+='<br>📱 Dữ liệu lưu trong trình duyệt — <b>xuất file JSON để giữ an toàn</b> khi đổi thiết bị hoặc xóa cache.';
+  document.getElementById('bkInfo').innerHTML=h;
+}
+
+function closeBackup(){document.getElementById('bkModal').style.display='none';}
+
+function exportData(){
+  var raw=localStorage.getItem('qlcv4')||'{}';
+  var dt=new Date().toISOString().slice(0,10);
+  var blob=new Blob([JSON.stringify({version:'qlcv4',exportedAt:new Date().toISOString(),data:JSON.parse(raw)},null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='dongdoi-backup-'+dt+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Đã xuất file sao lưu');
+}
+
+function importData(input){
+  var file=input.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var obj=JSON.parse(e.target.result);
+      var data=obj.data||obj;
+      if(typeof data!=='object')throw new Error('invalid');
+      if(!confirm('Nhập dữ liệu sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại.\n\nDữ liệu hiện tại sẽ được sao lưu tự động trước khi ghi đè.\n\nTiếp tục?'))return;
+      autoBackup();
+      D=data;
+      sv();
+      refresh();
+      ideaUpdateCount();
+      closeBackup();
+      toast('Đã nhập dữ liệu thành công');
+    }catch(err){
+      alert('File không hợp lệ. Vui lòng chọn file JSON đã xuất từ ứng dụng.');
+    }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+/* ===== Service Worker ===== */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
 /* ===== Init ===== */
-ld();refresh();ideaUpdateCount();
+ld();refresh();ideaUpdateCount();autoBackup();
+setInterval(autoBackup,300000);
 </script>
 </body>
 </html>
