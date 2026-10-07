@@ -707,6 +707,40 @@ body.idea-open .idea-panel{display:flex}
   .edu-roster-table{min-width:720px}
   .edu-table-scroll{overflow-x:auto}
 }
+
+/* =========================================================
+   PHASE 2-4 — EDU EXTENSIONS
+   F3,F4,F5,F7,F8,F9,F10,F11,F12,F13,F14,F15
+   ========================================================= */
+.edu-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
+.edu-tab{border:1px solid var(--border);background:var(--card);color:var(--fg2);padding:8px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;font-size:13px}
+.edu-tab.active{background:var(--sel);color:var(--accent);border-color:var(--accent)}
+.edu-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.edu-kpi{padding:14px;border:1px solid var(--border);background:var(--card);border-radius:var(--radius)}
+.edu-kpi-label{color:var(--fg3);font-size:12px}
+.edu-kpi-value{margin-top:4px;font-size:23px;font-weight:700;color:var(--fg)}
+.edu-kpi-sub{margin-top:5px;font-size:11px;color:var(--fg3)}
+.edu-stat-green{color:var(--green)!important}
+.edu-stat-red{color:var(--red)!important}
+.edu-stat-amber{color:var(--amber)!important}
+.edu-tpl-preview{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;max-height:55vh;overflow:auto;font-size:13px;line-height:1.7}
+.edu-likert{display:flex;gap:4px}
+.edu-likert label{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px}
+.edu-likert input:checked+span{color:var(--accent);font-weight:600}
+.edu-cost-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.edu-cost-card{padding:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);text-align:center}
+.edu-cost-card .val{font-size:18px;font-weight:700}
+.edu-rule-card{padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.edu-rule-card .rule-info{flex:1;min-width:0}
+.edu-rule-card .rule-name{font-weight:600;font-size:13px}
+.edu-rule-card .rule-desc{font-size:11px;color:var(--fg3);margin-top:3px}
+.edu-archive-card{padding:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);margin-bottom:8px;cursor:pointer}
+.edu-archive-card:hover{border-color:var(--accent)}
+.edu-archive-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--fg3)}
+@media(max-width:560px){
+  .edu-kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .edu-cost-summary{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -1224,7 +1258,9 @@ function updateToolbar(){
   }else if(!isRoot){
     h+='<button class="tb-btn" onclick="promptNewFolder()">📁 <span>Thư mục</span></button>';
     h+='<button class="tb-btn primary" onclick="openModal()">＋ <span>Thêm mới</span></button>';
-    if(cur==='2'||cur==='2.1'||cur==='2.2'||cur==='2.3')h+='<button class="tb-btn" onclick="eduOpenSalesPipeline()" title="Pipeline đăng ký">📈 <span>Pipeline</span></button>';
+    if(cur==='2'||cur==='2.1'||cur==='2.2'||cur==='2.3'){h+='<button class="tb-btn" onclick="eduOpenSalesPipeline()" title="Pipeline đăng ký">📈 <span>Pipeline</span></button>';h+='<button class="tb-btn" onclick="eduOpenContracts()" title="Hợp đồng & Công nợ">📄 <span>Hợp đồng</span></button>';}
+    if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<button class="tb-btn" onclick="eduOpenCertificates()" title="Văn bằng & Chứng chỉ">📜 <span>Chứng chỉ</span></button>';
+    if(cur==='3')h+='<button class="tb-btn" onclick="eduOpenAutomationRules()" title="Quy tắc tự động">⚙️ <span>Automation</span></button>';
   }
   var vIco=viewMode==='tiles'?'📃':viewMode==='list'?'▥':viewMode==='kanban'?'⊞':'🔲';
   var vTip=viewMode==='tiles'?'Danh sách':viewMode==='list'?'Kanban':viewMode==='kanban'?'Eisenhower':'Lưới';
@@ -1232,6 +1268,7 @@ function updateToolbar(){
   h+='<button class="tb-btn" onclick="openQuickAdd()" title="Thêm nhanh (Ctrl+N)">⚡</button>';
   h+='<button class="tb-btn" onclick="openCalendar()" title="Lịch">📅</button>';
   h+='<button class="tb-btn" onclick="openExport()" title="Xuất báo cáo">⇩</button>';
+  h+='<button class="tb-btn" onclick="eduOpenReport()" title="Báo cáo đào tạo">📊</button>';
   h+='<button class="tb-btn" onclick="openGSearch()" title="Tìm kiếm toàn cục (Ctrl+Shift+F)">🔎</button>';
   h+='<button class="tb-btn" onclick="openBackup()" title="Sao lưu & Phục hồi">🛡️</button>';
   h+='<button class="notif-btn" onclick="toggleNotifPanel()" title="Thông báo">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button>';
@@ -1316,6 +1353,8 @@ function renderTilesView(el,all){
       h+=subtaskBadgeHTML(item);
       if(item.pomodoroCount)h+='<span class="subtask-badge" style="background:color-mix(in srgb,var(--red) 12%,transparent);color:var(--red)">🍅 '+item.pomodoroCount+'</span>';
       if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenProgramClasses(\''+cur+'\',\''+id+'\')">🎓 Lớp học</button></div>';
+      if(cur==='3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorProfile(\''+id+'\')">👤 Hồ sơ</button> <button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorCalendar(\''+id+'\')">📅 Lịch</button></div>';
+      if(cur==='5.1'&&!item._isFolder)h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduPreviewTemplate(\''+id+'\')">👁️ Xem mẫu</button></div>';
       h+='</div>';
     }
   });
@@ -1367,6 +1406,8 @@ function renderListView(el,all){
       h+='<button onclick="event.stopPropagation();openModal(\''+id+'\')" title="Sửa">📝</button>';
       h+='<button onclick="event.stopPropagation();confirmDel(\''+id+'\',false)" title="Xóa">🗑️</button>';
       if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<button onclick="event.stopPropagation();eduOpenProgramClasses(\''+cur+'\',\''+id+'\')" title="Lớp học">🎓</button>';
+      if(cur==='3')h+='<button onclick="event.stopPropagation();eduOpenInstructorProfile(\''+id+'\')" title="Hồ sơ">👤</button><button onclick="event.stopPropagation();eduOpenInstructorCalendar(\''+id+'\')" title="Lịch GV">📅</button>';
+      if(cur==='5.1'&&!item._isFolder)h+='<button onclick="event.stopPropagation();eduPreviewTemplate(\''+id+'\')" title="Xem mẫu">👁️</button>';
       h+='</div></div>';
     }
   });
@@ -1458,6 +1499,7 @@ function renderDash(){
     });
     h+='<div style="text-align:center;margin-top:8px"><button class="tb-btn" onclick="nav(\''+IDEA_SEC+'\')">Xem tất cả ý tưởng →</button></div>';
   }
+  h+=eduRenderDashboardExtension();
   h+=renderTimeline();
   return h;
 }
@@ -3981,6 +4023,13 @@ if('serviceWorker' in navigator){
 function eduEnsureData(){
   if(!D._classes)D._classes=[];
   if(!D._students)D._students=[];
+  if(!D._certificates)D._certificates=[];
+  if(!D._contracts)D._contracts=[];
+  if(!D._evaluations)D._evaluations=[];
+  if(!D._evaluationResponses)D._evaluationResponses=[];
+  if(!D._trainingCosts)D._trainingCosts=[];
+  if(!D._automationRules)D._automationRules=[];
+  if(!D._courseArchives)D._courseArchives=[];
   if(!D._trainingMeta)D._trainingMeta={version:1};
 }
 
@@ -4127,6 +4176,9 @@ function eduRenderClasses(){
       '<div class="edu-toolbar" style="margin-top:9px;margin-bottom:0">'+
         '<button class="edu-btn" onclick="eduOpenRoster(\''+esc(c.id)+'\')">👥 Học viên</button>'+
         '<button class="edu-btn" onclick="eduOpenClassEdit(\''+esc(c.id)+'\')">✏️ Sửa</button>'+
+        '<button class="edu-btn" onclick="eduOpenEvaluation(\''+esc(c.id)+'\')">📝 Đánh giá</button>'+
+        '<button class="edu-btn" onclick="eduOpenCosts(\''+esc(c.id)+'\')">💰 Chi phí</button>'+
+        (c.status==='finished'?'<button class="edu-btn" onclick="eduArchiveClass(\''+esc(c.id)+'\')">🗄️ Đóng khóa</button>':'')+
       '</div></div>';
   }
   el.innerHTML=html+'</div>';
@@ -4165,6 +4217,10 @@ function eduSaveClass(){
   if(!name){toast('Nhập tên lớp');return;}
   if(start&&end&&end<start){toast('Ngày kết thúc phải sau ngày bắt đầu');return;}
   var instructor=document.getElementById('eduClassInstructor').value;
+  if(instructor&&start){
+    var conflict=eduCheckInstructorConflict(instructor,start,end||start,id||'');
+    if(conflict){toast('⚠️ Giảng viên bị trùng lịch với lớp "'+conflict.name+'" ('+conflict.startDate+' → '+(conflict.endDate||'')+')');return;}
+  }
   var c=id?eduGetClass(id):null;
   if(!c){
     c={id:gid(),programId:eduCurrentProgramId,programSection:eduCurrentProgramSection,enrollments:[],sessions:[],createdAt:Date.now()};
@@ -4261,7 +4317,7 @@ function eduRenderRoster(){
   var c=eduGetClass(eduCurrentClassId);if(!c)return;
   var el=document.getElementById('eduRosterContent');
   if(!c.enrollments||!c.enrollments.length){el.innerHTML='<div class="edu-muted">Chưa có học viên.</div>';return;}
-  var html='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>#</th><th>Họ tên</th><th>Đơn vị</th><th>SĐT</th><th>Email</th><th>Trạng thái</th><th>CRM</th></tr></thead><tbody>';
+  var html='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>#</th><th>Họ tên</th><th>Đơn vị</th><th>SĐT</th><th>Email</th><th>Trạng thái</th><th>CRM</th><th>CC</th></tr></thead><tbody>';
   var i,e,s;
   for(i=0;i<c.enrollments.length;i++){
     e=c.enrollments[i];s=eduGetStudent(e.studentId);if(!s)continue;
@@ -4271,7 +4327,8 @@ function eduRenderRoster(){
         '<option value="confirmed" '+(e.status==='confirmed'?'selected':'')+'>Xác nhận</option>'+
         '<option value="completed" '+(e.status==='completed'?'selected':'')+'>Hoàn thành</option>'+
         '<option value="dropped" '+(e.status==='dropped'?'selected':'')+'>Bỏ dở</option>'+
-      '</select></td><td>'+(s.crmId?'<span class="edu-crm-link">✓ CRM</span>':'—')+'</td></tr>';
+      '</select></td><td>'+(s.crmId?'<span class="edu-crm-link">✓ CRM</span>':'—')+'</td>'+
+      '<td>'+(e.status==='completed'?'<button class="edu-btn" style="font-size:10px;padding:2px 6px" onclick="eduIssueCertificate(\''+esc(c.id)+'\',\''+esc(s.id)+'\')">📜 CC</button>':'')+'</td></tr>';
   }
   el.innerHTML=html+'</tbody></table></div>';
 }
@@ -4499,13 +4556,816 @@ function eduSeed2026WorkItems(){
   if(added)toast('Đã bổ sung '+added+' công việc năm 2026');
 }
 
+/* =========================================================
+   PHASE 2-4: F4,F7,F11,F12,F3,F5,F9,F10,F14,F15,F8,F13
+   ========================================================= */
+
+/* ===== F4: Văn bằng & Chứng chỉ ===== */
+function eduNextCertNumber(){
+  eduEnsureData();var y=new Date().getFullYear(),max=0,i,c,parts;
+  for(i=0;i<D._certificates.length;i++){
+    c=D._certificates[i];if(!c.certNumber)continue;
+    parts=c.certNumber.split('-');if(parts.length===3&&parseInt(parts[1],10)===y){var n=parseInt(parts[2],10);if(n>max)max=n;}
+  }
+  return 'EFTI-'+y+'-'+('0000'+(max+1)).slice(-4);
+}
+function eduOpenCertificates(){
+  eduEnsureData();eduEnsureUI2();
+  document.getElementById('eduCertOverlay').classList.add('show');
+  eduRenderCertificates();
+}
+function eduRenderCertificates(filter){
+  var el=document.getElementById('eduCertContent');if(!el)return;
+  var certs=D._certificates.slice();var q=(filter||'').toLowerCase();
+  if(q)certs=certs.filter(function(c){return (c.certNumber||'').toLowerCase().indexOf(q)>=0||
+    (eduGetStudent(c.studentId)||{}).name&&(eduGetStudent(c.studentId).name||'').toLowerCase().indexOf(q)>=0;});
+  certs.sort(function(a,b){return (b.issuedDate||'').localeCompare(a.issuedDate||'');});
+  if(!certs.length){el.innerHTML='<div class="edu-muted">Chưa có chứng chỉ.</div>';return;}
+  var html='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Số hiệu</th><th>Học viên</th><th>Loại</th><th>Ngày cấp</th><th>Hết hạn</th><th>Trạng thái</th></tr></thead><tbody>';
+  var i,c,s,now=eduYMD(Date.now());
+  for(i=0;i<certs.length;i++){
+    c=certs[i];s=eduGetStudent(c.studentId);
+    var st=c.status||'valid';
+    if(st==='valid'&&c.expiryDate&&c.expiryDate<now)st='expired';
+    html+='<tr><td>'+esc(c.certNumber||'')+'</td><td>'+esc(s?s.name:'—')+'</td><td>'+esc(c.certType||'')+'</td><td>'+esc(c.issuedDate||'')+'</td><td>'+esc(c.expiryDate||'N/A')+'</td><td><span class="edu-pill edu-status-'+(st==='valid'?'running':st==='expired'?'finished':'registration')+'">'+
+    (st==='valid'?'Còn hiệu lực':st==='expired'?'Hết hạn':'Thu hồi')+'</span></td></tr>';
+  }
+  el.innerHTML=html+'</tbody></table></div>';
+}
+function eduIssueCertificate(classId,studentId){
+  eduEnsureData();var c=eduGetClass(classId);if(!c)return;
+  var existing=D._certificates.filter(function(x){return x.classId===classId&&x.studentId===studentId;});
+  if(existing.length){toast('Học viên đã có chứng chỉ cho khóa này');return;}
+  var cert={id:gid(),studentId:studentId,classId:classId,programSection:c.programSection||'',certNumber:eduNextCertNumber(),
+    certType:'Chứng chỉ hoàn thành',issuedDate:eduYMD(Date.now()),expiryDate:'',status:'valid',issuedBy:'EFTI Group',note:''};
+  D._certificates.push(cert);sv();
+  logActivity('Cấp chứng chỉ',cert.id,cert.certNumber);
+  toast('Đã cấp chứng chỉ '+cert.certNumber);
+  eduRenderRoster();
+}
+function eduCheckExpiringCerts(){
+  eduEnsureData();var now=Date.now(),soon=now+30*86400000,changed=false;
+  var existKeys=(D._notifications||[]).map(function(n){return n.key;});
+  for(var i=0;i<D._certificates.length;i++){
+    var c=D._certificates[i];if(c.status!=='valid'||!c.expiryDate)continue;
+    var exp=new Date(c.expiryDate+'T00:00:00').getTime();
+    if(exp>now&&exp<=soon){
+      var key='cert-expiring-'+c.id;
+      if(existKeys.indexOf(key)>=0)continue;
+      var s=eduGetStudent(c.studentId);
+      if(!D._notifications)D._notifications=[];
+      D._notifications.unshift({id:gid(),key:key,type:'system',title:'Chứng chỉ '+c.certNumber+' ('+(s?s.name:'')+') sắp hết hạn '+c.expiryDate,ts:now,read:false});
+      changed=true;
+    }
+  }
+  if(changed)sv();
+}
+
+/* ===== F7: Hợp đồng & Công nợ ===== */
+function eduOpenContracts(){
+  eduEnsureData();eduEnsureUI2();
+  document.getElementById('eduContractOverlay').classList.add('show');
+  eduRenderContracts();
+}
+function eduRenderContracts(){
+  var el=document.getElementById('eduContractContent');if(!el)return;
+  var list=D._contracts.slice().sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0);});
+  if(!list.length){el.innerHTML='<div class="edu-muted">Chưa có hợp đồng.</div>';return;}
+  var html='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Mã HĐ</th><th>Khách hàng</th><th>Chương trình</th><th>Giá trị</th><th>Đã thu</th><th>Còn nợ</th><th>Hạn TT</th><th>TT</th><th></th></tr></thead><tbody>';
+  var i,c,debt;
+  for(i=0;i<list.length;i++){
+    c=list[i];debt=(c.amount||0)-(c.paidAmount||0);
+    var overdue=c.dueDate&&c.dueDate<eduYMD(Date.now())&&debt>0;
+    html+='<tr'+(overdue?' style="background:color-mix(in srgb,var(--red) 8%,transparent)"':'')+'>'+
+      '<td>'+esc(c.code||'')+'</td><td>'+esc(c.customerName||'')+'</td><td>'+esc(c.programName||'')+'</td>'+
+      '<td style="text-align:right">'+(c.amount||0).toLocaleString('vi-VN')+'</td>'+
+      '<td style="text-align:right;color:var(--green)">'+(c.paidAmount||0).toLocaleString('vi-VN')+'</td>'+
+      '<td style="text-align:right;'+(debt>0?'color:var(--red)':'')+'">'+debt.toLocaleString('vi-VN')+'</td>'+
+      '<td>'+esc(c.dueDate||'')+(overdue?' ⚠️':'')+'</td>'+
+      '<td><span class="edu-pill edu-status-'+(c.status==='signed'?'running':c.status==='completed'?'finished':'registration')+'">'+
+        (c.status==='draft'?'Nháp':c.status==='signed'?'Đã ký':c.status==='completed'?'Hoàn thành':'Hủy')+'</span></td>'+
+      '<td><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="eduEditContract(\''+esc(c.id)+'\')">✏️</button> '+
+      '<button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="eduAddPayment(\''+esc(c.id)+'\')">💰</button></td></tr>';
+  }
+  el.innerHTML=html+'</tbody></table></div>';
+}
+function eduEditContract(id){
+  eduEnsureUI2();var c=null,i;
+  if(id)for(i=0;i<D._contracts.length;i++){if(D._contracts[i].id===id){c=D._contracts[i];break;}}
+  document.getElementById('eduContractEditTitle').innerHTML=c?'Sửa hợp đồng':'Tạo hợp đồng';
+  document.getElementById('eduCEId').value=c?c.id:'';
+  document.getElementById('eduCECode').value=c?c.code||'':'HD-'+Date.now().toString(36).toUpperCase();
+  document.getElementById('eduCECustomer').value=c?c.customerName||'':'';
+  document.getElementById('eduCEProgram').value=c?c.programName||'':'';
+  document.getElementById('eduCEAmount').value=c?c.amount||'':'';
+  document.getElementById('eduCEDue').value=c?c.dueDate||'':'';
+  document.getElementById('eduCEStatus').value=c?c.status||'draft':'draft';
+  document.getElementById('eduCETerms').value=c?c.terms||'':'';
+  document.getElementById('eduContractEditOverlay').classList.add('show');
+}
+function eduSaveContract(){
+  var id=document.getElementById('eduCEId').value;
+  var name=document.getElementById('eduCECustomer').value.trim();
+  if(!name){toast('Nhập tên khách hàng');return;}
+  var c=null,i;
+  if(id)for(i=0;i<D._contracts.length;i++){if(D._contracts[i].id===id){c=D._contracts[i];break;}}
+  if(!c){c={id:gid(),paidAmount:0,paymentHistory:[],createdAt:Date.now()};D._contracts.push(c);}
+  c.code=document.getElementById('eduCECode').value.trim();
+  c.customerName=name;
+  c.programName=document.getElementById('eduCEProgram').value.trim();
+  c.amount=parseFloat(document.getElementById('eduCEAmount').value)||0;
+  c.dueDate=document.getElementById('eduCEDue').value;
+  c.status=document.getElementById('eduCEStatus').value;
+  c.terms=document.getElementById('eduCETerms').value.trim();
+  c.updatedAt=Date.now();
+  logActivity(id?'Sửa hợp đồng':'Tạo hợp đồng',c.id,c.code);
+  sv();eduCloseOverlay('eduContractEditOverlay');eduRenderContracts();toast('Đã lưu hợp đồng');
+}
+function eduAddPayment(contractId){
+  var c=null,i;for(i=0;i<D._contracts.length;i++){if(D._contracts[i].id===contractId){c=D._contracts[i];break;}}
+  if(!c)return;
+  var debt=(c.amount||0)-(c.paidAmount||0);
+  var amt=prompt('Nhập số tiền thanh toán (còn nợ: '+debt.toLocaleString('vi-VN')+'):');
+  if(!amt)return;amt=parseFloat(amt);if(isNaN(amt)||amt<=0){toast('Số tiền không hợp lệ');return;}
+  if(!c.paymentHistory)c.paymentHistory=[];
+  c.paymentHistory.push({date:eduYMD(Date.now()),amount:amt,method:'Chuyển khoản',note:''});
+  c.paidAmount=(c.paidAmount||0)+amt;
+  if(c.paidAmount>=c.amount)c.status='completed';
+  c.updatedAt=Date.now();
+  logActivity('Thanh toán HĐ',c.id,c.code+' +'+amt.toLocaleString('vi-VN'));
+  sv();eduRenderContracts();toast('Đã ghi nhận thanh toán '+amt.toLocaleString('vi-VN'));
+}
+function eduCheckOverdueContracts(){
+  eduEnsureData();var today=eduYMD(Date.now()),changed=false;
+  var existKeys=(D._notifications||[]).map(function(n){return n.key;});
+  for(var i=0;i<D._contracts.length;i++){
+    var c=D._contracts[i];if(c.status==='completed'||c.status==='cancelled')continue;
+    var debt=(c.amount||0)-(c.paidAmount||0);
+    if(debt>0&&c.dueDate&&c.dueDate<today){
+      var key='contract-overdue-'+c.id;
+      if(existKeys.indexOf(key)>=0)continue;
+      if(!D._notifications)D._notifications=[];
+      D._notifications.unshift({id:gid(),key:key,type:'system',title:'Hợp đồng '+c.code+' quá hạn thanh toán (nợ '+debt.toLocaleString('vi-VN')+')',ts:Date.now(),read:false});
+      changed=true;
+    }
+  }
+  if(changed)sv();
+}
+
+/* ===== F11: Bộ Quy trình mẫu Đào tạo ===== */
+function eduSeedProcesses(){
+  eduEnsureData();if(D._trainingMeta&&D._trainingMeta.seedProcesses)return;
+  var arr=D['4']||[];
+  var procs=[
+    {name:'QT-01: Tổ chức lớp bồi dưỡng CBCCVC (NĐ 171)',status:'active',type:'qt',
+      steps:['Xác định nhu cầu bồi dưỡng','Lập kế hoạch & dự toán','Trình phê duyệt','Tuyển sinh & đăng ký','Tổ chức lớp học','Đánh giá kết quả','Cấp chứng chỉ','Báo cáo & quyết toán'],
+      note:'Theo NĐ 171/2025/NĐ-CP về đào tạo, bồi dưỡng CBCCVC. Timeline: 8-12 tuần.',
+      tags:['HCSN','NĐ 171','CBCCVC']},
+    {name:'QT-02: Đào tạo Kế toán trưởng (TT 101)',status:'active',type:'qt',
+      steps:['Tiếp nhận hồ sơ','Thẩm định điều kiện','Xếp lớp & lịch học','Giảng dạy (4-6 tháng)','Thi kết thúc','Cấp chứng chỉ'],
+      note:'Theo TT 101/2021/TT-BTC. Timeline: 5-7 tháng.',
+      tags:['DN','TT 101','KTT']},
+    {name:'QT-03: Đào tạo nội bộ DN',status:'active',type:'qt',
+      steps:['Khảo sát nhu cầu DN','Thiết kế chương trình','Ký hợp đồng','Chuẩn bị tài liệu & GV','Triển khai đào tạo','Đánh giá & phản hồi','Bàn giao kết quả'],
+      note:'Quy trình đào tạo theo yêu cầu doanh nghiệp. Timeline: 4-8 tuần.',
+      tags:['DN','In-house']}
+  ];
+  var added=0;
+  for(var i=0;i<procs.length;i++){
+    var exists=false;for(var j=0;j<arr.length;j++){if(arr[j].name===procs[i].name){exists=true;break;}}
+    if(exists)continue;
+    var p=procs[i];
+    arr.push({id:gid(),name:p.name,status:p.status,type:p.type,steps:p.steps,note:p.note,tags:p.tags,
+      createdAt:Date.now(),updatedAt:Date.now(),seededFrom:'training-processes-v1'});
+    added++;
+  }
+  if(!D['4'])D['4']=arr;
+  D._trainingMeta.seedProcesses=true;sv();
+  if(added)toast('Đã thêm '+added+' quy trình mẫu đào tạo');
+}
+
+/* ===== F12: Kho Văn bản mẫu ===== */
+function eduSeedTemplates(){
+  eduEnsureData();if(D._trainingMeta&&D._trainingMeta.seedTemplates)return;
+  var arr=D['5.1']||[];
+  var templates=[
+    {name:'Kế hoạch đào tạo, bồi dưỡng năm',type:'hs',templateType:'plan',note:'Mẫu KH đào tạo năm theo NĐ 171'},
+    {name:'Chương trình bồi dưỡng chi tiết',type:'hs',templateType:'program',note:'Mẫu CT BD có module, thời lượng, GV'},
+    {name:'Quyết định cử CBCCVC đi bồi dưỡng',type:'hs',templateType:'decision',note:'Mẫu QĐ cử cán bộ đi học'},
+    {name:'Hợp đồng đào tạo',type:'hs',templateType:'contract',note:'Mẫu HĐ đào tạo giữa đơn vị và EFTI'},
+    {name:'Phiếu đánh giá sau đào tạo',type:'hs',templateType:'evaluation',note:'Mẫu phiếu đánh giá Kirkpatrick L1-L2'},
+    {name:'Mẫu chứng chỉ hoàn thành',type:'hs',templateType:'certificate',note:'Mẫu CC theo mẫu EFTI Group'},
+    {name:'Biên bản khai giảng',type:'hs',templateType:'record',note:'Mẫu BB khai giảng khóa đào tạo'},
+    {name:'Biên bản bế giảng',type:'hs',templateType:'record',note:'Mẫu BB bế giảng khóa đào tạo'},
+    {name:'Báo cáo kết quả đào tạo',type:'hs',templateType:'report',note:'Mẫu BC kết quả khóa đào tạo'},
+    {name:'Dự toán kinh phí đào tạo',type:'hs',templateType:'budget',note:'Mẫu dự toán chi phí chi tiết'},
+    {name:'Quyết toán kinh phí',type:'hs',templateType:'budget',note:'Mẫu quyết toán sau khóa học'},
+    {name:'Phiếu khảo sát nhu cầu đào tạo',type:'hs',templateType:'survey',note:'Mẫu khảo sát nhu cầu BD'},
+    {name:'Giấy mời tham gia khóa đào tạo',type:'hs',templateType:'invitation',note:'Mẫu giấy mời học viên/đơn vị'},
+    {name:'Phiếu đăng ký tham gia',type:'hs',templateType:'registration',note:'Mẫu đơn đăng ký tham gia khóa'},
+    {name:'Bảng điểm tổng hợp',type:'hs',templateType:'score',note:'Mẫu bảng điểm thi/kiểm tra'}
+  ];
+  var added=0;
+  for(var i=0;i<templates.length;i++){
+    var exists=false;for(var j=0;j<arr.length;j++){if(arr[j].name===templates[i].name){exists=true;break;}}
+    if(exists)continue;
+    var t=templates[i];
+    arr.push({id:gid(),name:t.name,status:'active',type:t.type,templateType:t.templateType,note:t.note,
+      tags:['Biểu mẫu'],createdAt:Date.now(),updatedAt:Date.now(),seededFrom:'training-templates-v1'});
+    added++;
+  }
+  if(!D['5.1'])D['5.1']=arr;
+  D._trainingMeta.seedTemplates=true;sv();
+  if(added)toast('Đã thêm '+added+' văn bản mẫu');
+}
+function eduPreviewTemplate(itemId){
+  var arr=D['5.1']||[],item=null,i;
+  for(i=0;i<arr.length;i++){if(arr[i].id===itemId){item=arr[i];break;}}
+  if(!item)return;
+  eduEnsureUI2();
+  document.getElementById('eduTplPreviewTitle').innerHTML='Xem mẫu: '+esc(item.name);
+  var html='<div class="edu-tpl-preview">';
+  html+='<h3 style="text-align:center;margin:0 0 15px">'+esc(item.name).toUpperCase()+'</h3>';
+  html+='<p style="text-align:center;color:var(--fg3);margin-bottom:20px">Loại: '+esc(item.templateType||'')+' | '+esc(item.note||'')+'</p>';
+  html+='<hr style="border:none;border-top:1px solid var(--border);margin:15px 0">';
+  html+='<p><em>Nội dung mẫu sẽ được cập nhật chi tiết theo quy định hiện hành.</em></p>';
+  if(item.templateType==='contract')html+='<p><b>BÊN A:</b> [Tên đơn vị]<br><b>BÊN B:</b> EFTI Group<br><b>Nội dung:</b> [Chương trình đào tạo]<br><b>Học phí:</b> [Số tiền] VNĐ<br><b>Thời gian:</b> [Ngày bắt đầu] — [Ngày kết thúc]</p>';
+  else if(item.templateType==='evaluation')html+='<p><b>Khóa đào tạo:</b> [Tên khóa]<br><b>Thời gian:</b> [Ngày]<br><b>Giảng viên:</b> [Tên GV]<br><hr style="border:none;border-top:1px dashed var(--border);margin:10px 0"><p>1. Nội dung đào tạo phù hợp: ⭐⭐⭐⭐⭐</p><p>2. Giảng viên truyền đạt tốt: ⭐⭐⭐⭐⭐</p><p>3. Tài liệu đầy đủ: ⭐⭐⭐⭐⭐</p>';
+  else if(item.templateType==='budget')html+='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:var(--hover)"><th style="border:1px solid var(--border);padding:6px">Khoản mục</th><th style="border:1px solid var(--border);padding:6px">Dự toán</th><th style="border:1px solid var(--border);padding:6px">Thực chi</th></tr><tr><td style="border:1px solid var(--border);padding:6px">Thù lao giảng viên</td><td style="border:1px solid var(--border);padding:6px;text-align:right">[Số tiền]</td><td style="border:1px solid var(--border);padding:6px;text-align:right">[Số tiền]</td></tr><tr><td style="border:1px solid var(--border);padding:6px">Thuê địa điểm</td><td style="border:1px solid var(--border);padding:6px;text-align:right">[Số tiền]</td><td style="border:1px solid var(--border);padding:6px;text-align:right">[Số tiền]</td></tr></table>';
+  html+='</div>';
+  document.getElementById('eduTplPreviewContent').innerHTML=html;
+  document.getElementById('eduTplPreviewOverlay').classList.add('show');
+}
+
+/* ===== F3: Đánh giá & Chấm điểm sau đào tạo ===== */
+function eduOpenEvaluation(classId){
+  eduEnsureData();eduEnsureUI2();
+  eduCurrentEvalClassId=classId;
+  var c=eduGetClass(classId);if(!c)return;
+  document.getElementById('eduEvalTitle').innerHTML='Đánh giá — '+esc(c.name||'');
+  document.getElementById('eduEvalOverlay').classList.add('show');
+  eduRenderEvaluation();
+}
+var eduCurrentEvalClassId='';
+function eduRenderEvaluation(){
+  var el=document.getElementById('eduEvalContent');if(!el)return;
+  var classId=eduCurrentEvalClassId;
+  var evals=D._evaluations.filter(function(e){return e.classId===classId;});
+  var html='<div class="edu-toolbar" style="margin-bottom:10px"><button class="edu-btn primary" onclick="eduCreateEvaluation(\''+esc(classId)+'\')">＋ Tạo bài đánh giá</button></div>';
+  if(!evals.length){html+='<div class="edu-muted">Chưa có bài đánh giá.</div>';el.innerHTML=html;return;}
+  for(var i=0;i<evals.length;i++){
+    var ev=evals[i];
+    var responses=D._evaluationResponses.filter(function(r){return r.evaluationId===ev.id;});
+    var avgScore=0;
+    if(responses.length){
+      var total=0,count=0;
+      for(var r=0;r<responses.length;r++){
+        var ans=responses[r].answers||{};
+        for(var qid in ans){var v=parseFloat(ans[qid]);if(!isNaN(v)){total+=v;count++;}}
+      }
+      if(count)avgScore=total/count;
+    }
+    html+='<div class="edu-archive-card">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center">';
+    html+='<div><b>'+esc(ev.title||'Bài đánh giá')+'</b><div class="edu-muted" style="margin-top:3px">'+ev.questions.length+' câu hỏi · '+responses.length+' phản hồi</div></div>';
+    html+='<div style="text-align:right"><div style="font-size:18px;font-weight:700;color:'+(avgScore>=3?'var(--green)':'var(--red)')+'">'+avgScore.toFixed(1)+'/5</div>';
+    html+='<div class="edu-muted">'+(avgScore>=3?'Đạt':'Không đạt')+'</div></div></div>';
+    html+='<div class="edu-toolbar" style="margin-top:8px;margin-bottom:0">';
+    html+='<button class="edu-btn" onclick="eduFillEvaluation(\''+esc(ev.id)+'\')">📝 Nhập đánh giá</button>';
+    html+='<button class="edu-btn" onclick="eduViewEvalResults(\''+esc(ev.id)+'\')">📊 Xem kết quả</button></div></div>';
+  }
+  el.innerHTML=html;
+}
+function eduCreateEvaluation(classId){
+  var title=prompt('Tên bài đánh giá:','Đánh giá sau khóa học');if(!title)return;
+  var ev={id:gid(),classId:classId,title:title,questions:[
+    {id:gid(),text:'Nội dung đào tạo phù hợp với nhu cầu công việc',type:'likert'},
+    {id:gid(),text:'Giảng viên truyền đạt rõ ràng, dễ hiểu',type:'likert'},
+    {id:gid(),text:'Tài liệu học tập đầy đủ và hữu ích',type:'likert'},
+    {id:gid(),text:'Tổ chức lớp học chuyên nghiệp',type:'likert'},
+    {id:gid(),text:'Bạn có áp dụng được kiến thức vào công việc không?',type:'yesno'},
+    {id:gid(),text:'Góp ý và đề xuất:',type:'text'}
+  ],createdAt:Date.now()};
+  D._evaluations.push(ev);sv();
+  logActivity('Tạo bài đánh giá',ev.id,ev.title);
+  toast('Đã tạo bài đánh giá');eduRenderEvaluation();
+}
+function eduFillEvaluation(evalId){
+  var ev=null,i;for(i=0;i<D._evaluations.length;i++){if(D._evaluations[i].id===evalId){ev=D._evaluations[i];break;}}
+  if(!ev)return;
+  var c=eduGetClass(ev.classId);if(!c||!c.enrollments||!c.enrollments.length){toast('Lớp chưa có học viên');return;}
+  eduEnsureUI2();
+  var html='<h4 style="margin:0 0 10px">'+esc(ev.title)+'</h4>';
+  html+='<div class="edu-field"><label>Chọn học viên</label><select id="eduEvalStudent">';
+  for(i=0;i<c.enrollments.length;i++){
+    var s=eduGetStudent(c.enrollments[i].studentId);
+    if(s)html+='<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>';
+  }
+  html+='</select></div>';
+  for(i=0;i<ev.questions.length;i++){
+    var q=ev.questions[i];
+    html+='<div style="margin:12px 0"><label style="font-size:13px;font-weight:500">'+(i+1)+'. '+esc(q.text)+'</label>';
+    if(q.type==='likert'){
+      html+='<div class="edu-likert">';
+      for(var v=1;v<=5;v++)html+='<label><input type="radio" name="eq_'+q.id+'" value="'+v+'"><span>'+v+'</span></label>';
+      html+='</div>';
+    }else if(q.type==='yesno'){
+      html+='<div><label><input type="radio" name="eq_'+q.id+'" value="5"> Có</label> <label><input type="radio" name="eq_'+q.id+'" value="1"> Không</label></div>';
+    }else{
+      html+='<textarea id="eq_'+q.id+'" style="width:100%;height:60px;margin-top:4px;border:1px solid var(--border);border-radius:6px;padding:8px;background:var(--bg);color:var(--fg);font:inherit" placeholder="Nhập ý kiến..."></textarea>';
+    }
+    html+='</div>';
+  }
+  html+='<div class="edu-toolbar" style="justify-content:flex-end;margin-top:15px"><button class="edu-btn primary" onclick="eduSubmitEvalResponse(\''+esc(evalId)+'\')">Gửi đánh giá</button></div>';
+  document.getElementById('eduEvalFillContent').innerHTML=html;
+  document.getElementById('eduEvalFillOverlay').classList.add('show');
+}
+function eduSubmitEvalResponse(evalId){
+  var ev=null,i;for(i=0;i<D._evaluations.length;i++){if(D._evaluations[i].id===evalId){ev=D._evaluations[i];break;}}
+  if(!ev)return;
+  var studentId=document.getElementById('eduEvalStudent').value;if(!studentId){toast('Chọn học viên');return;}
+  var answers={};
+  for(i=0;i<ev.questions.length;i++){
+    var q=ev.questions[i];
+    if(q.type==='text'){
+      var ta=document.getElementById('eq_'+q.id);answers[q.id]=ta?ta.value:'';
+    }else{
+      var radios=document.querySelectorAll('input[name="eq_'+q.id+'"]:checked');
+      answers[q.id]=radios.length?radios[0].value:'';
+    }
+  }
+  D._evaluationResponses.push({id:gid(),evaluationId:evalId,studentId:studentId,answers:answers,submittedAt:Date.now()});
+  sv();eduCloseOverlay('eduEvalFillOverlay');
+  logActivity('Nộp đánh giá',evalId,ev.title);
+  toast('Đã ghi nhận đánh giá');eduRenderEvaluation();
+}
+function eduViewEvalResults(evalId){
+  var ev=null,i;for(i=0;i<D._evaluations.length;i++){if(D._evaluations[i].id===evalId){ev=D._evaluations[i];break;}}
+  if(!ev)return;
+  eduEnsureUI2();
+  var responses=D._evaluationResponses.filter(function(r){return r.evaluationId===evalId;});
+  var html='<h4 style="margin:0 0 10px">Kết quả: '+esc(ev.title)+' ('+responses.length+' phản hồi)</h4>';
+  if(!responses.length){html+='<div class="edu-muted">Chưa có phản hồi.</div>';}
+  else{
+    html+='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Câu hỏi</th><th>TB</th><th>Đánh giá</th></tr></thead><tbody>';
+    for(i=0;i<ev.questions.length;i++){
+      var q=ev.questions[i];
+      if(q.type==='text')continue;
+      var sum=0,cnt2=0;
+      for(var r=0;r<responses.length;r++){var v=parseFloat(responses[r].answers[q.id]);if(!isNaN(v)){sum+=v;cnt2++;}}
+      var avg=cnt2?sum/cnt2:0;
+      html+='<tr><td>'+esc(q.text)+'</td><td style="font-weight:700;color:'+(avg>=3?'var(--green)':'var(--red)')+'">'+avg.toFixed(1)+'</td><td>'+(avg>=3?'Đạt':'Không đạt')+'</td></tr>';
+    }
+    html+='</tbody></table></div>';
+  }
+  document.getElementById('eduEvalResultContent').innerHTML=html;
+  document.getElementById('eduEvalResultOverlay').classList.add('show');
+}
+
+/* ===== F5: Ngân sách & Chi phí đào tạo ===== */
+function eduOpenCosts(classId){
+  eduEnsureData();eduEnsureUI2();
+  eduCurrentCostClassId=classId;
+  var c=eduGetClass(classId);if(!c)return;
+  document.getElementById('eduCostTitle').innerHTML='Chi phí — '+esc(c.name||'');
+  document.getElementById('eduCostOverlay').classList.add('show');
+  eduRenderCosts();
+}
+var eduCurrentCostClassId='';
+function eduRenderCosts(){
+  var el=document.getElementById('eduCostContent');if(!el)return;
+  var classId=eduCurrentCostClassId;
+  var costs=D._trainingCosts.filter(function(c){return c.classId===classId;});
+  var cls=eduGetClass(classId);
+  var totalEst=0,totalAct=0;
+  for(var i=0;i<costs.length;i++){totalEst+=(costs[i].estimatedAmount||0);totalAct+=(costs[i].actualAmount||0);}
+  var enrolled=cls&&cls.enrollments?cls.enrollments.length:1;
+  var html='<div class="edu-cost-summary">'+
+    '<div class="edu-cost-card"><div class="edu-muted">Dự toán</div><div class="val">'+totalEst.toLocaleString('vi-VN')+'</div></div>'+
+    '<div class="edu-cost-card"><div class="edu-muted">Thực chi</div><div class="val" style="color:'+(totalAct>totalEst?'var(--red)':'var(--green)')+'">'+totalAct.toLocaleString('vi-VN')+'</div></div>'+
+    '<div class="edu-cost-card"><div class="edu-muted">Chi phí/HV</div><div class="val">'+(enrolled?Math.round(totalAct/enrolled):0).toLocaleString('vi-VN')+'</div></div></div>';
+  html+='<div class="edu-toolbar" style="margin-bottom:10px"><button class="edu-btn primary" onclick="eduAddCost()">＋ Thêm khoản chi</button></div>';
+  if(!costs.length){html+='<div class="edu-muted">Chưa có khoản chi nào.</div>';el.innerHTML=html;return;}
+  var cats={instructor:'Giảng viên',venue:'Địa điểm',material:'Tài liệu',meal:'Ăn nghỉ',other:'Khác'};
+  html+='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Khoản mục</th><th>Mô tả</th><th style="text-align:right">Dự toán</th><th style="text-align:right">Thực chi</th><th style="text-align:right">Chênh lệch</th></tr></thead><tbody>';
+  for(i=0;i<costs.length;i++){
+    var c2=costs[i],diff=(c2.actualAmount||0)-(c2.estimatedAmount||0);
+    html+='<tr><td>'+esc(cats[c2.category]||c2.category||'')+'</td><td>'+esc(c2.description||'')+'</td>'+
+      '<td style="text-align:right">'+(c2.estimatedAmount||0).toLocaleString('vi-VN')+'</td>'+
+      '<td style="text-align:right">'+(c2.actualAmount||0).toLocaleString('vi-VN')+'</td>'+
+      '<td style="text-align:right;color:'+(diff>0?'var(--red)':'var(--green)')+'">'+diff.toLocaleString('vi-VN')+'</td></tr>';
+  }
+  html+='</tbody></table></div>';
+  el.innerHTML=html;
+}
+function eduAddCost(){
+  eduEnsureUI2();
+  document.getElementById('eduCostEditCat').value='instructor';
+  document.getElementById('eduCostEditDesc').value='';
+  document.getElementById('eduCostEditEst').value='';
+  document.getElementById('eduCostEditAct').value='';
+  document.getElementById('eduCostEditOverlay').classList.add('show');
+}
+function eduSaveCost(){
+  var desc=document.getElementById('eduCostEditDesc').value.trim();
+  if(!desc){toast('Nhập mô tả khoản chi');return;}
+  var cost={id:gid(),classId:eduCurrentCostClassId,category:document.getElementById('eduCostEditCat').value,
+    description:desc,estimatedAmount:parseFloat(document.getElementById('eduCostEditEst').value)||0,
+    actualAmount:parseFloat(document.getElementById('eduCostEditAct').value)||0,date:eduYMD(Date.now()),note:''};
+  D._trainingCosts.push(cost);sv();
+  logActivity('Thêm chi phí',cost.id,desc);
+  eduCloseOverlay('eduCostEditOverlay');eduRenderCosts();toast('Đã thêm khoản chi');
+}
+
+/* ===== F9: Hồ sơ năng lực Giảng viên ===== */
+function eduOpenInstructorProfile(instructorId){
+  eduEnsureData();eduEnsureUI2();
+  var expert=null,arr=D['3']||[],i;
+  for(i=0;i<arr.length;i++){if(arr[i].id===instructorId){expert=arr[i];break;}}
+  if(!expert){toast('Không tìm thấy giảng viên');return;}
+  var classCount=0,totalHours=0;
+  for(i=0;i<D._classes.length;i++){
+    var c=D._classes[i];
+    if(c.instructorIds&&c.instructorIds.indexOf(instructorId)>=0){
+      classCount++;
+      if(c.sessions)totalHours+=c.sessions.length*4;
+    }
+  }
+  var html='<div style="display:flex;gap:15px;flex-wrap:wrap;align-items:flex-start">';
+  html+='<div style="flex:1;min-width:200px">';
+  html+='<h3 style="margin:0">'+esc(expert.name||'')+'</h3>';
+  html+='<div class="edu-muted" style="margin-top:5px">'+esc(expert.note||expert.desc||'')+'</div>';
+  if(expert.tags&&expert.tags.length)html+='<div style="margin-top:8px">'+expert.tags.map(function(t){return '<span class="edu-pill">'+esc(t)+'</span>';}).join(' ')+'</div>';
+  html+='</div>';
+  html+='<div class="edu-kpi-grid" style="flex:2;min-width:200px">';
+  html+='<div class="edu-kpi"><div class="edu-kpi-label">Khóa đã dạy</div><div class="edu-kpi-value">'+classCount+'</div></div>';
+  html+='<div class="edu-kpi"><div class="edu-kpi-label">Số giờ giảng</div><div class="edu-kpi-value">'+totalHours+'h</div></div>';
+  html+='<div class="edu-kpi"><div class="edu-kpi-label">Đánh giá TB</div><div class="edu-kpi-value">'+(expert.rating||'—')+'</div></div>';
+  html+='<div class="edu-kpi"><div class="edu-kpi-label">Thù lao/giờ</div><div class="edu-kpi-value">'+(expert.hourlyRate?(expert.hourlyRate/1000)+'K':'—')+'</div></div>';
+  html+='</div></div>';
+  html+='<div class="sec-title" style="margin-top:15px">Các khóa đã giảng dạy</div>';
+  var taught=D._classes.filter(function(cl){return cl.instructorIds&&cl.instructorIds.indexOf(instructorId)>=0;});
+  if(!taught.length)html+='<div class="edu-muted">Chưa có khóa nào.</div>';
+  else{
+    html+='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Tên lớp</th><th>Bắt đầu</th><th>Kết thúc</th><th>Trạng thái</th><th>Sĩ số</th></tr></thead><tbody>';
+    for(i=0;i<taught.length;i++){
+      var cl=taught[i];
+      html+='<tr><td>'+esc(cl.name||'')+'</td><td>'+esc(cl.startDate||'')+'</td><td>'+esc(cl.endDate||'')+'</td><td>'+eduClassStatusLabel(cl.status)+'</td><td>'+(cl.enrollments?cl.enrollments.length:0)+'</td></tr>';
+    }
+    html+='</tbody></table></div>';
+  }
+  document.getElementById('eduInstructorProfileTitle').innerHTML='Hồ sơ — '+esc(expert.name||'');
+  document.getElementById('eduInstructorProfileContent').innerHTML=html;
+  document.getElementById('eduInstructorProfileOverlay').classList.add('show');
+}
+
+/* ===== F10: Phân công & Lịch giảng viên ===== */
+function eduOpenInstructorCalendar(instructorId){
+  eduEnsureData();eduEnsureUI2();
+  var expert=null,arr=D['3']||[],i;
+  for(i=0;i<arr.length;i++){if(arr[i].id===instructorId){expert=arr[i];break;}}
+  if(!expert){toast('Không tìm thấy giảng viên');return;}
+  var taught=D._classes.filter(function(cl){return cl.instructorIds&&cl.instructorIds.indexOf(instructorId)>=0;});
+  var html='<div style="margin-bottom:10px;font-size:13px">Giảng viên <b>'+esc(expert.name)+'</b> có '+taught.length+' khóa.</div>';
+  if(!taught.length){html+='<div class="edu-muted">Chưa phân công khóa nào.</div>';}
+  else{
+    taught.sort(function(a,b){return (a.startDate||'').localeCompare(b.startDate||'');});
+    html+='<div class="edu-table-scroll"><table class="edu-roster-table"><thead><tr><th>Lớp</th><th>Bắt đầu</th><th>Kết thúc</th><th>Trạng thái</th></tr></thead><tbody>';
+    for(i=0;i<taught.length;i++){
+      var cl=taught[i];
+      html+='<tr><td>'+esc(cl.name||'')+'</td><td>'+esc(cl.startDate||'')+'</td><td>'+esc(cl.endDate||'')+'</td><td>'+eduClassStatusLabel(cl.status)+'</td></tr>';
+    }
+    html+='</tbody></table></div>';
+  }
+  document.getElementById('eduInstructorCalTitle').innerHTML='Lịch giảng — '+esc(expert.name||'');
+  document.getElementById('eduInstructorCalContent').innerHTML=html;
+  document.getElementById('eduInstructorCalOverlay').classList.add('show');
+}
+function eduCheckInstructorConflict(instructorId,startDate,endDate,excludeClassId){
+  if(!instructorId||!startDate)return null;
+  var classes=D._classes.filter(function(cl){return cl.instructorIds&&cl.instructorIds.indexOf(instructorId)>=0&&cl.id!==excludeClassId;});
+  for(var i=0;i<classes.length;i++){
+    var c=classes[i];if(!c.startDate)continue;
+    var cEnd=c.endDate||c.startDate;
+    if(startDate<=cEnd&&(endDate||startDate)>=c.startDate)return c;
+  }
+  return null;
+}
+
+/* ===== F14: Dashboard Đào tạo ===== */
+function eduRenderDashboardExtension(){
+  eduEnsureData();
+  var openClasses=D._classes.filter(function(c){return c.status==='running'||c.status==='registration';});
+  var finishedClasses=D._classes.filter(function(c){return c.status==='finished';});
+  var totalStudents=0,i;
+  for(i=0;i<D._classes.length;i++){totalStudents+=D._classes[i].enrollments?D._classes[i].enrollments.length:0;}
+  var completionRate=D._classes.length?(finishedClasses.length/D._classes.length*100).toFixed(0):0;
+  var revenue=0,debt=0;
+  for(i=0;i<D._contracts.length;i++){revenue+=(D._contracts[i].paidAmount||0);debt+=((D._contracts[i].amount||0)-(D._contracts[i].paidAmount||0));}
+  var h='<div class="sec-title" style="margin-top:20px">🎓 Đào tạo</div>';
+  h+='<div class="edu-kpi-grid" style="margin-bottom:15px">';
+  h+='<div class="edu-kpi"><div class="edu-kpi-label">Khóa đang mở</div><div class="edu-kpi-value edu-stat-green">'+openClasses.length+'</div></div>';
+  h+='<div class="edu-kpi"><div class="edu-kpi-label">Tổng học viên</div><div class="edu-kpi-value">'+totalStudents+'</div></div>';
+  h+='<div class="edu-kpi"><div class="edu-kpi-label">Tỷ lệ hoàn thành</div><div class="edu-kpi-value">'+completionRate+'%</div></div>';
+  h+='<div class="edu-kpi"><div class="edu-kpi-label">Doanh thu</div><div class="edu-kpi-value edu-stat-green">'+revenue.toLocaleString('vi-VN')+'</div><div class="edu-kpi-sub">Công nợ: <span class="'+(debt>0?'edu-stat-red':'')+'">'+debt.toLocaleString('vi-VN')+'</span></div></div>';
+  h+='</div>';
+  if(D._classes.length){
+    var months={},j;
+    for(i=0;i<D._classes.length;i++){
+      var c=D._classes[i];if(!c.startDate)continue;
+      var m=c.startDate.substring(0,7);
+      if(!months[m])months[m]={classes:0,students:0};
+      months[m].classes++;months[m].students+=(c.enrollments?c.enrollments.length:0);
+    }
+    var mkeys=Object.keys(months).sort();
+    if(mkeys.length>1){
+      var maxC=0,maxS=0;for(j=0;j<mkeys.length;j++){if(months[mkeys[j]].classes>maxC)maxC=months[mkeys[j]].classes;if(months[mkeys[j]].students>maxS)maxS=months[mkeys[j]].students;}
+      var cw=Math.max(300,mkeys.length*60),ch=120;
+      h+='<div style="overflow-x:auto"><svg viewBox="0 0 '+cw+' '+(ch+40)+'" style="width:'+cw+'px;height:'+(ch+40)+'px">';
+      var bw=Math.min(20,cw/mkeys.length/3);
+      for(j=0;j<mkeys.length;j++){
+        var x=30+j*(cw-40)/mkeys.length;
+        var hc=maxC?months[mkeys[j]].classes/maxC*ch:0;
+        var hs=maxS?months[mkeys[j]].students/maxS*ch:0;
+        h+='<rect x="'+x+'" y="'+(ch-hc)+'" width="'+bw+'" height="'+hc+'" fill="var(--accent)" rx="3" opacity="0.7"/>';
+        h+='<rect x="'+(x+bw+2)+'" y="'+(ch-hs)+'" width="'+bw+'" height="'+hs+'" fill="var(--teal)" rx="3" opacity="0.7"/>';
+        h+='<text x="'+(x+bw)+'" y="'+(ch+15)+'" text-anchor="middle" font-size="10" fill="var(--fg3)">'+mkeys[j].substring(5)+'</text>';
+      }
+      h+='<text x="10" y="10" font-size="10" fill="var(--fg3)">Lớp (xanh) · HV (teal)</text>';
+      h+='</svg></div>';
+    }
+  }
+  return h;
+}
+
+/* ===== F15: Xuất báo cáo định kỳ ===== */
+function eduOpenReport(){
+  eduEnsureData();eduEnsureUI2();
+  document.getElementById('eduReportOverlay').classList.add('show');
+  document.getElementById('eduReportContent').innerHTML='<div class="edu-muted">Chọn loại và kỳ báo cáo, sau đó nhấn Tạo báo cáo.</div>';
+}
+function eduGenerateReport(){
+  var period=document.getElementById('eduReportPeriod').value;
+  var type=document.getElementById('eduReportType').value;
+  var year=new Date().getFullYear();
+  var startMonth=0,endMonth=11;
+  if(period==='q1'){startMonth=0;endMonth=2;}
+  else if(period==='q2'){startMonth=3;endMonth=5;}
+  else if(period==='q3'){startMonth=6;endMonth=8;}
+  else if(period==='q4'){startMonth=9;endMonth=11;}
+  var startDate=year+'-'+('0'+(startMonth+1)).slice(-2)+'-01';
+  var endDate=year+'-'+('0'+(endMonth+1)).slice(-2)+'-31';
+  var classes=D._classes.filter(function(c){return c.startDate&&c.startDate>=startDate&&c.startDate<=endDate;});
+  var totalStudents=0,completed=0,i;
+  for(i=0;i<classes.length;i++){
+    if(classes[i].enrollments)totalStudents+=classes[i].enrollments.length;
+    if(classes[i].status==='finished')completed++;
+  }
+  var costs=D._trainingCosts.filter(function(c){return c.date&&c.date>=startDate&&c.date<=endDate;});
+  var totalCost=0;for(i=0;i<costs.length;i++)totalCost+=(costs[i].actualAmount||0);
+  var contracts=D._contracts.filter(function(c){return c.createdAt&&eduYMD(c.createdAt)>=startDate&&eduYMD(c.createdAt)<=endDate;});
+  var revenue=0;for(i=0;i<contracts.length;i++)revenue+=(contracts[i].paidAmount||0);
+  var periodLabel=period==='year'?'Năm '+year:'Quý '+period.substring(1)+'/'+year;
+  var html='<div id="eduReportPrint"><h3 style="text-align:center;margin:0">BÁO CÁO KẾT QUẢ ĐÀO TẠO</h3>';
+  html+='<p style="text-align:center;color:var(--fg3)">Kỳ: '+periodLabel+' — EFTI Group</p>';
+  html+='<table style="width:100%;border-collapse:collapse;margin-top:15px;font-size:13px">';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Tổng số khóa</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+classes.length+'</td></tr>';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Khóa đã hoàn thành</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+completed+'</td></tr>';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Tổng học viên</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+totalStudents+'</td></tr>';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Tỷ lệ hoàn thành</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+(classes.length?Math.round(completed/classes.length*100):0)+'%</td></tr>';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Tổng chi phí</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+totalCost.toLocaleString('vi-VN')+' VNĐ</td></tr>';
+  html+='<tr><td style="border:1px solid var(--border);padding:8px;font-weight:600">Doanh thu hợp đồng</td><td style="border:1px solid var(--border);padding:8px;text-align:right">'+revenue.toLocaleString('vi-VN')+' VNĐ</td></tr>';
+  html+='</table>';
+  if(classes.length){
+    html+='<h4 style="margin:15px 0 8px">Chi tiết các khóa</h4>';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="border:1px solid var(--border);padding:6px;background:var(--hover)">Tên lớp</th><th style="border:1px solid var(--border);padding:6px;background:var(--hover)">Bắt đầu</th><th style="border:1px solid var(--border);padding:6px;background:var(--hover)">Kết thúc</th><th style="border:1px solid var(--border);padding:6px;background:var(--hover)">Sĩ số</th><th style="border:1px solid var(--border);padding:6px;background:var(--hover)">TT</th></tr></thead><tbody>';
+    for(i=0;i<classes.length;i++){
+      var cl=classes[i];
+      html+='<tr><td style="border:1px solid var(--border);padding:6px">'+esc(cl.name||'')+'</td><td style="border:1px solid var(--border);padding:6px">'+esc(cl.startDate||'')+'</td><td style="border:1px solid var(--border);padding:6px">'+esc(cl.endDate||'')+'</td><td style="border:1px solid var(--border);padding:6px;text-align:center">'+(cl.enrollments?cl.enrollments.length:0)+'</td><td style="border:1px solid var(--border);padding:6px">'+eduClassStatusLabel(cl.status)+'</td></tr>';
+    }
+    html+='</tbody></table>';
+  }
+  html+='</div>';
+  html+='<div class="edu-toolbar" style="justify-content:flex-end;margin-top:15px"><button class="edu-btn" onclick="eduCopyReport()">📋 Copy HTML</button></div>';
+  document.getElementById('eduReportContent').innerHTML=html;
+}
+function eduCopyReport(){
+  var el=document.getElementById('eduReportPrint');if(!el)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(el.innerHTML).then(function(){toast('Đã copy báo cáo');}).catch(function(){toast('Không thể copy');});
+  }else{
+    var range=document.createRange();range.selectNode(el);
+    var sel2=window.getSelection();sel2.removeAllRanges();sel2.addRange(range);
+    toast('Đã chọn nội dung, nhấn Ctrl+C để copy');
+  }
+}
+
+/* ===== F8: Automation Thông báo & Nhắc nhở ===== */
+function eduSeedAutomationRules(){
+  eduEnsureData();if(D._trainingMeta&&D._trainingMeta.seedAutomation)return;
+  D._automationRules=[
+    {id:gid(),name:'Sắp khai giảng',trigger:'class_starting',conditions:{daysBefore:3},action:'notification',enabled:true,createdAt:Date.now()},
+    {id:gid(),name:'Nhắc học phí quá hạn',trigger:'payment_due',conditions:{daysBefore:0},action:'notification',enabled:true,createdAt:Date.now()},
+    {id:gid(),name:'Mời đánh giá sau khóa',trigger:'evaluation_due',conditions:{daysBefore:0},action:'notification',enabled:true,createdAt:Date.now()},
+    {id:gid(),name:'Chứng chỉ sắp hết hạn',trigger:'cert_expiring',conditions:{daysBefore:30},action:'notification',enabled:true,createdAt:Date.now()}
+  ];
+  D._trainingMeta.seedAutomation=true;sv();
+}
+function eduRunAutomation(){
+  eduEnsureData();var now=Date.now(),today=eduYMD(now),changed=false;
+  var existKeys=(D._notifications||[]).map(function(n){return n.key;});
+  if(!D._notifications)D._notifications=[];
+  for(var r=0;r<D._automationRules.length;r++){
+    var rule=D._automationRules[r];if(!rule.enabled)continue;
+    if(rule.trigger==='class_starting'){
+      var threshold=new Date(now+rule.conditions.daysBefore*86400000);
+      var threshDate=eduYMD(threshold.getTime());
+      for(var i=0;i<D._classes.length;i++){
+        var c=D._classes[i];if(c.status!=='registration'||!c.startDate)continue;
+        if(c.startDate<=threshDate&&c.startDate>=today){
+          var key='auto-class-start-'+c.id;
+          if(existKeys.indexOf(key)>=0)continue;
+          D._notifications.unshift({id:gid(),key:key,type:'system',title:'Lớp "'+c.name+'" sắp khai giảng ngày '+c.startDate,ts:now,read:false});
+          changed=true;
+        }
+      }
+    }else if(rule.trigger==='payment_due'){
+      eduCheckOverdueContracts();
+    }else if(rule.trigger==='cert_expiring'){
+      eduCheckExpiringCerts();
+    }
+  }
+  if(changed)sv();
+}
+function eduOpenAutomationRules(){
+  eduEnsureData();eduEnsureUI2();
+  document.getElementById('eduAutoOverlay').classList.add('show');
+  eduRenderAutomationRules();
+}
+function eduRenderAutomationRules(){
+  var el=document.getElementById('eduAutoContent');if(!el)return;
+  var rules=D._automationRules;
+  if(!rules.length){el.innerHTML='<div class="edu-muted">Chưa có quy tắc tự động.</div>';return;}
+  var triggerLabels={class_starting:'Sắp khai giảng',payment_due:'Nhắc học phí',evaluation_due:'Mời đánh giá',cert_expiring:'CC sắp hết hạn'};
+  var html='';
+  for(var i=0;i<rules.length;i++){
+    var r=rules[i];
+    html+='<div class="edu-rule-card">'+
+      '<div class="rule-info"><div class="rule-name">'+esc(r.name)+'</div>'+
+      '<div class="rule-desc">Trigger: '+(triggerLabels[r.trigger]||r.trigger)+' · Trước '+r.conditions.daysBefore+' ngày</div></div>'+
+      '<label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" '+(r.enabled?'checked':'')+' onchange="eduToggleRule(\''+esc(r.id)+'\',this.checked)"> Bật</label></div>';
+  }
+  el.innerHTML=html;
+}
+function eduToggleRule(ruleId,enabled){
+  for(var i=0;i<D._automationRules.length;i++){
+    if(D._automationRules[i].id===ruleId){D._automationRules[i].enabled=enabled;break;}
+  }
+  sv();toast(enabled?'Đã bật quy tắc':'Đã tắt quy tắc');
+}
+
+/* ===== F13: Lưu trữ hồ sơ Khóa học ===== */
+function eduArchiveClass(classId){
+  eduEnsureData();var c=eduGetClass(classId);if(!c){toast('Không tìm thấy lớp');return;}
+  if(c.status!=='finished'){toast('Chỉ đóng khóa khi lớp đã kết thúc');return;}
+  var existing=D._courseArchives.filter(function(a){return a.classId===classId;});
+  if(existing.length){toast('Khóa này đã được lưu trữ');return;}
+  var totalStudents=c.enrollments?c.enrollments.length:0;
+  var completed2=0,dropped=0;
+  if(c.enrollments)for(var i=0;i<c.enrollments.length;i++){
+    if(c.enrollments[i].status==='completed')completed2++;
+    if(c.enrollments[i].status==='dropped')dropped++;
+  }
+  var evals=D._evaluationResponses.filter(function(r){
+    var ev=null;for(var j=0;j<D._evaluations.length;j++){if(D._evaluations[j].id===r.evaluationId&&D._evaluations[j].classId===classId){ev=D._evaluations[j];break;}}
+    return ev!==null;
+  });
+  var avgScore=0;
+  if(evals.length){var total=0,cnt3=0;for(i=0;i<evals.length;i++){var ans=evals[i].answers||{};for(var k in ans){var v=parseFloat(ans[k]);if(!isNaN(v)){total+=v;cnt3++;}}}if(cnt3)avgScore=total/cnt3;}
+  var certs=D._certificates.filter(function(x){return x.classId===classId;}).length;
+  var costs2=D._trainingCosts.filter(function(x){return x.classId===classId;});
+  var archive={id:gid(),classId:classId,className:c.name||'',programSection:c.programSection||'',archivedAt:Date.now(),
+    summary:{totalStudents:totalStudents,completed:completed2,dropped:dropped,avgScore:parseFloat(avgScore.toFixed(1)),certificates:certs},
+    snapshot:{enrollments:JSON.parse(JSON.stringify(c.enrollments||[])),sessions:JSON.parse(JSON.stringify(c.sessions||[])),
+      evaluationCount:evals.length,totalCost:costs2.reduce(function(s,x){return s+(x.actualAmount||0);},0)}};
+  D._courseArchives.push(archive);
+  var targetSection='5.'+new Date().getFullYear();
+  if(!D[targetSection])D[targetSection]=[];
+  D[targetSection].push({id:gid(),name:'Hồ sơ: '+c.name,status:'done',type:'hs',note:'Lưu trữ ngày '+eduYMD(Date.now())+'. '+totalStudents+' HV, '+completed2+' hoàn thành.',
+    archiveId:archive.id,createdAt:Date.now(),updatedAt:Date.now()});
+  logActivity('Lưu trữ khóa',archive.id,c.name);
+  sv();toast('Đã đóng khóa và lưu hồ sơ');eduRenderClasses();
+}
+function eduOpenArchives(){
+  eduEnsureData();eduEnsureUI2();
+  document.getElementById('eduArchiveOverlay').classList.add('show');
+  eduRenderArchives();
+}
+function eduRenderArchives(){
+  var el=document.getElementById('eduArchiveContent');if(!el)return;
+  var archives=D._courseArchives.slice().sort(function(a,b){return (b.archivedAt||0)-(a.archivedAt||0);});
+  if(!archives.length){el.innerHTML='<div class="edu-muted">Chưa có hồ sơ lưu trữ.</div>';return;}
+  var html='';
+  for(var i=0;i<archives.length;i++){
+    var a=archives[i],s=a.summary||{};
+    html+='<div class="edu-archive-card">'+
+      '<div style="font-weight:600">'+esc(a.className||'')+'</div>'+
+      '<div class="edu-archive-meta">'+
+        '<span>📅 '+new Date(a.archivedAt).toLocaleDateString('vi-VN')+'</span>'+
+        '<span>👥 '+s.totalStudents+' HV</span>'+
+        '<span>✅ '+s.completed+' hoàn thành</span>'+
+        '<span>⭐ '+(s.avgScore||'—')+'</span>'+
+        '<span>📜 '+s.certificates+' CC</span>'+
+      '</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+/* ===== Phase 2-4: UI Modals ===== */
+function eduEnsureUI2(){
+  if(document.getElementById('eduCertOverlay'))return;
+  var html=
+  '<div id="eduCertOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3>Văn bằng & Chứng chỉ</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduCertOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div class="edu-toolbar"><input placeholder="Tìm số hiệu, họ tên..." style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit" oninput="eduRenderCertificates(this.value)"></div><div id="eduCertContent"></div></div></div></div>'+
+  '<div id="eduContractOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3>Hợp đồng & Công nợ</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduContractOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div class="edu-toolbar"><button class="edu-btn primary" onclick="eduEditContract()">＋ Tạo hợp đồng</button></div><div id="eduContractContent"></div></div></div></div>'+
+  '<div id="eduContractEditOverlay" class="edu-overlay">'+
+    '<div class="edu-modal small"><div class="edu-modal-head"><h3 id="eduContractEditTitle">Tạo hợp đồng</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduContractEditOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><input type="hidden" id="eduCEId">'+
+      '<div class="edu-form-grid">'+
+        '<div class="edu-field"><label>Mã HĐ</label><input id="eduCECode"></div>'+
+        '<div class="edu-field"><label>Khách hàng</label><input id="eduCECustomer"></div>'+
+        '<div class="edu-field"><label>Chương trình</label><input id="eduCEProgram"></div>'+
+        '<div class="edu-field"><label>Giá trị (VNĐ)</label><input id="eduCEAmount" type="number"></div>'+
+        '<div class="edu-field"><label>Hạn thanh toán</label><input id="eduCEDue" type="date"></div>'+
+        '<div class="edu-field"><label>Trạng thái</label><select id="eduCEStatus"><option value="draft">Nháp</option><option value="signed">Đã ký</option><option value="completed">Hoàn thành</option><option value="cancelled">Hủy</option></select></div>'+
+        '<div class="edu-field full"><label>Điều khoản</label><textarea id="eduCETerms" rows="3" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;background:var(--bg);color:var(--fg);font:inherit"></textarea></div>'+
+      '</div>'+
+      '<div class="edu-toolbar" style="justify-content:flex-end;margin-top:15px"><button class="edu-btn" onclick="eduCloseOverlay(\'eduContractEditOverlay\')">Hủy</button><button class="edu-btn primary" onclick="eduSaveContract()">Lưu</button></div>'+
+    '</div></div></div>'+
+  '<div id="eduEvalOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3 id="eduEvalTitle">Đánh giá</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduEvalOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduEvalContent"></div></div></div></div>'+
+  '<div id="eduEvalFillOverlay" class="edu-overlay">'+
+    '<div class="edu-modal small"><div class="edu-modal-head"><h3>Nhập đánh giá</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduEvalFillOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduEvalFillContent"></div></div></div></div>'+
+  '<div id="eduEvalResultOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3>Kết quả đánh giá</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduEvalResultOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduEvalResultContent"></div></div></div></div>'+
+  '<div id="eduCostOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3 id="eduCostTitle">Chi phí</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduCostOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduCostContent"></div></div></div></div>'+
+  '<div id="eduCostEditOverlay" class="edu-overlay">'+
+    '<div class="edu-modal small"><div class="edu-modal-head"><h3>Thêm khoản chi</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduCostEditOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body">'+
+      '<div class="edu-form-grid">'+
+        '<div class="edu-field"><label>Khoản mục</label><select id="eduCostEditCat"><option value="instructor">Giảng viên</option><option value="venue">Địa điểm</option><option value="material">Tài liệu</option><option value="meal">Ăn nghỉ</option><option value="other">Khác</option></select></div>'+
+        '<div class="edu-field"><label>Mô tả</label><input id="eduCostEditDesc"></div>'+
+        '<div class="edu-field"><label>Dự toán (VNĐ)</label><input id="eduCostEditEst" type="number"></div>'+
+        '<div class="edu-field"><label>Thực chi (VNĐ)</label><input id="eduCostEditAct" type="number"></div>'+
+      '</div>'+
+      '<div class="edu-toolbar" style="justify-content:flex-end;margin-top:15px"><button class="edu-btn" onclick="eduCloseOverlay(\'eduCostEditOverlay\')">Hủy</button><button class="edu-btn primary" onclick="eduSaveCost()">Lưu</button></div>'+
+    '</div></div></div>'+
+  '<div id="eduTplPreviewOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3 id="eduTplPreviewTitle">Xem mẫu</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduTplPreviewOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduTplPreviewContent"></div></div></div></div>'+
+  '<div id="eduInstructorProfileOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3 id="eduInstructorProfileTitle">Hồ sơ giảng viên</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduInstructorProfileOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduInstructorProfileContent"></div></div></div></div>'+
+  '<div id="eduInstructorCalOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3 id="eduInstructorCalTitle">Lịch giảng viên</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduInstructorCalOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduInstructorCalContent"></div></div></div></div>'+
+  '<div id="eduReportOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3>Báo cáo đào tạo</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduReportOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body">'+
+      '<div class="edu-toolbar"><select id="eduReportPeriod"><option value="q1">Quý 1</option><option value="q2">Quý 2</option><option value="q3">Quý 3</option><option value="q4">Quý 4</option><option value="year">Cả năm</option></select>'+
+      '<select id="eduReportType"><option value="summary">Tổng hợp</option><option value="detail">Chi tiết</option></select>'+
+      '<button class="edu-btn primary" onclick="eduGenerateReport()">📊 Tạo báo cáo</button></div>'+
+      '<div id="eduReportContent"></div>'+
+    '</div></div></div>'+
+  '<div id="eduAutoOverlay" class="edu-overlay">'+
+    '<div class="edu-modal small"><div class="edu-modal-head"><h3>Quy tắc tự động</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduAutoOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduAutoContent"></div></div></div></div>'+
+  '<div id="eduArchiveOverlay" class="edu-overlay">'+
+    '<div class="edu-modal"><div class="edu-modal-head"><h3>Hồ sơ lưu trữ</h3><button class="edu-close" onclick="eduCloseOverlay(\'eduArchiveOverlay\')">×</button></div>'+
+    '<div class="edu-modal-body"><div id="eduArchiveContent"></div></div></div></div>';
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
 /* ===== Init ===== */
 ld();
 eduEnsureData();
 if(!D._trainingMeta||!D._trainingMeta.seed2026)eduSeed2026WorkItems();
+eduSeedProcesses();
+eduSeedTemplates();
+eduSeedAutomationRules();
 purgeOldTrash();refresh();ideaUpdateCount();autoBackup();scheduleReminders();requestNotifPermission();
 setTimeout(eduGenerateLeadNotifications,3000);
+setTimeout(eduRunAutomation,5000);
 setInterval(eduGenerateLeadNotifications,3600000);
+setInterval(eduRunAutomation,3600000);
 setInterval(autoBackup,300000);
 setInterval(function(){scheduleReminders();},60000);
 
