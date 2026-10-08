@@ -72,6 +72,9 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 
 /* Toolbar */
 .toolbar{padding:calc(var(--safe-t) + 8px) 12px 8px;border-bottom:1px solid var(--border);background:var(--card);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.tb-logo{width:34px;height:34px;border-radius:9px;border:none;background:none;cursor:pointer;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tb-logo img{width:100%;height:100%;border-radius:9px;object-fit:cover}
+.tb-logo:hover{opacity:.8}
 .menu-btn{width:38px;height:38px;border:none;border-radius:var(--radius-s);background:transparent;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:18px;color:var(--fg);flex-shrink:0}
 .tb-info{flex:1;min-width:120px}
 .tb-info .crumb{font-size:10px;color:var(--fg3);display:flex;align-items:center;gap:3px}
@@ -741,6 +744,76 @@ body.idea-open .idea-panel{display:flex}
   .edu-kpi-grid{grid-template-columns:repeat(2,1fr)}
   .edu-cost-summary{grid-template-columns:1fr}
 }
+/* ===== NEW FEATURES A1-C3 ===== */
+/* C1: Today Focus */
+.today-focus{margin-top:16px}
+.today-focus-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.today-focus-empty{padding:12px;color:var(--fg3);font-size:12px;text-align:center}
+.today-focus-grid{display:grid;gap:6px}
+.today-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;border-left:3px solid var(--accent)}
+.today-item:hover{border-color:var(--accent)}
+.today-item.urgent{border-left-color:var(--red)}
+.today-item.warning{border-left-color:var(--amber)}
+.today-item-ico{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.today-item-body{flex:1;min-width:0}
+.today-item-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.today-item-meta{font-size:10px;color:var(--fg3);margin-top:2px}
+.today-item-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.swipe-item{position:relative;overflow:hidden;border-radius:var(--radius);touch-action:pan-y}
+.swipe-content{position:relative;z-index:2;background:var(--card);transition:transform .22s ease;will-change:transform}
+.swipe-actions{position:absolute;inset:0;z-index:1;display:flex;align-items:stretch;justify-content:space-between;pointer-events:none}
+.swipe-action{min-width:82px;border:0;color:#fff;font:inherit;font-weight:600;cursor:pointer;pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:5px}
+.swipe-action-status{background:var(--green)}
+.swipe-action-delete{background:var(--red)}
+.swipe-item.swipe-left .swipe-content{transform:translateX(-82px)}
+.swipe-item.swipe-right .swipe-content{transform:translateX(82px)}
+.swipe-item.swipe-dragging .swipe-content{transition:none}
+.status-quick-badge{cursor:pointer;user-select:none}
+.status-quick-badge:hover{filter:brightness(1.06)}
+.status-menu{position:fixed;z-index:10020;min-width:150px;padding:6px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:0 10px 32px rgba(0,0,0,.2)}
+.status-menu button{display:flex;width:100%;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:calc(var(--radius) - 3px);background:transparent;color:var(--fg);text-align:left;cursor:pointer;font:inherit}
+.status-menu button:hover{background:var(--hover)}
+.dl-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;margin-left:5px;border-radius:999px;font-size:11px;line-height:1.35;font-weight:600;white-space:nowrap}
+.dl-ok{color:var(--green);background:var(--hover);border:1px solid var(--green)}
+.dl-warn{color:var(--amber);background:var(--hover);border:1px solid var(--amber)}
+.dl-overdue{color:var(--red);background:var(--hover);border:1px solid var(--red)}
+.fav-block{margin:6px 8px 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.fav-title{padding:5px 8px;color:var(--fg3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.fav-item{display:flex;align-items:center;gap:7px;width:100%;padding:7px 8px;border:0;border-radius:var(--radius);background:transparent;color:var(--fg2);text-align:left;cursor:pointer;font:inherit}
+.fav-item:hover{color:var(--fg);background:var(--hover)}
+.fav-star{margin-left:auto;padding:2px 5px;border:0;background:transparent;color:var(--fg3);cursor:pointer;font-size:15px}
+.fav-star.is-fav{color:var(--amber)}
+.qf-bar{display:flex;gap:6px;padding:4px 0 10px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.qf-bar::-webkit-scrollbar{display:none}
+.qf-btn{flex:0 0 auto;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--fg2);font:inherit;font-size:12px;cursor:pointer}
+.qf-btn:hover{background:var(--hover);color:var(--fg)}
+.qf-btn.active{color:var(--fg);border-color:var(--accent);background:var(--sel)}
+.crm-activity-btn,.crm-message-btn{border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg2);cursor:pointer;padding:4px 8px;font:inherit;font-size:11px}
+.crm-activity-btn:hover,.crm-message-btn:hover{background:var(--hover);color:var(--fg)}
+.crm-action-menu{position:fixed;z-index:10030;min-width:175px;padding:6px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:0 10px 32px rgba(0,0,0,.22)}
+.crm-action-menu button{display:block;width:100%;padding:8px 10px;border:0;border-radius:7px;background:transparent;color:var(--fg);text-align:left;cursor:pointer;font:inherit}
+.crm-action-menu button:hover{background:var(--hover)}
+.crm-interaction-list{display:flex;flex-direction:column;gap:7px}
+.crm-interaction-item{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg)}
+.crm-interaction-meta{display:flex;justify-content:space-between;gap:8px;margin-bottom:3px;color:var(--fg3);font-size:11px}
+.crm-interaction-note{color:var(--fg2);font-size:12px}
+.edu-progress-wrap{margin-top:7px}
+.edu-progress-meta{display:flex;justify-content:space-between;margin-bottom:4px;color:var(--fg3);font-size:11px}
+.edu-progress{width:100%;height:7px;overflow:hidden;border-radius:999px;background:var(--hover)}
+.edu-progress-fill{height:100%;border-radius:inherit;transition:width .25s ease}
+.edu-progress-fill.edu-progress-high{background:var(--green)}
+.edu-progress-fill.edu-progress-mid{background:var(--amber)}
+.edu-progress-fill.edu-progress-low{background:var(--red)}
+.activity-feed{display:flex;flex-direction:column}
+.activity-feed-item{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;padding:8px 0}
+.activity-feed-item:not(:last-child):after{content:"";position:absolute;left:16px;top:39px;bottom:-5px;width:1px;background:var(--border)}
+.activity-feed-icon{position:relative;z-index:1;display:flex;width:32px;height:32px;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:50%;background:var(--card)}
+.activity-feed-text{color:var(--fg2);font-size:12px;line-height:1.45}
+.activity-feed-time{margin-top:2px;color:var(--fg3);font-size:11px}
+@media(max-width:767px){
+  .qf-bar{margin-left:-4px;margin-right:-4px;padding-left:4px;padding-right:4px}
+  .dl-tag{font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -756,6 +829,7 @@ body.idea-open .idea-panel{display:flex}
 
 <div class="main">
   <div class="toolbar" id="toolbar">
+    <button class="tb-logo" onclick="nav('0')" title="Trang chủ"><img src="favicon.png" alt="Đồng Đội"></button>
     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
     <div class="tb-info">
       <div class="crumb" id="crumb"></div>
@@ -1176,7 +1250,7 @@ function buildTree(){
     h+='</div>';
   }
   TREE.forEach(n=>renderNode(n,0));
-  document.getElementById('tree').innerHTML=h;
+  document.getElementById('tree').innerHTML=renderFavoritesSidebar()+h;
 }
 
 /* ===== Navigation ===== */
@@ -1212,8 +1286,8 @@ function getAllCustomers(){
 function getLinkedItems(customerId){
   var linked=[];
   for(var k in D){
-    if(k==='_folders'||k==='_trash'||isCSec(k))continue;
-    (D[k]||[]).forEach(function(item){
+    if(k[0]==='_'||isCSec(k))continue;if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(item){
       if(item.linkedCustomer===customerId)linked.push({item:item,section:k});
     });
   }
@@ -1343,11 +1417,15 @@ function renderTilesView(el,all){
       var st=item.status||'active';
       var isE=cur==='3',isP=cur==='4';
       var sl=isE?SLE:isP?SLP:SL;
-      h+='<div class="tile '+(isSel?'selected':'')+'"'+drag+' onclick="onTileClick(event,\''+id+'\',false)" ondblclick="openModal(\''+id+'\')" oncontextmenu="onItemCtx(event,\''+id+'\',false)">';
+      h+='<div class="tile swipe-item '+(isSel?'selected':'')+'" data-swipe-item="1"'+drag+' onclick="onTileClick(event,\''+id+'\',false)" ondblclick="openModal(\''+id+'\')" oncontextmenu="onItemCtx(event,\''+id+'\',false)">';
+      h+='<div class="swipe-actions"><div class="swipe-action swipe-action-status" onclick="swipeStatus(\''+esc(cur)+'\',\''+esc(id)+'\',event)">🔄 Đổi TT</div>';
+      h+='<div class="swipe-action swipe-action-delete" onclick="swipeDelete(\''+esc(cur)+'\',\''+esc(id)+'\',event)">🗑 Xóa</div></div>';
+      h+='<div class="swipe-content">';
       if(item.pinned)h+='<span class="pin-ico">📌</span>';
       h+='<div class="tile-ico">'+getItemIcon(item)+'</div>';
       h+='<div class="tile-lbl">'+esc(item.name||'')+'</div>';
-      h+='<div class="tile-type"><span class="badge b-'+st[0]+'">'+(sl[st]||st)+'</span></div>';
+      h+='<div class="tile-type"><span class="badge status-quick-badge b-'+st[0]+'" onclick="statusBadgeClick(event,\''+esc(cur)+'\',\''+esc(id)+'\')" oncontextmenu="statusBadgeContext(event,\''+esc(cur)+'\',\''+esc(id)+'\')" title="Click đổi TT / Chuột phải chọn">'+(sl[st]||st)+'</span></div>';
+      h+=deadlineLabel(item.deadline);
       if(item.tags&&item.tags.length)h+=renderTagBadges(item.tags);
       h+=recurringBadgeHTML(item);
       h+=subtaskBadgeHTML(item);
@@ -1355,10 +1433,12 @@ function renderTilesView(el,all){
       if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenProgramClasses(\''+cur+'\',\''+id+'\')">🎓 Lớp học</button></div>';
       if(cur==='3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorProfile(\''+id+'\')">👤 Hồ sơ</button> <button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorCalendar(\''+id+'\')">📅 Lịch</button></div>';
       if(cur==='5.1'&&!item._isFolder)h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduPreviewTemplate(\''+id+'\')">👁️ Xem mẫu</button></div>';
-      h+='</div>';
+      h+=favoriteStarHtml(cur);
+      h+='</div></div>';
     }
   });
   el.innerHTML=h+'</div>';
+  swipeInit();
 }
 
 function renderListView(el,all){
@@ -1398,7 +1478,7 @@ function renderListView(el,all){
       h+='<div class="lc-check"><input type="checkbox" '+(isSel?'checked':'')+' onclick="event.stopPropagation()" onchange="toggleSel(\''+id+'\')"></div>';
       h+='<div class="lc-ico">'+getItemIcon(item)+'</div>';
       h+='<div class="lc-name '+(isRen?'editing':'')+'">'+(isRen?'<input value="'+esc(item.name)+'" onblur="finishRename(this,\''+id+'\',false)" onkeydown="if(event.key===\'Enter\')this.blur();if(event.key===\'Escape\'){renamingId=null;refresh()}" id="renInput">':esc(item.name||''))+'</div>';
-      h+='<div class="lc-status"><span class="badge b-'+st[0]+'">'+(sl[st]||st)+'</span></div>';
+      h+='<div class="lc-status"><span class="badge status-quick-badge b-'+st[0]+'" onclick="statusBadgeClick(event,\''+esc(cur)+'\',\''+esc(id)+'\')" oncontextmenu="statusBadgeContext(event,\''+esc(cur)+'\',\''+esc(id)+'\')" title="Click đổi TT">'+(sl[st]||st)+'</span>'+deadlineLabel(item.deadline)+'</div>';
       h+='<div class="lc-type">'+(item.type?'<span class="tag t-'+item.type+'">'+(TL[item.type]||'')+'</span>':'')+(item.linkedCustomer?'<span title="Có liên kết KH" style="font-size:10px">🔗</span>':'')+'</div>';
       h+='<div class="lc-date">'+fd(item.updatedAt)+'</div>';
       h+='<div class="lc-acts">';
@@ -1424,7 +1504,7 @@ function getItemIcon(item){
 }
 
 function renderDash(){
-  var all=[];for(var k in D){if(k==='_folders')continue;(D[k]||[]).forEach(function(i){all.push(Object.assign({},i,{section:k}));});}
+  var all=[];for(var k in D){if(k[0]==='_')continue;if(!Array.isArray(D[k]))continue;D[k].forEach(function(i){all.push(Object.assign({},i,{section:k}));});}
   var bs={active:0,pending:0,done:0};
   all.forEach(function(i){bs[i.status||'active']++;});
   var fCount=(D._folders||[]).length;
@@ -1439,6 +1519,7 @@ function renderDash(){
   h+='<div class="stat"><div class="stat-ico">⏳</div><div class="stat-val" style="color:var(--amber)">'+bs.pending+'</div><div class="stat-lbl">Đang chờ</div></div>';
   h+='<div class="stat"><div class="stat-ico">📁</div><div class="stat-val" style="color:var(--purple)">'+(fCount+TREE.reduce(function(a,n){return a+(n.children?n.children.length:0);},0))+'</div><div class="stat-lbl">Thư mục</div></div>';
   h+='</div>';
+  h+=todayFocusHtml();
   h+='<div class="sec-title">Danh mục</div><div class="tiles" style="margin-bottom:20px">';
   TREE.forEach(function(n){if(n.id==='0')return;var c=cnt(n.id);
     h+='<div class="tile" onclick="nav(\''+n.id+'\')"><div class="tile-ico">'+n.icon+'</div><div class="tile-lbl">'+esc(n.label)+'</div><div class="tile-cnt">'+c+'</div>'+progBarHTML(n.id)+'</div>';
@@ -1472,7 +1553,7 @@ function renderDash(){
   }
 
   var now=Date.now(),upcoming=[];
-  for(var rk in D){if(rk==='_folders'||rk==='_trash')continue;(D[rk]||[]).forEach(function(ri){
+  for(var rk in D){if(rk[0]==='_')continue;if(!Array.isArray(D[rk]))continue;D[rk].forEach(function(ri){
     if(ri.reminder&&ri.status!=='done'&&ri.reminder>now&&ri.reminder-now<172800000)upcoming.push({item:ri,section:rk});
   });}
   if(upcoming.length){
@@ -1499,6 +1580,7 @@ function renderDash(){
     });
     h+='<div style="text-align:center;margin-top:8px"><button class="tb-btn" onclick="nav(\''+IDEA_SEC+'\')">Xem tất cả ý tưởng →</button></div>';
   }
+  h+=dashboardActivityFeedHtml();
   h+=eduRenderDashboardExtension();
   h+=renderTimeline();
   return h;
@@ -1577,6 +1659,9 @@ function renderCustomerList(){
   h+='<div class="stat"><div class="stat-ico">⭐</div><div class="stat-val" style="color:var(--amber)">'+stats.vip+'</div><div class="stat-lbl">VIP</div></div>';
   h+='</div>';
 
+  h+=crmQuickFilterBar(cur);
+  items=crmApplyQuickFilters(cur,items);
+
   if(fKids.length){
     h+='<div class="tiles" style="margin-bottom:16px">';
     fKids.forEach(function(k){
@@ -1612,6 +1697,8 @@ function renderCustomerList(){
 
     h+='<div class="cust-card" ondblclick="openCustDetail(\''+c.id+'\')" oncontextmenu="onItemCtx(event,\''+c.id+'\',false)">';
     h+='<div class="cust-card-acts">';
+    h+='<button class="crm-activity-btn" onclick="crmOpenActivityMenu(event,\''+esc(cur)+'\',\''+esc(c.id)+'\')" title="Ghi tương tác nhanh">📞</button>';
+    if(c.phone)h+='<button class="crm-activity-btn" onclick="crmOpenMessageMenu(event,\''+esc(cur)+'\',\''+esc(c.id)+'\')" title="Gửi tin Zalo/SMS">💬</button>';
     h+='<button onclick="event.stopPropagation();addActivity(\''+c.id+'\')" title="Thêm tương tác">📝</button>';
     h+='<button onclick="event.stopPropagation();openModal(\''+c.id+'\')" title="Sửa">✏️</button>';
     h+='</div>';
@@ -1637,7 +1724,9 @@ function renderCustomerList(){
     if(lastAct)h+='<span>· Lần cuối: '+new Date(lastAct.date).toLocaleDateString('vi-VN')+'</span>';
     if(linked.length)h+='<span class="link-badge" onclick="event.stopPropagation();openCustDetail(\''+c.id+'\')">🔗 '+linked.length+' liên kết</span>';
     if(acts.length)h+='<span>📋 '+acts.length+' tương tác</span>';
-    h+='</div></div>';
+    h+='</div>';
+    h+=crmInteractionsHtml(c,3);
+    h+='</div>';
   });
   return h;
 }
@@ -1683,6 +1772,11 @@ function openCustDetail(id){
     h+='</div>';
   }
 
+  if(item.interactions&&item.interactions.length){
+    h+='<div style="margin-bottom:16px"><div class="sec-title">⚡ Tương tác nhanh ('+item.interactions.length+')</div>';
+    h+=crmInteractionsHtml(item,10);
+    h+='</div>';
+  }
   h+='<div class="act-log"><div class="act-log-title"><span>📋 Nhật ký tương tác ('+acts.length+')</span><div style="display:flex;gap:4px">';
   h+='<button class="tb-btn" style="padding:3px 10px;font-size:11px" onclick="closeModal();addActivity(\''+id+'\')">+ Thêm</button>';
   h+='<button class="tb-btn" style="padding:3px 10px;font-size:11px" onclick="closeModal();openMsgTemplateManager()">📨 Mẫu tin</button>';
@@ -2315,8 +2409,8 @@ function doGSearch(q){
   if(!q){res.innerHTML='<div class="gs-empty">Nhập từ khóa để tìm kiếm</div>';return;}
   var results=[];
   for(var k in D){
-    if(k==='_folders'||k==='_trash')continue;
-    (D[k]||[]).forEach(function(item){
+    if(k[0]==='_')continue;if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(item){
       var text=JSON.stringify(item).toLowerCase();
       if(text.indexOf(q)>=0){
         results.push({item:item,section:k});
@@ -2386,8 +2480,8 @@ function scheduleReminders(){
   reminderTimers.forEach(clearTimeout);reminderTimers=[];
   var now=Date.now();
   for(var k in D){
-    if(k==='_folders'||k==='_trash')continue;
-    (D[k]||[]).forEach(function(item){
+    if(k[0]==='_')continue;if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(item){
       if(item.reminder&&item.status!=='done'&&item.reminder>now){
         var delay=item.reminder-now;
         if(delay<86400000){
@@ -4179,7 +4273,7 @@ function eduRenderClasses(){
         '<button class="edu-btn" onclick="eduOpenEvaluation(\''+esc(c.id)+'\')">📝 Đánh giá</button>'+
         '<button class="edu-btn" onclick="eduOpenCosts(\''+esc(c.id)+'\')">💰 Chi phí</button>'+
         (c.status==='finished'?'<button class="edu-btn" onclick="eduArchiveClass(\''+esc(c.id)+'\')">🗄️ Đóng khóa</button>':'')+
-      '</div></div>';
+      '</div>'+eduClassProgressHtml(c)+'</div>';
   }
   el.innerHTML=html+'</div>';
 }
@@ -4519,41 +4613,97 @@ function eduGenerateLeadNotifications(){
 
 /* ===== Seed 20 công việc mẫu 2026 ===== */
 function eduSeed2026WorkItems(){
-  var rows=[
-    ['1.2','Lập KH đào tạo, bồi dưỡng năm 2026','2026-01-01','2026-01-31','done'],
-    ['1.2','Khảo sát nhu cầu BD CBCCVC Sở TC TP.HCM','2026-01-01','2026-01-31','done'],
-    ['1.1','Tổ chức lớp BD Kế toán trưởng Khóa 47','2026-02-01','2026-05-31','active'],
-    ['2.1','Ký HĐ đào tạo nội bộ - Công ty ABC','2026-02-01','2026-02-28','done'],
-    ['1.2','Mở lớp BD ngạch Chuyên viên chính - Sở NV','2026-03-01','2026-03-31','done'],
-    ['2.1','Tư vấn & chăm sóc lead - NH XYZ','2026-03-01','2026-03-31','done'],
-    ['1.2','Cập nhật CT theo TT 03/2026/TT-BNV','2026-03-01','2026-03-31','done'],
-    ['1.1','Hội thảo "Cập nhật Luật KT sửa đổi 2026"','2026-04-01','2026-04-30','done'],
-    ['1.1','Đánh giá KQ lớp KTT K47 - Kỳ thi giữa khóa','2026-04-01','2026-04-30','done'],
-    ['1.1','Triển khai ĐT online - Công ty DEF','2026-04-01','2026-04-30','done'],
-    ['1.1','Cấp 32 chứng chỉ KTT Khóa 46','2026-05-01','2026-05-31','done'],
-    ['1.2','BD "Quản lý nhà nước" - Sở NV Đồng Nai','2026-05-01','2026-06-30','done'],
-    ['1.2','Báo cáo KQ đào tạo 6 tháng đầu năm','2026-06-01','2026-06-30','done'],
-    ['1.1','CT "Kỹ năng lãnh đạo" cho DN vừa và nhỏ','2026-06-01','2026-06-30','active'],
-    ['1.1','Thi KT và cấp CC KTT Khóa 47','2026-07-01','2026-07-31','active'],
-    ['1.2','Mở lớp BD nghiệp vụ Thanh tra - Sở TC','2026-07-01','2026-07-31','active'],
-    ['1.1','ĐT "IFRS cho DN Việt Nam" - Lớp 3','2026-08-01','2026-08-31','pending'],
-    ['2.1','Chiến dịch email marketing - CT Q4/2026','2026-08-01','2026-08-31','active'],
-    ['1.2','Quyết toán kinh phí ĐT CBCCVC 9 tháng','2026-09-01','2026-09-30','pending'],
-    ['1.1','Lập KH & mở ĐK KTT Khóa 48','2026-09-01','2026-09-30','active']
+  var programs=[
+    // 1.1 Doanh nghiệp — sản phẩm đào tạo cung cấp cho KH doanh nghiệp
+    ['1.1','CT Đào tạo Kế toán trưởng DN (TT 101/2021)','done','Khung CT 4 tháng, 480 tiết: Pháp luật KT, Tổ chức công tác KT, Phân tích BCTC, Kiểm soát nội bộ. Đối tượng: DN tư nhân, FDI. Cấp chứng chỉ KTT do BTC duyệt.'],
+    ['1.1','CT Cập nhật Luật Kế toán sửa đổi 2026','done','Hội thảo 2 ngày. Module: Thay đổi trọng yếu, BCTC theo chuẩn mới, Case study thực tế. Phù hợp KTT, kế toán viên đang hành nghề.'],
+    ['1.1','CT IFRS cho DN Việt Nam','active','3 cấp độ: Nền tảng (2 ngày), Chuyển đổi (3 ngày), Nâng cao (2 ngày). Giáo trình tiếng Việt. Lộ trình áp dụng IFRS bắt buộc theo QĐ 345/BTC.'],
+    ['1.1','CT Kỹ năng lãnh đạo cho DN vừa và nhỏ','active','3 module: Tư duy chiến lược, Quản trị nhân sự, Quản trị tài chính. Thời lượng: 5 ngày. Bài tập nhóm, mô phỏng tình huống.'],
+    ['1.1','CT Đào tạo nội bộ DN - Mẫu khung','pending','Khung CT linh hoạt theo yêu cầu DN: Khảo sát nhu cầu (TNA) → Thiết kế CT → Triển khai → Đánh giá Kirkpatrick. Báo giá theo quy mô.'],
+    ['1.1','CT Quản trị tài chính doanh nghiệp','active','Dành cho CFO, Kế toán trưởng. 4 chuyên đề: Phân tích tài chính, Quản trị dòng tiền, Lập kế hoạch tài chính, Quản trị rủi ro. 40 tiết.'],
+    ['1.1','CT Thuế thực hành cho DN','pending','Kê khai thuế GTGT, TNDN, TNCN. Xử lý hóa đơn điện tử. Thanh tra thuế - phòng ngừa rủi ro. 32 tiết, thực hành trên phần mềm HTKK.'],
+    // 1.2 HCSN — sản phẩm bồi dưỡng cung cấp cho cơ quan nhà nước
+    ['1.2','CT Bồi dưỡng ngạch Chuyên viên chính','done','Theo NĐ 171/2025. 6 chuyên đề, 240 tiết. Thi viết + tiểu luận cuối khóa. Cấp chứng chỉ BD ngạch CVC.'],
+    ['1.2','CT Bồi dưỡng Quản lý nhà nước','done','4 phần: Nhà nước & Pháp luật, Hành chính công, Quản lý ngành/lĩnh vực, Kỹ năng lãnh đạo. 160 tiết.'],
+    ['1.2','CT Bồi dưỡng nghiệp vụ Thanh tra','active','Theo Luật Thanh tra 2022. 5 chuyên đề: Pháp luật, Kỹ năng thanh tra, Giải quyết khiếu nại, Phòng chống tham nhũng, Xử lý vi phạm. 120 tiết.'],
+    ['1.2','CT Bồi dưỡng kế toán HCSN theo TT 107/2017','pending','Cập nhật chế độ kế toán HCSN. Hạch toán thu chi ngân sách, tài sản, BCTC đơn vị sự nghiệp. 80 tiết, thực hành phần mềm.'],
+    ['1.2','CT Bồi dưỡng ngạch Chuyên viên','active','Theo NĐ 171/2025. Kiến thức cơ bản QLNN, kỹ năng soạn thảo văn bản, xử lý nghiệp vụ hành chính. 160 tiết.'],
+    ['1.2','CT Bồi dưỡng lãnh đạo cấp phòng','pending','Dành cho Trưởng/Phó phòng cơ quan HCSN. Kỹ năng lãnh đạo, quản lý đội ngũ, ra quyết định hành chính. 120 tiết theo khung Bộ Nội vụ.'],
+    ['1.2','CT Bồi dưỡng kiến thức quốc phòng - an ninh','active','Đối tượng 3 theo NĐ 13/2014. 3 chuyên đề, 32 tiết. Phối hợp Bộ CHQS tỉnh.'],
+    // 1.3 Cá nhân — sản phẩm đào tạo cho cá nhân tự đăng ký
+    ['1.3','CT Ôn thi chứng chỉ hành nghề Kế toán','active','Luyện đề 4 môn: PL về KT, Tài chính DN, Thuế, Kiểm toán. Cam kết đầu ra. 120 tiết, học tối/cuối tuần.'],
+    ['1.3','CT Kế toán thực hành cho người mới','pending','Từ cơ bản đến thực tế: Chứng từ, Sổ sách, BCTC, Kê khai thuế, Phần mềm kế toán. 60 tiết. Cầm tay chỉ việc.'],
+    ['1.3','CT Ôn thi chứng chỉ Kiểm toán viên','active','Luyện thi 6 môn CPA Việt Nam. Đề thi các năm, giải chi tiết. Giảng viên là Kiểm toán viên hành nghề. 200 tiết.'],
+    ['1.3','CT Excel nâng cao cho Kế toán - Tài chính','active','Hàm nâng cao, Pivot Table, Power Query, Dashboard báo cáo. 24 tiết. Thực hành trên dữ liệu thật.'],
+    ['1.3','CT Kế toán thuế cho hộ kinh doanh','pending','Dành cho chủ hộ, cá nhân kinh doanh. Kê khai thuế TNCN, thuế khoán, sổ sách tối thiểu. 20 tiết, chiều thứ 7.']
   ];
-  var added=0,i,row,section,arr,j,exists;
-  for(i=0;i<rows.length;i++){
-    row=rows[i];section=row[0];
+  var customers=[
+    // 2.1 Khách hàng Doanh nghiệp
+    ['2.1','Công ty CP ABC','done','dn',{phone:'028 3822 1234',email:'dao.tao@abc.com.vn',representative:'Chị Hương - TP Nhân sự',note:'KH lâu năm. 3 HĐ đào tạo KTT. Nhu cầu thường niên cập nhật Luật KT.',cpriority:'vip'}],
+    ['2.1','Ngân hàng TMCP XYZ','active','dn',{phone:'028 3825 5678',email:'hr@xyzbank.vn',representative:'Anh Minh - Phó GĐ Đào tạo',note:'Đang tư vấn gói IFRS 3 cấp độ. Quy mô 200 nhân viên tài chính.',cpriority:'vip',nextContact:Date.now()+86400000*3}],
+    ['2.1','Công ty TNHH DEF','active','dn',{phone:'028 3829 9012',email:'admin@def.com.vn',representative:'Anh Tuấn - GĐ',note:'Quan tâm ĐT nội bộ kế toán + thuế. DN FDI Nhật Bản, 150 nhân viên.',nextContact:Date.now()+86400000*7}],
+    ['2.1','Tập đoàn GHI Holdings','active','dn',{phone:'028 3830 4567',email:'training@ghi.com.vn',representative:'Chị Thảo - GĐ Nhân sự',note:'Tập đoàn đa ngành. Nhu cầu: Kỹ năng lãnh đạo cho 30 quản lý cấp trung.',cpriority:'vip',nextContact:Date.now()+86400000*2}],
+    ['2.1','Công ty CP Sản xuất JKL','pending','dn',{phone:'0274 388 9999',email:'keToan@jkl.vn',representative:'Anh Phong - KTT',note:'Sản xuất, 80 nhân viên. Cần đào tạo Quản trị tài chính cho ban GĐ.',nextContact:Date.now()+86400000*14}],
+    ['2.1','Công ty Logistics MNO','active','dn',{phone:'028 3835 1111',email:'hr@mno-logistics.vn',representative:'Chị Mai - TP Đào tạo',note:'Logistics quốc tế. Nhu cầu: Thuế XNK, Kế toán quốc tế, 2 lớp/năm.'}],
+    // 2.2 Khách hàng HCSN
+    ['2.2','Sở Tài chính TP.HCM','done','hcsn',{phone:'028 3829 0123',email:'sotc@tphcm.gov.vn',representative:'Anh Dũng - Phòng QLNS',note:'Đối tác chiến lược. BD ngạch CVC hàng năm. 2-3 lớp/năm, 40 HV/lớp.',cpriority:'vip'}],
+    ['2.2','Sở Nội vụ Đồng Nai','done','hcsn',{phone:'0251 382 1234',email:'snv@dongnai.gov.vn',representative:'Anh Thắng - Phòng ĐTBD',note:'BD Quản lý nhà nước 2026. HĐ 2 lớp/năm. Đã hợp tác từ 2023.'}],
+    ['2.2','Sở Tài chính Bình Dương','active','hcsn',{phone:'0274 382 5678',email:'sotc@binhduong.gov.vn',representative:'Chị Lan - Phòng TC-HC',note:'Đang gửi KH BD kế toán HCSN theo TT 107. Dự kiến 60 HV.',nextContact:Date.now()+86400000*5}],
+    ['2.2','UBND huyện Bình Chánh','active','hcsn',{phone:'028 3760 1234',email:'ubnd.binhchanh@tphcm.gov.vn',representative:'Chị Hồng - VP UBND',note:'BD quốc phòng-an ninh đối tượng 3. Phối hợp tổ chức tại huyện.',nextContact:Date.now()+86400000*10}],
+    ['2.2','Trường Chính trị tỉnh Tây Ninh','pending','hcsn',{phone:'0276 382 2222',email:'tct@tayninh.gov.vn',representative:'ThS. Quang - Phòng ĐT',note:'Quan tâm phối hợp tổ chức BD ngạch CV, CVC. Đang trao đổi nội dung CT.'}],
+    ['2.2','Sở Y tế Long An','active','hcsn',{phone:'0272 382 3333',email:'syt@longan.gov.vn',representative:'Anh Hiếu - Phòng TC-CB',note:'Cần BD kế toán HCSN cho 15 đơn vị trực thuộc (bệnh viện, trung tâm y tế).',nextContact:Date.now()+86400000*8}],
+    // 2.3 Khách hàng Cá nhân
+    ['2.3','Nguyễn Văn An','done','cn',{phone:'0901 234 567',email:'an.nguyen@gmail.com',note:'Đã hoàn thành KTT K46. Quan tâm IFRS nâng cao. KTT tại Công ty CP ABC.'}],
+    ['2.3','Trần Thị Bình','active','cn',{phone:'0912 345 678',email:'binh.tran@gmail.com',note:'Đăng ký ôn thi chứng chỉ hành nghề KT. Sinh viên tốt nghiệp UEH 2025.'}],
+    ['2.3','Lê Hoàng Cường','active','cn',{phone:'0933 456 789',email:'cuong.le@outlook.com',note:'Đăng ký CT Kế toán thực hành. Đang chuyển ngành từ IT sang Kế toán.',nextContact:Date.now()+86400000*3}],
+    ['2.3','Phạm Thị Diệu','active','cn',{phone:'0944 567 890',email:'dieu.pham@gmail.com',note:'Ôn thi CPA Việt Nam. Đã đỗ 3/6 môn. Cần luyện thêm 3 môn còn lại.',nextContact:Date.now()+86400000*5}],
+    ['2.3','Võ Minh Đức','pending','cn',{phone:'0955 678 901',email:'duc.vo@yahoo.com',note:'Chủ hộ kinh doanh. Quan tâm CT Kế toán thuế cho HKD. Đang hỏi lịch khai giảng.'}],
+    ['2.3','Trương Thị Ên','active','cn',{phone:'0966 789 012',email:'en.truong@gmail.com',note:'Kế toán viên DN. Đăng ký Excel nâng cao + Kế toán quản trị. Học buổi tối.'}]
+  ];
+  var experts=[
+    ['3','PGS.TS Nguyễn Văn Hùng','active',{note:'GV thỉnh giảng ĐH Kinh tế TP.HCM. 15 năm giảng dạy, 20+ bài báo quốc tế. Phụ trách: KTT, IFRS, Kiểm toán.',tags:['Kế toán','Kiểm toán','IFRS'],expertise:'Kế toán, Kiểm toán, IFRS',hourlyRate:800000,rating:4.8,phone:'0903 111 222'}],
+    ['3','TS. Lê Thị Mai','active',{note:'Giảng viên chính Học viện Tài chính. Tác giả 3 giáo trình Thuế & Luật KT. Phụ trách: Thuế, Luật KT, Cập nhật PL.',tags:['Thuế','Luật KT','Pháp luật'],expertise:'Thuế, Luật Kế toán',hourlyRate:700000,rating:4.6,phone:'0903 222 333'}],
+    ['3','ThS. Phạm Quốc Đạt','active',{note:'Giảng viên Học viện Hành chính QG phân viện TP.HCM. 20 năm kinh nghiệm thực tiễn QLNN. Phụ trách: BD ngạch CV/CVC, QLNN, NĐ 171.',tags:['QLNN','Hành chính','NĐ 171'],expertise:'Quản lý nhà nước, Hành chính công',hourlyRate:600000,rating:4.5,phone:'0903 333 444'}],
+    ['3','ThS. Trương Minh Châu','active',{note:'Giảng viên Kỹ năng mềm & Lãnh đạo freelance. Đã đào tạo cho 50+ DN, 200+ lớp. Phong cách tương tác, workshop.',tags:['Kỹ năng mềm','Lãnh đạo','Quản trị'],expertise:'Kỹ năng lãnh đạo, Quản trị',hourlyRate:900000,rating:4.7,phone:'0903 444 555'}],
+    ['3','CN. Võ Thanh Tùng','active',{note:'KTT thực hành, 10 năm kinh nghiệm DN FDI. Hướng dẫn thực tế: sổ sách, phần mềm MISA/SAP, kê khai thuế. Phụ trách: KT thực hành, Excel.',tags:['Kế toán','Thực hành','FDI','Excel'],expertise:'Kế toán thực hành, ERP, Excel',hourlyRate:500000,rating:4.4,phone:'0903 555 666'}],
+    ['3','PGS.TS Đặng Thị Phương','active',{note:'GV chính ĐH Ngân hàng TP.HCM. Chuyên gia Tài chính DN, Phân tích BCTC, Quản trị rủi ro. 30+ công trình NCKH.',tags:['Tài chính','BCTC','Rủi ro'],expertise:'Quản trị tài chính, Phân tích BCTC',hourlyRate:850000,rating:4.7,phone:'0903 666 777'}],
+    ['3','TS. Hoàng Văn Sơn','active',{note:'Kiểm toán viên hành nghề, CPA Việt Nam. 12 năm tại Big4. GV ôn thi CPA. Phụ trách: Ôn thi CPA, Kiểm toán nâng cao.',tags:['Kiểm toán','CPA','Big4'],expertise:'Kiểm toán, CPA, Ôn thi chứng chỉ',hourlyRate:750000,rating:4.6,phone:'0903 777 888'}],
+    ['3','ThS. Bùi Thanh Hà','active',{note:'Chuyên viên cao cấp Thanh tra Chính phủ (đã nghỉ hưu). 25 năm kinh nghiệm thanh tra. Phụ trách: BD nghiệp vụ Thanh tra, PCTN.',tags:['Thanh tra','PCTN','Pháp luật'],expertise:'Nghiệp vụ thanh tra, Phòng chống tham nhũng',hourlyRate:650000,rating:4.5,phone:'0903 888 999'}]
+  ];
+  var added=0;
+  var i,j,section,arr,exists,item;
+  for(i=0;i<programs.length;i++){
+    var p=programs[i];section=p[0];
     if(!D[section])D[section]=[];
     arr=D[section];exists=false;
-    for(j=0;j<arr.length;j++){if(String(arr[j].name||'').trim().toLowerCase()===String(row[1]).trim().toLowerCase()){exists=true;break;}}
+    for(j=0;j<arr.length;j++){if(String(arr[j].name||'').trim().toLowerCase()===String(p[1]).trim().toLowerCase()){exists=true;break;}}
     if(exists)continue;
-    arr.push({id:gid(),name:row[1],status:row[4],startDate:row[2],deadline:new Date(row[3]+'T17:00:00').getTime(),createdAt:new Date(row[2]+'T08:00:00').getTime(),updatedAt:Date.now(),desc:'',note:'',tags:[],seededFrom:'training-plan-2026-v1'});
+    arr.push({id:gid(),name:p[1],status:p[2],type:section.split('.')[1]==='1'?'dn':section.split('.')[1]==='2'?'hcsn':'cn',desc:p[3],note:'',tags:[],createdAt:Date.now(),updatedAt:Date.now(),seededFrom:'seed-2026-v2'});
     added++;
   }
-  D._trainingMeta=D._trainingMeta||{};D._trainingMeta.seed2026=true;
+  for(i=0;i<customers.length;i++){
+    var c=customers[i];section=c[0];
+    if(!D[section])D[section]=[];
+    arr=D[section];exists=false;
+    for(j=0;j<arr.length;j++){if(String(arr[j].name||'').trim().toLowerCase()===String(c[1]).trim().toLowerCase()){exists=true;break;}}
+    if(exists)continue;
+    item={id:gid(),name:c[1],status:c[2],type:c[3],createdAt:Date.now(),updatedAt:Date.now(),seededFrom:'seed-2026-v2'};
+    var extra=c[4];for(var ek in extra)item[ek]=extra[ek];
+    arr.push(item);added++;
+  }
+  for(i=0;i<experts.length;i++){
+    var e=experts[i];section=e[0];
+    if(!D[section])D[section]=[];
+    arr=D[section];exists=false;
+    for(j=0;j<arr.length;j++){if(String(arr[j].name||'').trim().toLowerCase()===String(e[1]).trim().toLowerCase()){exists=true;break;}}
+    if(exists)continue;
+    item={id:gid(),name:e[1],status:e[2],type:'expert',createdAt:Date.now(),updatedAt:Date.now(),seededFrom:'seed-2026-v2'};
+    var ex=e[3];for(var xk in ex)item[xk]=ex[xk];
+    arr.push(item);added++;
+  }
+  D._trainingMeta=D._trainingMeta||{};D._trainingMeta.seed2026=true;D._trainingMeta.seed2026v2=true;D._trainingMeta.seed2026v3=true;
   sv();if(typeof refresh==='function')refresh();
-  if(added)toast('Đã bổ sung '+added+' công việc năm 2026');
+  if(added)toast('Đã bổ sung '+added+' dữ liệu mẫu');
 }
 
 /* =========================================================
@@ -5354,10 +5504,346 @@ function eduEnsureUI2(){
   document.body.insertAdjacentHTML('beforeend',html);
 }
 
+/* =========================================================
+   NEW FEATURES A1-C3 — COMMON + ALL FUNCTIONS
+   ========================================================= */
+function htEnsureNewData(){if(!D._favorites)D._favorites=[];if(!D._activity)D._activity=[];}
+function htCloseFloatingMenus(){
+  var ids=['statusQuickMenu','crmQuickActivityMenu','crmMessageShareMenu'];
+  for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el&&el.parentNode)el.parentNode.removeChild(el);}
+}
+function htPositionPopup(el,anchor){
+  if(!el||!anchor)return;var r=anchor.getBoundingClientRect();
+  el.style.visibility='hidden';el.style.display='block';
+  var w=el.offsetWidth||180,ht=el.offsetHeight||120;
+  var left=r.left,top=r.bottom+5;
+  if(left+w>window.innerWidth-8)left=window.innerWidth-w-8;
+  if(left<8)left=8;
+  if(top+ht>window.innerHeight-8)top=r.top-ht-5;
+  if(top<8)top=8;
+  el.style.left=left+'px';el.style.top=top+'px';el.style.visibility='visible';
+}
+function htTodayStart(){var d=new Date();d.setHours(0,0,0,0);return d.getTime();}
+
+/* A1: Swipe Actions */
+var swipeState=null;
+function swipeInit(){
+  var nodes=document.querySelectorAll('[data-swipe-item="1"]');
+  for(var i=0;i<nodes.length;i++)swipeBind(nodes[i]);
+}
+function swipeBind(el){
+  if(!el||el.getAttribute('data-swipe-bound')==='1')return;
+  el.setAttribute('data-swipe-bound','1');
+  el.classList.add('swipe-item');
+  el.addEventListener('touchstart',swipeTouchStart,false);
+  el.addEventListener('touchmove',swipeTouchMove,false);
+  el.addEventListener('touchend',swipeTouchEnd,false);
+}
+function swipeTouchStart(e){
+  if(!e.touches||e.touches.length!==1)return;
+  var touch=e.touches[0];swipeCloseAll(this);
+  swipeState={el:this,startX:touch.clientX,startY:touch.clientY,dx:0,horizontal:null};
+  this.classList.add('swipe-dragging');
+}
+function swipeTouchMove(e){
+  if(!swipeState||swipeState.el!==this)return;
+  var touch=e.touches[0],dx=touch.clientX-swipeState.startX,dy=touch.clientY-swipeState.startY;
+  swipeState.dx=dx;
+  if(swipeState.horizontal===null){if(Math.abs(dx)<6&&Math.abs(dy)<6)return;swipeState.horizontal=Math.abs(dx)>Math.abs(dy);}
+  if(!swipeState.horizontal)return;e.preventDefault();
+  if(dx>100)dx=100;if(dx<-100)dx=-100;
+  var content=this.querySelector('.swipe-content');if(content)content.style.transform='translateX('+dx+'px)';
+}
+function swipeTouchEnd(){
+  if(!swipeState||swipeState.el!==this)return;
+  var dx=swipeState.dx;this.classList.remove('swipe-dragging','swipe-left','swipe-right');
+  var content=this.querySelector('.swipe-content');if(content)content.style.transform='';
+  if(swipeState.horizontal){if(dx<=-60)this.classList.add('swipe-left');else if(dx>=60)this.classList.add('swipe-right');}
+  swipeState=null;
+}
+function swipeCloseAll(exceptEl){
+  var nodes=document.querySelectorAll('.swipe-item');
+  for(var i=0;i<nodes.length;i++){if(nodes[i]===exceptEl)continue;nodes[i].classList.remove('swipe-left','swipe-right');var c=nodes[i].querySelector('.swipe-content');if(c)c.style.transform='';}
+}
+function swipeStatus(sectionId,itemId,e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  var arr=its(sectionId);for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){statusCycleItem(arr[i]);break;}}
+  swipeCloseAll();render();
+}
+function swipeDelete(sectionId,itemId,e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  var arr=its(sectionId);for(var i=0;i<arr.length;i++){
+    if(arr[i].id===itemId){
+      var delItem=arr[i];if(!D._trash)D._trash=[];D._trash.push(Object.assign({},delItem,{_from:sectionId,_deletedAt:Date.now()}));
+      arr.splice(i,1);sv();logActivity('Xóa',itemId,delItem.name||'');toast('Đã chuyển vào thùng rác');render();return;
+    }
+  }
+}
+
+/* A2: Status Toggle */
+function statusNext(s){if(s==='active')return 'pending';if(s==='pending')return 'done';return 'active';}
+function statusCycleItem(item){
+  if(!item)return;var SL_MAP={active:'Đang thực hiện',pending:'Chờ xử lý',done:'Hoàn thành'};
+  item.status=statusNext(item.status||'active');item.updatedAt=Date.now();sv();
+  logActivity('Đổi TT',item.id,item.name||'');toast('Trạng thái: '+(SL_MAP[item.status]||item.status));
+}
+function statusBadgeClick(e,sectionId,itemId){
+  if(e){e.preventDefault();e.stopPropagation();}
+  if(e&&(e.altKey||e.shiftKey)){statusOpenMenu(e.currentTarget||e.target,sectionId,itemId);return;}
+  var arr=its(sectionId);for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){statusCycleItem(arr[i]);render();return;}}
+}
+function statusBadgeContext(e,sectionId,itemId){if(e){e.preventDefault();e.stopPropagation();}statusOpenMenu(e.currentTarget||e.target,sectionId,itemId);return false;}
+function statusOpenMenu(anchor,sectionId,itemId){
+  htCloseFloatingMenus();var menu=document.createElement('div');menu.id='statusQuickMenu';menu.className='status-menu';
+  menu.innerHTML='<button onclick="statusSet(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'active\')">🟢 Đang thực hiện</button>'+
+    '<button onclick="statusSet(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'pending\')">🟡 Chờ xử lý</button>'+
+    '<button onclick="statusSet(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'done\')">✅ Hoàn thành</button>';
+  document.body.appendChild(menu);htPositionPopup(menu,anchor);
+}
+function statusSet(sectionId,itemId,status){
+  var arr=its(sectionId);for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){arr[i].status=status;arr[i].updatedAt=Date.now();break;}}
+  sv();logActivity('Đổi TT',itemId,'');toast('Trạng thái: '+(status==='active'?'Đang thực hiện':status==='pending'?'Chờ xử lý':'Hoàn thành'));
+  htCloseFloatingMenus();render();
+}
+
+/* A3: Deadline Countdown */
+function deadlineLabel(ts){
+  if(!ts)return '';var target=typeof ts==='number'?ts:new Date(ts).getTime();if(!target||isNaN(target))return '';
+  var tgt=new Date(target);tgt.setHours(0,0,0,0);var today=htTodayStart();
+  var diff=Math.round((tgt.getTime()-today)/86400000);
+  if(diff===0)return '<span class="dl-tag dl-warn">⏰ Hôm nay</span>';
+  if(diff<0)return '<span class="dl-tag dl-overdue">⚠ Quá hạn '+Math.abs(diff)+' ngày</span>';
+  if(diff<=2)return '<span class="dl-tag dl-warn">⏳ Còn '+diff+' ngày</span>';
+  return '<span class="dl-tag dl-ok">⏳ Còn '+diff+' ngày</span>';
+}
+
+/* A4: Favorites */
+function favoriteHas(sectionId){htEnsureNewData();for(var i=0;i<D._favorites.length;i++){if(D._favorites[i]===sectionId)return true;}return false;}
+function favoriteToggle(sectionId,e){
+  if(e){e.preventDefault();e.stopPropagation();}htEnsureNewData();
+  var idx=-1;for(var i=0;i<D._favorites.length;i++){if(D._favorites[i]===sectionId){idx=i;break;}}
+  if(idx>=0){D._favorites.splice(idx,1);toast('Đã bỏ ghim');}else{D._favorites.unshift(sectionId);toast('Đã ghim vào yêu thích');}
+  sv();refresh();
+}
+function renderFavoritesSidebar(){
+  htEnsureNewData();if(!D._favorites.length)return '';
+  var h='<div class="fav-block"><div class="fav-title">⭐ Yêu thích</div>';
+  for(var i=0;i<D._favorites.length;i++){
+    var node=fn(D._favorites[i]);if(!node)continue;
+    h+='<button class="fav-item" onclick="nav(\''+esc(node.id)+'\')"><span>'+(node.icon||'📌')+'</span><span>'+esc(node.label||node.id)+'</span></button>';
+  }
+  return h+'</div>';
+}
+function favoriteStarHtml(sectionId){
+  var active=favoriteHas(sectionId);
+  return '<button class="fav-star'+(active?' is-fav':'')+'" title="'+(active?'Bỏ ghim':'Ghim')+'" onclick="event.stopPropagation();favoriteToggle(\''+esc(sectionId)+'\',event)">'+(active?'★':'☆')+'</button>';
+}
+
+/* B1: CRM Quick Filters */
+var crmQuickFilters={};
+function crmQFToggle(sectionId,key){
+  if(!crmQuickFilters[sectionId])crmQuickFilters[sectionId]={};
+  if(key==='all'){crmQuickFilters[sectionId]={};}else{crmQuickFilters[sectionId][key]=!crmQuickFilters[sectionId][key];}
+  render();
+}
+function crmQFActive(sectionId,key){
+  var f=crmQuickFilters[sectionId]||{};
+  if(key==='all')return !f.vip&&!f.overdue&&!f.week&&!f.uncontacted;
+  return !!f[key];
+}
+function crmQuickFilterBar(sectionId){
+  var keys=[['all','Tất cả'],['vip','⭐ VIP'],['overdue','⚠ Quá hạn'],['week','📅 Tuần này'],['uncontacted','📵 Chưa liên hệ']];
+  var h='<div class="qf-bar">';
+  for(var i=0;i<keys.length;i++){h+='<button class="qf-btn'+(crmQFActive(sectionId,keys[i][0])?' active':'')+'" onclick="crmQFToggle(\''+esc(sectionId)+'\',\''+keys[i][0]+'\')">'+keys[i][1]+'</button>';}
+  return h+'</div>';
+}
+function crmApplyQuickFilters(sectionId,items){
+  var f=crmQuickFilters[sectionId]||{};if(!f.vip&&!f.overdue&&!f.week&&!f.uncontacted)return items;
+  var now=Date.now(),sevenDays=now+7*86400000,thirtyDaysAgo=now-30*86400000;
+  return items.filter(function(c){
+    var ok=true;
+    if(f.vip)ok=ok&&c.cpriority==='vip';
+    if(f.overdue)ok=ok&&c.nextContact&&c.nextContact<now;
+    if(f.week)ok=ok&&c.nextContact&&c.nextContact>=now&&c.nextContact<=sevenDays;
+    if(f.uncontacted){var lc=c.lastContactDate||0;ok=ok&&(!lc||lc<thirtyDaysAgo);}
+    return ok;
+  });
+}
+
+/* B2: Quick Activity Log */
+function crmActivityTypeInfo(type){
+  if(type==='call')return{icon:'📞',label:'Gọi điện'};if(type==='email')return{icon:'✉️',label:'Email'};
+  if(type==='meeting')return{icon:'🤝',label:'Gặp mặt'};return{icon:'📝',label:'Ghi chú'};
+}
+function crmOpenActivityMenu(e,sectionId,itemId){
+  if(e){e.preventDefault();e.stopPropagation();}htCloseFloatingMenus();
+  var anchor=e.currentTarget||e.target;var menu=document.createElement('div');menu.id='crmQuickActivityMenu';menu.className='crm-action-menu';
+  menu.innerHTML='<button onclick="crmAddInteraction(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'call\')">📞 Gọi điện</button>'+
+    '<button onclick="crmAddInteraction(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'email\')">✉️ Email</button>'+
+    '<button onclick="crmAddInteraction(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'meeting\')">🤝 Gặp mặt</button>'+
+    '<button onclick="crmAddInteraction(\''+esc(sectionId)+'\',\''+esc(itemId)+'\',\'note\')">📝 Ghi chú</button>';
+  document.body.appendChild(menu);htPositionPopup(menu,anchor);
+}
+function crmAddInteraction(sectionId,itemId,type){
+  var arr=its(sectionId),item=null;for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){item=arr[i];break;}}
+  if(!item){toast('Không tìm thấy');return;}
+  var info=crmActivityTypeInfo(type);var note=prompt(info.label+' — ghi chú:','');if(note===null)return;
+  if(!item.interactions)item.interactions=[];
+  item.interactions.unshift({type:type,note:note||'',ts:Date.now()});
+  item.lastContactDate=Date.now();item.updatedAt=Date.now();sv();
+  logActivity('CRM',itemId,info.label+' với '+(item.name||''));toast('Đã ghi nhận '+info.label.toLowerCase());
+  htCloseFloatingMenus();render();
+}
+function crmInteractionsHtml(item,limit){
+  if(!item||!item.interactions||!item.interactions.length)return '';
+  var arr=item.interactions.slice(0,limit||10),h='<div class="crm-interaction-list">';
+  for(var i=0;i<arr.length;i++){
+    var it=arr[i],info=crmActivityTypeInfo(it.type);
+    h+='<div class="crm-interaction-item"><div class="crm-interaction-meta"><span>'+info.icon+' '+esc(info.label)+'</span><span>'+esc(relativeTime(it.ts))+'</span></div>';
+    if(it.note)h+='<div class="crm-interaction-note">'+esc(it.note)+'</div>';
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+
+/* B3: Zalo / SMS */
+function crmCleanPhone(phone){return String(phone||'').replace(/\s+/g,'').replace(/[().-]/g,'');}
+function crmOpenMessageMenu(e,sectionId,itemId){
+  if(e){e.preventDefault();e.stopPropagation();}
+  var arr=its(sectionId),item=null;for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){item=arr[i];break;}}
+  if(!item||!item.phone){toast('Chưa có SĐT');return;}
+  htCloseFloatingMenus();var templates=D._msgTemplates||[];
+  if(!templates.length)templates=[{name:'Tin nhắn nhanh',text:'Xin chào {name}.'}];
+  var html='';
+  for(var i=0;i<templates.length;i++){
+    var text=(templates[i].text||templates[i].body||templates[i].content||'').replace(/\{name\}/gi,item.name||'').replace(/\{phone\}/gi,item.phone||'');
+    html+='<div style="padding:8px;margin-bottom:6px;border:1px solid var(--border);border-radius:8px"><div style="font-size:12px;font-weight:600;margin-bottom:5px">'+esc(templates[i].name||('Mẫu '+(i+1)))+'</div>'+
+      '<div style="display:flex;gap:6px"><button class="crm-message-btn" onclick="crmSendZalo(\''+esc(sectionId)+'\',\''+esc(itemId)+'\','+i+')">Zalo</button>'+
+      '<button class="crm-message-btn" onclick="crmSendSms(\''+esc(sectionId)+'\',\''+esc(itemId)+'\','+i+')">SMS</button></div></div>';
+  }
+  var menu=document.createElement('div');menu.id='crmMessageShareMenu';menu.className='crm-action-menu';menu.style.minWidth='240px';
+  menu.innerHTML=html;document.body.appendChild(menu);htPositionPopup(menu,e.currentTarget||e.target);
+}
+function crmSendZalo(sectionId,itemId,tplIdx){
+  var arr=its(sectionId),item=null;for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){item=arr[i];break;}}
+  if(!item||!item.phone)return;var phone=crmCleanPhone(item.phone);
+  var tpl=(D._msgTemplates||[])[tplIdx];var text=(tpl?tpl.text||tpl.body||'':'Xin chào '+item.name).replace(/\{name\}/gi,item.name||'');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(function(){});
+  window.open('https://zalo.me/'+encodeURIComponent(phone),'_blank');
+  toast('Đã mở Zalo & sao chép tin nhắn');htCloseFloatingMenus();
+}
+function crmSendSms(sectionId,itemId,tplIdx){
+  var arr=its(sectionId),item=null;for(var i=0;i<arr.length;i++){if(arr[i].id===itemId){item=arr[i];break;}}
+  if(!item||!item.phone)return;var phone=crmCleanPhone(item.phone);
+  var tpl=(D._msgTemplates||[])[tplIdx];var text=(tpl?tpl.text||tpl.body||'':'Xin chào '+item.name).replace(/\{name\}/gi,item.name||'');
+  window.location.href='sms:'+phone+'?body='+encodeURIComponent(text);htCloseFloatingMenus();
+}
+
+/* C1: Today Focus — Việc Hôm Nay */
+function todayFocusHtml(){
+  var now=Date.now(),today=htTodayStart(),endOfDay=today+86400000,items=[];
+  for(var k in D){if(k[0]==='_')continue;if(!Array.isArray(D[k]))continue;
+    D[k].forEach(function(it){
+      if(it.status==='done'||it._isFolder)return;
+      if(it.deadline){var dl=typeof it.deadline==='number'?it.deadline:new Date(it.deadline).getTime();
+        if(dl&&dl<endOfDay){items.push({name:it.name,ico:getItemIcon(it),section:k,type:dl<today?'overdue':'deadline',meta:dl<today?'⚠️ Quá hạn':'📅 Hết hạn hôm nay'});}
+      }
+      if(it.reminder){var rm=typeof it.reminder==='number'?it.reminder:new Date(it.reminder).getTime();
+        if(rm&&rm>=today&&rm<endOfDay){items.push({name:it.name,ico:'⏰',section:k,type:'reminder',meta:'⏰ '+new Date(rm).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})});}
+      }
+    });
+  }
+  var custs=getAllCustomers();
+  custs.forEach(function(c){if(c.item.status==='done')return;
+    if(c.item.nextContact){var nc=typeof c.item.nextContact==='number'?c.item.nextContact:new Date(c.item.nextContact).getTime();
+      if(nc&&nc>=today&&nc<endOfDay){items.push({name:c.item.name,ico:c.item.type==='dn'?'🏢':c.item.type==='hcsn'?'🏛️':'👤',section:c.section,type:'contact',meta:'📞 Liên hệ hôm nay'+(c.item.phone?' · '+c.item.phone:'')});}
+      else if(nc&&nc<today){items.push({name:c.item.name,ico:c.item.type==='dn'?'🏢':c.item.type==='hcsn'?'🏛️':'👤',section:c.section,type:'overdue',meta:'⚠️ Quá hạn liên hệ'});}
+    }
+  });
+  eduEnsureData();
+  if(D._classes)D._classes.forEach(function(cl){
+    if(cl.status==='finished')return;
+    if(cl.startDate){var sd=typeof cl.startDate==='number'?cl.startDate:new Date(cl.startDate).getTime();
+      if(sd&&sd>=today&&sd<endOfDay){items.push({name:cl.name||'Lớp',ico:'🎓',section:'',type:'class',meta:'🎓 Khai giảng hôm nay'+(cl.location?' · '+cl.location:'')});}
+    }
+    if(cl.sessions)cl.sessions.forEach(function(s){
+      if(s.date){var sd2=typeof s.date==='number'?s.date:new Date(s.date).getTime();
+        if(sd2&&sd2>=today&&sd2<endOfDay&&!s.completed){items.push({name:(cl.name||'Lớp')+' — Buổi '+(s.sessionNo||''),ico:'📖',section:'',type:'session',meta:'📖 Buổi học hôm nay'});}
+      }
+    });
+  });
+  items.sort(function(a,b){var o={overdue:0,deadline:1,session:2,class:3,reminder:4,contact:5};return (o[a.type]||9)-(o[b.type]||9);});
+  if(!items.length)return '';
+  var h='<div class="today-focus"><div class="today-focus-title">📌 Việc Hôm Nay <span style="font-size:12px;font-weight:400;color:var(--fg3)">('+items.length+')</span></div><div class="today-focus-grid">';
+  items.slice(0,8).forEach(function(it){
+    var cls=it.type==='overdue'?'urgent':it.type==='deadline'?'warning':'';
+    h+='<div class="today-item '+cls+'"'+(it.section?' onclick="nav(\''+it.section+'\')"':'')+'>'+
+      '<div class="today-item-ico">'+it.ico+'</div>'+
+      '<div class="today-item-body"><div class="today-item-name">'+esc(it.name||'')+'</div><div class="today-item-meta">'+it.meta+'</div></div></div>';
+  });
+  if(items.length>8)h+='<div style="text-align:center;padding:6px;font-size:11px;color:var(--fg3)">… và '+(items.length-8)+' việc khác</div>';
+  h+='</div></div>';return h;
+}
+
+/* C2: Class Progress Bar */
+function eduClassProgress(cls){
+  if(!cls||!cls.sessions||!cls.sessions.length)return{total:0,done:0,percent:0};
+  var done=0,today=htTodayStart();
+  for(var i=0;i<cls.sessions.length;i++){
+    var s=cls.sessions[i];
+    if(s.completed||s.status==='done')done++;
+    else if(s.attendance&&typeof s.attendance==='object'){var has=false;for(var k in s.attendance){has=true;break;}if(has)done++;}
+    else if(s.date){var sd=typeof s.date==='number'?s.date:new Date(s.date).getTime();if(sd&&sd<today)done++;}
+  }
+  var pct=Math.round(done/cls.sessions.length*100);
+  return{total:cls.sessions.length,done:done,percent:pct};
+}
+function eduClassProgressHtml(cls){
+  var p=eduClassProgress(cls);if(!p.total)return '';
+  var cls2=p.percent>70?'edu-progress-high':p.percent>=30?'edu-progress-mid':'edu-progress-low';
+  return '<div class="edu-progress-wrap"><div class="edu-progress-meta"><span>'+p.done+'/'+p.total+' buổi</span><span>'+p.percent+'%</span></div>'+
+    '<div class="edu-progress"><div class="edu-progress-fill '+cls2+'" style="width:'+p.percent+'%"></div></div></div>';
+}
+
+/* C3: Activity Feed + relativeTime */
+function relativeTime(ts){
+  if(!ts)return '';var t=typeof ts==='number'?ts:new Date(ts).getTime();if(!t||isNaN(t))return '';
+  var diff=Date.now()-t;if(diff<0)diff=0;var sec=Math.floor(diff/1000);
+  if(sec<20)return 'vừa xong';if(sec<60)return sec+' giây trước';
+  var min=Math.floor(sec/60);if(min<60)return min+' phút trước';
+  var hour=Math.floor(min/60);if(hour<24)return hour+' giờ trước';
+  var day=Math.floor(hour/24);if(day===1)return 'hôm qua';if(day<7)return day+' ngày trước';
+  return fd(t);
+}
+function activityIcon(item){
+  var t=String(item.type||item.action||'').toLowerCase();
+  if(t.indexOf('delete')>=0||t.indexOf('xóa')>=0)return '🗑';if(t.indexOf('status')>=0||t.indexOf('tt')>=0)return '🔄';
+  if(t.indexOf('crm')>=0)return '👤';if(t.indexOf('create')>=0||t.indexOf('thêm')>=0)return '➕';
+  if(t.indexOf('edit')>=0||t.indexOf('sửa')>=0)return '✏️';return '•';
+}
+function dashboardActivityFeedHtml(){
+  htEnsureNewData();var arr=(D._activity||[]).slice().sort(function(a,b){return (b.ts||b.time||0)-(a.ts||a.time||0);}).slice(0,10);
+  if(!arr.length)return '';
+  var h='<div class="sec-title" style="margin-top:20px">📋 Hoạt động gần đây</div><div class="activity-feed">';
+  for(var i=0;i<arr.length;i++){
+    var it=arr[i];
+    h+='<div class="activity-feed-item"><div class="activity-feed-icon">'+activityIcon(it)+'</div><div>'+
+      '<div class="activity-feed-text">'+esc(it.description||it.text||it.action||'Hoạt động')+'</div>'+
+      '<div class="activity-feed-time">'+esc(relativeTime(it.ts||it.time))+'</div></div></div>';
+  }
+  return h+'</div>';
+}
+
+/* Close floating menus on outside click */
+document.addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest('.status-menu,.crm-action-menu,.crm-message-btn,.crm-activity-btn,.status-quick-badge'))return;
+  htCloseFloatingMenus();
+});
+
 /* ===== Init ===== */
 ld();
-eduEnsureData();
-if(!D._trainingMeta||!D._trainingMeta.seed2026)eduSeed2026WorkItems();
+eduEnsureData();htEnsureNewData();
+if(!D._trainingMeta||!D._trainingMeta.seed2026v3)eduSeed2026WorkItems();
 eduSeedProcesses();
 eduSeedTemplates();
 eduSeedAutomationRules();
