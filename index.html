@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -146,6 +146,7 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 .t-cg{background:var(--purple-s);color:var(--purple)}.t-hs{background:var(--teal-s);color:var(--teal)}.t-qt{background:var(--red-s);color:var(--red)}
 .t-folder{background:var(--amber-s);color:var(--amber)}
 .t-idea{background:#fef9c3;color:#a16207}
+.t-algo{background:#e0e7ff;color:#4338ca}
 .bk-modal{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px}
 .bk-box{background:var(--card);border-radius:var(--radius);max-width:420px;width:100%;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
 .bk-box h3{margin-bottom:12px;font-size:16px}
@@ -241,8 +242,10 @@ body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-ser
 @media(prefers-color-scheme:dark){
   :root:not([data-theme="light"]) .cust-card-pri.vip{background:#2a2410;color:#fbbf24}
   :root:not([data-theme="light"]) .t-idea{background:#2a2410;color:#fbbf24}
+  :root:not([data-theme="light"]) .t-algo{background:#1e1b4b;color:#818cf8}
 }
 :root[data-theme="dark"] .t-idea{background:#2a2410;color:#fbbf24}
+:root[data-theme="dark"] .t-algo{background:#1e1b4b;color:#818cf8}
 
 /* Dashboard */
 .dash-hi{margin-bottom:16px}
@@ -1060,9 +1063,16 @@ const TREE=[
     {id:'5.3',label:'Năm 2027',icon:'📅',type:'hs'},
     {id:'5.4',label:'Ý tưởng',icon:'💡',type:'idea'},
   {id:'_trash',label:'Thùng rác',icon:'🗑️',children:[]}
+  ]},
+  {id:'7',label:'Thư viện thuật toán',icon:'📐',oicon:'📐',children:[
+    {id:'7.1',label:'Kế toán quản trị',icon:'📊',type:'algo'},
+    {id:'7.2',label:'Kế toán tổng hợp',icon:'📒',type:'algo'},
+    {id:'7.3',label:'Kinh tế tài chính',icon:'💹',type:'algo'},
+    {id:'7.4',label:'Vận trù học',icon:'🔢',type:'algo'},
+    {id:'7.5',label:'Kinh tế vĩ mô',icon:'🌐',type:'algo'}
   ]}
 ];
-const TL={dn:'Doanh nghiệp',hcsn:'HCSN',cn:'Cá nhân',cg:'Chuyên gia',hs:'Hồ sơ',qt:'Quy trình',folder:'Thư mục',idea:'Ý tưởng'};
+const TL={dn:'Doanh nghiệp',hcsn:'HCSN',cn:'Cá nhân',cg:'Chuyên gia',hs:'Hồ sơ',qt:'Quy trình',folder:'Thư mục',idea:'Ý tưởng',algo:'Thuật toán'};
 const SL={active:'Hoạt động',pending:'Đang chờ',done:'Hoàn thành'};
 const SLE={active:'Hoạt động',pending:'Chờ xác nhận',done:'Hoàn tất'};
 const SLP={active:'Áp dụng',pending:'Dự thảo',done:'Ngưng'};
@@ -1091,6 +1101,7 @@ function ldServer(cb){
     if(data&&typeof data==='object'){
       D=data;
       try{localStorage.setItem('qlcv4',JSON.stringify(D));}catch(e){}
+      algoSeedRepos();
     }
     if(cb)cb(true);
   }).catch(function(){if(cb)cb(false);});
@@ -1160,6 +1171,7 @@ function ldFromCloud(cb){
       if(payload&&payload.data&&typeof payload.data==='object'){
         D=payload.data;
         try{localStorage.setItem('qlcv4',JSON.stringify(D));}catch(e){}
+        algoSeedRepos();
         _cloudLastRemoteTs=payload.ts||0;
         if(cb)cb(true);
       }else{if(cb)cb(false);}
@@ -1369,6 +1381,12 @@ function render(){
   if(cur==='_trash'){el.innerHTML=renderTrashPage();return;}
   if(cur===IDEA_SEC){el.innerHTML=renderIdeasPage();return;}
   if(isCSec(cur)&&cur!=='2'){el.innerHTML=renderCustomerList();return;}
+  var _algoToolHtml='';
+  if(cur==='7.1')_algoToolHtml=renderAlgoTool71();
+  else if(cur==='7.2')_algoToolHtml=renderAlgoTool72();
+  else if(cur==='7.3')_algoToolHtml=renderAlgoTool73();
+  else if(cur==='7.4')_algoToolHtml=renderAlgoTool74();
+  else if(cur==='7.5')_algoToolHtml=renderAlgoTool75();
   const kids=getChildren(cur);
   const items=its(cur);
   const q=(document.getElementById('q').value||'').toLowerCase();
@@ -1376,6 +1394,7 @@ function render(){
   const fKids=q?kids.filter(function(k){return k.label.toLowerCase().indexOf(q)>=0;}):kids;
   const all=fKids.map(function(k){return Object.assign({},k,{_isFolder:true});}).concat(fItems.map(function(i){return Object.assign({},i,{_isFolder:false});}));
   if(!all.length&&!q){
+    if(_algoToolHtml){el.innerHTML=_algoToolHtml;if(cur==='7.2')atJnlRender();return;}
     const nd=fn(cur);
     el.innerHTML='<div class="empty"><div class="empty-ico">'+(nd?nd.icon:'📁')+'</div><h4>Thư mục trống</h4><p>Nhấn chuột phải hoặc dùng nút trên thanh công cụ để tạo thư mục hoặc thêm mục mới</p></div>';
     return;
@@ -1399,6 +1418,7 @@ function render(){
   else if(viewMode==='eisenhower')renderEisenhowerView(el,all);
   else if(viewMode==='tiles')renderTilesView(el,all);
   else renderListView(el,all);
+  if(_algoToolHtml){el.innerHTML=_algoToolHtml+el.innerHTML;if(cur==='7.2')atJnlRender();}
 }
 
 function renderTilesView(el,all){
@@ -1433,6 +1453,11 @@ function renderTilesView(el,all){
       if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenProgramClasses(\''+cur+'\',\''+id+'\')">🎓 Lớp học</button></div>';
       if(cur==='3')h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorProfile(\''+id+'\')">👤 Hồ sơ</button> <button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduOpenInstructorCalendar(\''+id+'\')">📅 Lịch</button></div>';
       if(cur==='5.1'&&!item._isFolder)h+='<div style="margin-top:6px"><button class="edu-btn" style="font-size:11px;padding:3px 8px" onclick="event.stopPropagation();eduPreviewTemplate(\''+id+'\')">👁️ Xem mẫu</button></div>';
+      if(item.type==='algo'){
+        if(item.stars)h+='<span class="subtask-badge" style="background:#fef3c7;color:#92400e">⭐ '+item.stars+'</span>';
+        if(item.lang)h+='<span class="subtask-badge" style="background:#ccfbf1;color:#115e59">🛠️ '+esc(item.lang)+'</span>';
+        if(item.url)h+='<div style="margin-top:6px"><a href="'+esc(item.url)+'" target="_blank" rel="noopener" class="edu-btn" style="font-size:11px;padding:3px 8px;text-decoration:none;display:inline-block" onclick="event.stopPropagation()">🔗 GitHub</a></div>';
+      }
       h+=favoriteStarHtml(cur);
       h+='</div></div>';
     }
@@ -1488,6 +1513,7 @@ function renderListView(el,all){
       if(cur==='1.1'||cur==='1.2'||cur==='1.3')h+='<button onclick="event.stopPropagation();eduOpenProgramClasses(\''+cur+'\',\''+id+'\')" title="Lớp học">🎓</button>';
       if(cur==='3')h+='<button onclick="event.stopPropagation();eduOpenInstructorProfile(\''+id+'\')" title="Hồ sơ">👤</button><button onclick="event.stopPropagation();eduOpenInstructorCalendar(\''+id+'\')" title="Lịch GV">📅</button>';
       if(cur==='5.1'&&!item._isFolder)h+='<button onclick="event.stopPropagation();eduPreviewTemplate(\''+id+'\')" title="Xem mẫu">👁️</button>';
+      if(item.type==='algo'&&item.url)h+='<a href="'+esc(item.url)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="GitHub" style="text-decoration:none">🔗</a>';
       h+='</div></div>';
     }
   });
@@ -1500,6 +1526,7 @@ function getItemIcon(item){
   if(item.type==='qt')return '⚙️';
   if(item.type==='hs')return '📄';
   if(item.type==='idea')return '💡';
+  if(item.type==='algo')return '📐';
   return '📋';
 }
 
@@ -2116,6 +2143,16 @@ function openModal(itemId){
     if(custCount)body+='<div class="fg" style="font-size:12px;color:var(--fg2)">Phụ trách: <b>'+custCount+'</b> khách hàng</div>';
     body+='<div class="fg"><label>Ghi chú</label><textarea id="fd" placeholder="Thông tin bổ sung...">'+esc(item?item.desc||'':'')+'</textarea></div>';
     saveFn='svE()';
+  }else if(cur.startsWith('7.')){
+    title=item?'Sửa thuật toán':'Thêm thuật toán';
+    body='<div class="fg"><label>Tên</label><input id="fn" value="'+esc(item?item.name||'':'')+'" placeholder="Tên thuật toán / repo"></div><div class="fg"><label>Mô tả</label><textarea id="fd" placeholder="Mô tả chi tiết...">'+esc(item?item.desc||'':'')+'</textarea></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">';
+    body+='<div class="fg"><label>🔗 URL GitHub</label><input id="furl" value="'+esc(item?item.url||'':'')+'" placeholder="https://github.com/..."></div>';
+    body+='<div class="fg"><label>⭐ Stars</label><input id="fstars" type="number" min="0" value="'+(item?item.stars||0:0)+'"></div>';
+    body+='</div>';
+    body+='<div class="fg"><label>🛠️ Ngôn ngữ</label><input id="flang" value="'+esc(item?item.lang||'':'')+'" placeholder="Python, JavaScript..."></div>';
+    body+='<div class="fg"><label>Trạng thái</label><select id="ft"><option value="active" '+((item?item.status:'active')==='active'||!item?'selected':'')+'>Hoạt động</option><option value="pending" '+(item&&item.status==='pending'?'selected':'')+'>Đang chờ</option><option value="done" '+(item&&item.status==='done'?'selected':'')+'>Hoàn thành</option></select></div>';
+    saveFn='svAlgo()';
   }else{
     title=item?'Sửa mục':'Thêm mới';
     var rmVal=item&&item.reminder?new Date(item.reminder).toISOString().slice(0,16):'';
@@ -2180,6 +2217,12 @@ function svIdea(){var n=document.getElementById('fn').value.trim();if(!n)return;
   pushUndo(eid?'Sửa ý tưởng':'Thêm ý tưởng');
   if(eid){var i=l.findIndex(function(x){return x.id===eid;});if(i>=0)Object.assign(l[i],o);}else{o.id=gid();o.createdAt=Date.now();l.push(o);}
   si(cur,l);closeModal();refresh();ideaUpdateCount();scheduleReminders();toast(eid?'Đã cập nhật':'Đã thêm mới');}
+
+function svAlgo(){var n=document.getElementById('fn').value.trim();if(!n)return;var l=its(cur);
+  var o={name:n,desc:document.getElementById('fd').value.trim(),status:document.getElementById('ft').value,type:'algo',url:(document.getElementById('furl')||{}).value||'',stars:parseInt((document.getElementById('fstars')||{}).value,10)||0,lang:(document.getElementById('flang')||{}).value||'',updatedAt:Date.now()};
+  pushUndo(eid?'Sửa thuật toán':'Thêm thuật toán');
+  if(eid){var i=l.findIndex(function(x){return x.id===eid;});if(i>=0)Object.assign(l[i],o);}else{o.id=gid();o.createdAt=Date.now();l.push(o);}
+  si(cur,l);closeModal();refresh();toast(eid?'Đã cập nhật':'Đã thêm mới');}
 
 function svC(){var n=document.getElementById('fn').value.trim();if(!n)return;var l=its(cur);var nd=fn(cur);
   var o={name:n,phone:(document.getElementById('fphone')||{}).value||'',email:(document.getElementById('femail')||{}).value||'',
@@ -5840,6 +5883,335 @@ document.addEventListener('click',function(e){
   htCloseFloatingMenus();
 });
 
+/* ===== Algo Interactive Tools (7.1-7.5) ===== */
+var _algoToolCSS=false;
+function algoToolStyles(){
+  if(_algoToolCSS)return;_algoToolCSS=true;
+  var s=document.createElement('style');
+  s.textContent='.at-wrap{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid var(--border)}.at-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.at-head h2{margin:0;font-size:18px}.at-head p{font-size:12px;color:var(--fg2);margin:2px 0 0}.at-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.at-grid label{font-size:12px;color:var(--fg2);display:block;margin-bottom:2px}.at-grid input{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--bg);color:var(--fg);box-sizing:border-box}.at-btn{width:100%;padding:10px;background:var(--pri);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px}.at-btn:active{opacity:.8}.at-result{margin-top:12px;padding:12px;background:color-mix(in srgb,var(--pri) 6%,transparent);border-radius:8px;display:none}.at-result.show{display:block}.at-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}.at-kpi-card{text-align:center;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--border)}.at-kpi-card .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}.at-kpi-card .l{font-size:11px;color:var(--fg2);margin-top:2px}.at-adv{margin-top:10px}.at-adv-item{padding:8px;border-left:3px solid var(--pri);margin-bottom:6px;font-size:13px;background:var(--bg);border-radius:0 6px 6px 0}.at-adv-item.warn{border-color:#f59e0b}.at-adv-item.danger{border-color:#ef4444}.at-adv-item.ok{border-color:#22c55e}.at-ex{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.at-ex button{padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer}.at-ex button:active{background:var(--pri);color:#fff}.at-toggle{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}.at-toggle button{flex:1;padding:8px;border:none;background:var(--bg);color:var(--fg);font-size:13px;cursor:pointer}.at-toggle button.active{background:var(--pri);color:#fff}';
+  document.head.appendChild(s);
+}
+
+function renderAlgoTool71(){
+  algoToolStyles();
+  var h='<div class="at-wrap">';
+  h+='<div class="at-head"><span style="font-size:28px">📊</span><div><h2>Phân tích CVP</h2><p>Cost-Volume-Profit: điểm hòa vốn, biên đóng góp, đòn bẩy hoạt động</p></div></div>';
+  h+='<div class="at-ex"><span style="font-size:12px;color:var(--fg2)">Ví dụ:</span><button onclick="atCvpEx(1)">Sản xuất</button><button onclick="atCvpEx(2)">Dịch vụ</button><button onclick="atCvpEx(3)">Bán lẻ</button><button onclick="atCvpClear()">Xoá hết</button></div>';
+  h+='<div class="at-grid">';
+  h+='<div><label>Giá bán / đơn vị</label><input id="cvpPrice" type="number" min="0" value="0"></div>';
+  h+='<div><label>Biến phí / đơn vị</label><input id="cvpVC" type="number" min="0" value="0"></div>';
+  h+='<div><label>Tổng định phí</label><input id="cvpFC" type="number" min="0" value="0"></div>';
+  h+='<div><label>Sản lượng thực tế</label><input id="cvpQ" type="number" min="0" value="0"></div>';
+  h+='</div>';
+  h+='<button class="at-btn" onclick="atCvpCalc()">Phân tích CVP</button>';
+  h+='<div class="at-result" id="cvpResult"></div>';
+  h+='</div>';
+  return h;
+}
+function atCvpEx(n){
+  var d={1:{p:500000,vc:300000,fc:2000000000,q:15000},2:{p:1200000,vc:400000,fc:800000000,q:2000},3:{p:150000,vc:90000,fc:500000000,q:12000}};
+  var e=d[n];document.getElementById('cvpPrice').value=e.p;document.getElementById('cvpVC').value=e.vc;document.getElementById('cvpFC').value=e.fc;document.getElementById('cvpQ').value=e.q;
+}
+function atCvpClear(){['cvpPrice','cvpVC','cvpFC','cvpQ'].forEach(function(id){document.getElementById(id).value=0;});document.getElementById('cvpResult').classList.remove('show');}
+function atCvpCalc(){
+  var p=+document.getElementById('cvpPrice').value,vc=+document.getElementById('cvpVC').value,fc=+document.getElementById('cvpFC').value,q=+document.getElementById('cvpQ').value;
+  if(p<=0){toast('Giá bán phải > 0');return;}
+  var cm=p-vc,cmr=cm/p,bep=cm>0?Math.ceil(fc/cm):Infinity,bepRev=cm>0?fc/cmr:Infinity;
+  var rev=p*q,totalVC=vc*q,profit=rev-totalVC-fc;
+  var dol=profit!==0?(cm*q)/profit:Infinity;
+  var mos=q>0?((q-bep)/q*100):0;
+  var fmt=function(v){return v.toLocaleString('vi-VN');};
+  var el=document.getElementById('cvpResult');
+  var h='<div class="at-kpi">';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(bep)+'</div><div class="l">Điểm hòa vốn (SP)</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(Math.round(bepRev))+'</div><div class="l">Doanh thu hòa vốn</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+(cmr*100).toFixed(1)+'%</div><div class="l">Biên đóng góp</div></div>';
+  h+='<div class="at-kpi-card"><div class="v" style="color:'+(profit>=0?'var(--green)':'var(--red)')+'">'+fmt(Math.round(profit))+'</div><div class="l">Lợi nhuận</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+dol.toFixed(2)+'</div><div class="l">Đòn bẩy hoạt động</div></div>';
+  h+='<div class="at-kpi-card"><div class="v" style="color:'+(mos>=0?'var(--green)':'var(--red)')+'">'+mos.toFixed(1)+'%</div><div class="l">Margin of Safety</div></div>';
+  h+='</div>';
+  var adv=[];
+  if(cm<=0)adv.push({cls:'danger',t:'Biên đóng góp ≤ 0 — Mỗi sản phẩm bán ra đều lỗ. Cần tăng giá bán hoặc giảm biến phí.'});
+  else{
+    if(q<bep)adv.push({cls:'warn',t:'Sản lượng ('+fmt(q)+') chưa đạt điểm hòa vốn ('+fmt(bep)+'). Cần bán thêm '+fmt(bep-q)+' đơn vị.'});
+    else adv.push({cls:'ok',t:'Đã vượt điểm hòa vốn '+fmt(q-bep)+' đơn vị.'});
+    if(dol>5)adv.push({cls:'warn',t:'Đòn bẩy hoạt động cao ('+dol.toFixed(1)+'x) — lợi nhuận nhạy cảm mạnh với thay đổi doanh thu.'});
+    if(mos<20&&mos>=0)adv.push({cls:'warn',t:'Margin of Safety thấp ('+mos.toFixed(1)+'%) — biên an toàn hẹp, rủi ro lỗ khi doanh thu giảm nhẹ.'});
+    if(cmr<0.3)adv.push({cls:'warn',t:'Biên đóng góp thấp ('+(cmr*100).toFixed(1)+'%) — xem xét tăng giá hoặc tối ưu biến phí.'});
+  }
+  h+='<div class="at-adv">';
+  adv.forEach(function(a){h+='<div class="at-adv-item '+a.cls+'">'+a.t+'</div>';});
+  h+='</div>';
+  el.innerHTML=h;el.classList.add('show');
+}
+
+function renderAlgoTool72(){
+  algoToolStyles();
+  var h='<div class="at-wrap">';
+  h+='<div class="at-head"><span style="font-size:28px">📒</span><div><h2>Bút toán kép</h2><p>Kiểm tra bút toán Nợ-Có cân bằng, phân loại tài khoản theo GAAP</p></div></div>';
+  h+='<div class="at-ex"><span style="font-size:12px;color:var(--fg2)">Ví dụ:</span><button onclick="atJnlEx(1)">Mua hàng tiền mặt</button><button onclick="atJnlEx(2)">Bán hàng chịu</button><button onclick="atJnlEx(3)">Trả lương</button><button onclick="atJnlClear()">Xoá hết</button></div>';
+  h+='<div id="jnlRows"></div>';
+  h+='<button style="margin-top:6px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer" onclick="atJnlAddRow()">+ Thêm dòng</button>';
+  h+='<button class="at-btn" onclick="atJnlCalc()">Kiểm tra bút toán</button>';
+  h+='<div class="at-result" id="jnlResult"></div>';
+  h+='</div>';
+  return h;
+}
+var _jnlRows=[];
+function atJnlRender(){
+  var el=document.getElementById('jnlRows');if(!el)return;
+  var h='<div style="display:grid;grid-template-columns:2fr 1fr 1fr 30px;gap:6px;font-size:12px;color:var(--fg2);margin-bottom:4px"><span>Tài khoản</span><span>Nợ (Debit)</span><span>Có (Credit)</span><span></span></div>';
+  _jnlRows.forEach(function(r,i){
+    h+='<div style="display:grid;grid-template-columns:2fr 1fr 1fr 30px;gap:6px;margin-bottom:4px">';
+    h+='<input value="'+esc(r.acc)+'" onchange="_jnlRows['+i+'].acc=this.value" placeholder="TK 111, 331...">';
+    h+='<input type="number" min="0" value="'+r.dr+'" onchange="_jnlRows['+i+'].dr=+this.value">';
+    h+='<input type="number" min="0" value="'+r.cr+'" onchange="_jnlRows['+i+'].cr=+this.value">';
+    h+='<button onclick="_jnlRows.splice('+i+',1);atJnlRender()" style="border:none;background:none;cursor:pointer;font-size:16px;color:var(--red)">×</button>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+function atJnlAddRow(){_jnlRows.push({acc:'',dr:0,cr:0});atJnlRender();}
+function atJnlClear(){_jnlRows=[];atJnlRender();document.getElementById('jnlResult').classList.remove('show');}
+function atJnlEx(n){
+  if(n===1)_jnlRows=[{acc:'TK 156 - Hàng hóa',dr:50000000,cr:0},{acc:'TK 111 - Tiền mặt',dr:0,cr:50000000}];
+  if(n===2)_jnlRows=[{acc:'TK 131 - Phải thu KH',dr:120000000,cr:0},{acc:'TK 511 - Doanh thu',dr:0,cr:100000000},{acc:'TK 3331 - Thuế GTGT',dr:0,cr:20000000}];
+  if(n===3)_jnlRows=[{acc:'TK 642 - CP QLDN',dr:80000000,cr:0},{acc:'TK 334 - Phải trả NLĐ',dr:0,cr:80000000}];
+  atJnlRender();
+}
+function atJnlCalc(){
+  if(!_jnlRows.length){toast('Thêm ít nhất 1 dòng');return;}
+  var tDr=0,tCr=0;_jnlRows.forEach(function(r){tDr+=r.dr;tCr+=r.cr;});
+  var bal=Math.abs(tDr-tCr)<0.01;
+  var fmt=function(v){return v.toLocaleString('vi-VN');};
+  var el=document.getElementById('jnlResult');
+  var h='<div class="at-kpi">';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(tDr)+'</div><div class="l">Tổng Nợ</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(tCr)+'</div><div class="l">Tổng Có</div></div>';
+  h+='<div class="at-kpi-card"><div class="v" style="color:'+(bal?'var(--green)':'var(--red)')+'">'+(bal?'CÂN BẰNG':'LỆCH '+fmt(Math.round(Math.abs(tDr-tCr))))+'</div><div class="l">Trạng thái</div></div>';
+  h+='</div><div class="at-adv">';
+  if(bal)h+='<div class="at-adv-item ok">Bút toán hợp lệ — Tổng Nợ = Tổng Có. Nguyên tắc ghi sổ kép được tuân thủ.</div>';
+  else h+='<div class="at-adv-item danger">Bút toán KHÔNG cân bằng — chênh lệch '+fmt(Math.round(Math.abs(tDr-tCr)))+'. Kiểm tra lại số tiền các tài khoản.</div>';
+  _jnlRows.forEach(function(r){if(r.acc&&r.dr===0&&r.cr===0)h+='<div class="at-adv-item warn">TK "'+esc(r.acc)+'" có cả Nợ và Có = 0 — dòng thừa?</div>';});
+  _jnlRows.forEach(function(r){if(r.dr>0&&r.cr>0)h+='<div class="at-adv-item warn">TK "'+esc(r.acc)+'" ghi cả Nợ ('+fmt(r.dr)+') và Có ('+fmt(r.cr)+') — thường mỗi dòng chỉ ghi 1 bên.</div>';});
+  h+='</div>';
+  el.innerHTML=h;el.classList.add('show');
+}
+
+function renderAlgoTool73(){
+  algoToolStyles();
+  var h='<div class="at-wrap">';
+  h+='<div class="at-head"><span style="font-size:28px">💹</span><div><h2>Phân tích NPV / IRR</h2><p>Giá trị hiện tại ròng, tỷ suất hoàn vốn nội bộ, thời gian hoàn vốn</p></div></div>';
+  h+='<div class="at-ex"><span style="font-size:12px;color:var(--fg2)">Ví dụ:</span><button onclick="atNpvEx(1)">Nhà máy</button><button onclick="atNpvEx(2)">Bất động sản</button><button onclick="atNpvEx(3)">Startup</button><button onclick="atNpvClear()">Xoá hết</button></div>';
+  h+='<div class="at-grid">';
+  h+='<div><label>Vốn đầu tư ban đầu</label><input id="npvI0" type="number" min="0" value="0"></div>';
+  h+='<div><label>Tỷ lệ chiết khấu (%/năm)</label><input id="npvR" type="number" min="0" step="0.1" value="12"></div>';
+  h+='</div>';
+  h+='<div style="margin-top:8px"><label style="font-size:12px;color:var(--fg2)">Dòng tiền hàng năm (cách nhau dấu phẩy)</label><input id="npvCFs" placeholder="VD: 500,600,700,800,900" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--bg);color:var(--fg);box-sizing:border-box;margin-top:4px"></div>';
+  h+='<button class="at-btn" onclick="atNpvCalc()">Phân tích NPV/IRR</button>';
+  h+='<div class="at-result" id="npvResult"></div>';
+  h+='</div>';
+  return h;
+}
+function atNpvEx(n){
+  var d={1:{i0:5000,r:10,cfs:'1200,1500,1800,2000,2200'},2:{i0:3000,r:8,cfs:'400,450,500,550,600,650,700'},3:{i0:2000,r:15,cfs:'-200,300,800,1500,2500'}};
+  var e=d[n];document.getElementById('npvI0').value=e.i0;document.getElementById('npvR').value=e.r;document.getElementById('npvCFs').value=e.cfs;
+}
+function atNpvClear(){document.getElementById('npvI0').value=0;document.getElementById('npvR').value=12;document.getElementById('npvCFs').value='';document.getElementById('npvResult').classList.remove('show');}
+function atNpvCalc(){
+  var i0=+document.getElementById('npvI0').value,r=+document.getElementById('npvR').value/100;
+  var raw=document.getElementById('npvCFs').value.replace(/\s/g,'');
+  if(!raw){toast('Nhập dòng tiền');return;}
+  var cfs=raw.split(',').map(Number);
+  if(cfs.some(isNaN)){toast('Dòng tiền không hợp lệ');return;}
+  var npv=-i0;cfs.forEach(function(cf,t){npv+=cf/Math.pow(1+r,t+1);});
+  var irr=0.1,lo=-0.5,hi=5;
+  for(var iter=0;iter<200;iter++){
+    var mid=(lo+hi)/2,f=-i0;
+    cfs.forEach(function(cf,t){f+=cf/Math.pow(1+mid,t+1);});
+    if(Math.abs(f)<0.01){irr=mid;break;}
+    if(f>0)lo=mid;else hi=mid;
+    irr=mid;
+  }
+  var payback=-1,cum=-i0;
+  for(var t=0;t<cfs.length;t++){cum+=cfs[t];if(cum>=0){payback=t+1+(cum-cfs[t]>0?0:(-cum+cfs[t])/cfs[t]);break;}}
+  var pi=i0>0?(npv+i0)/i0:0;
+  var totalCF=cfs.reduce(function(a,b){return a+b;},0);
+  var fmt=function(v){return Math.round(v).toLocaleString('vi-VN');};
+  var el=document.getElementById('npvResult');
+  var h='<div class="at-kpi">';
+  h+='<div class="at-kpi-card"><div class="v" style="color:'+(npv>=0?'var(--green)':'var(--red)')+'">'+fmt(npv)+'</div><div class="l">NPV</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+(irr*100).toFixed(2)+'%</div><div class="l">IRR</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+(payback>0?payback.toFixed(1)+' năm':'N/A')+'</div><div class="l">Payback Period</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+pi.toFixed(2)+'</div><div class="l">Profitability Index</div></div>';
+  h+='</div><div class="at-adv">';
+  if(npv>0)h+='<div class="at-adv-item ok">NPV > 0 — Dự án tạo giá trị, nên đầu tư (với chi phí vốn '+((r*100).toFixed(1))+'%).</div>';
+  else h+='<div class="at-adv-item danger">NPV < 0 — Dự án phá hủy giá trị. Xem xét lại hoặc tìm phương án chi phí thấp hơn.</div>';
+  if(irr>r)h+='<div class="at-adv-item ok">IRR ('+(irr*100).toFixed(1)+'%) > chi phí vốn ('+(r*100).toFixed(1)+'%) — suất sinh lời vượt kỳ vọng.</div>';
+  else h+='<div class="at-adv-item warn">IRR ('+(irr*100).toFixed(1)+'%) ≤ chi phí vốn — tỷ suất hoàn vốn không đủ bù rủi ro.</div>';
+  if(payback>0&&payback<=3)h+='<div class="at-adv-item ok">Hoàn vốn nhanh ('+payback.toFixed(1)+' năm) — rủi ro thanh khoản thấp.</div>';
+  else if(payback>5)h+='<div class="at-adv-item warn">Thời gian hoàn vốn dài ('+payback.toFixed(1)+' năm) — cân nhắc rủi ro dài hạn.</div>';
+  h+='</div>';
+  el.innerHTML=h;el.classList.add('show');
+}
+
+function renderAlgoTool74(){
+  algoToolStyles();
+  var h='<div class="at-wrap">';
+  h+='<div class="at-head"><span style="font-size:28px">🔢</span><div><h2>Quy hoạch tuyến tính (LP)</h2><p>Tối ưu 2 biến: Max/Min Z = c₁x₁ + c₂x₂ với ràng buộc tuyến tính</p></div></div>';
+  h+='<div class="at-ex"><span style="font-size:12px;color:var(--fg2)">Ví dụ:</span><button onclick="atLpEx(1)">Sản xuất</button><button onclick="atLpEx(2)">Vận chuyển</button><button onclick="atLpClear()">Xoá hết</button></div>';
+  h+='<div class="at-toggle"><button class="active" id="lpMax" onclick="this.classList.add(\'active\');document.getElementById(\'lpMin\').classList.remove(\'active\')">Maximize</button><button id="lpMin" onclick="this.classList.add(\'active\');document.getElementById(\'lpMax\').classList.remove(\'active\')">Minimize</button></div>';
+  h+='<div class="at-grid">';
+  h+='<div><label>Hệ số Z: c₁ (x₁)</label><input id="lpC1" type="number" value="0"></div>';
+  h+='<div><label>Hệ số Z: c₂ (x₂)</label><input id="lpC2" type="number" value="0"></div>';
+  h+='</div>';
+  h+='<div style="margin-top:8px"><label style="font-size:12px;color:var(--fg2)">Ràng buộc (mỗi dòng: a₁ a₂ b, nghĩa là a₁x₁ + a₂x₂ ≤ b)</label><textarea id="lpCons" rows="3" placeholder="VD:\n2 1 100\n1 3 120\n1 1 80" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--bg);color:var(--fg);box-sizing:border-box;margin-top:4px;font-family:monospace"></textarea></div>';
+  h+='<button class="at-btn" onclick="atLpCalc()">Giải bài toán LP</button>';
+  h+='<div class="at-result" id="lpResult"></div>';
+  h+='</div>';
+  return h;
+}
+function atLpEx(n){
+  if(n===1){document.getElementById('lpC1').value=40;document.getElementById('lpC2').value=30;document.getElementById('lpCons').value='2 1 100\n1 3 120\n1 1 80';document.getElementById('lpMax').classList.add('active');document.getElementById('lpMin').classList.remove('active');}
+  if(n===2){document.getElementById('lpC1').value=5;document.getElementById('lpC2').value=4;document.getElementById('lpCons').value='6 4 24\n1 2 6';document.getElementById('lpMin').classList.add('active');document.getElementById('lpMax').classList.remove('active');}
+}
+function atLpClear(){document.getElementById('lpC1').value=0;document.getElementById('lpC2').value=0;document.getElementById('lpCons').value='';document.getElementById('lpResult').classList.remove('show');}
+function atLpCalc(){
+  var c1=+document.getElementById('lpC1').value,c2=+document.getElementById('lpC2').value;
+  var isMax=document.getElementById('lpMax').classList.contains('active');
+  var lines=document.getElementById('lpCons').value.trim().split('\n').filter(function(l){return l.trim();});
+  if(!lines.length){toast('Nhập ràng buộc');return;}
+  var cons=[];
+  for(var i=0;i<lines.length;i++){
+    var parts=lines[i].trim().split(/\s+/).map(Number);
+    if(parts.length<3||parts.some(isNaN)){toast('Ràng buộc dòng '+(i+1)+' sai định dạng');return;}
+    cons.push({a1:parts[0],a2:parts[1],b:parts[2]});
+  }
+  var vertices=[{x:0,y:0}];
+  cons.forEach(function(c){if(c.a1>0)vertices.push({x:c.b/c.a1,y:0});if(c.a2>0)vertices.push({x:0,y:c.b/c.a2});});
+  for(var i=0;i<cons.length;i++)for(var j=i+1;j<cons.length;j++){
+    var det=cons[i].a1*cons[j].a2-cons[i].a2*cons[j].a1;
+    if(Math.abs(det)>1e-10){var x=(cons[i].b*cons[j].a2-cons[i].a2*cons[j].b)/det;var y=(cons[i].a1*cons[j].b-cons[i].b*cons[j].a1)/det;vertices.push({x:x,y:y});}
+  }
+  var feasible=vertices.filter(function(v){
+    if(v.x<-1e-10||v.y<-1e-10)return false;
+    return cons.every(function(c){return c.a1*v.x+c.a2*v.y<=c.b+1e-10;});
+  });
+  if(!feasible.length){document.getElementById('lpResult').innerHTML='<div class="at-adv-item danger">Không có nghiệm khả thi — vùng ràng buộc rỗng.</div>';document.getElementById('lpResult').classList.add('show');return;}
+  var best=feasible[0],bestZ=c1*best.x+c2*best.y;
+  feasible.forEach(function(v){var z=c1*v.x+c2*v.y;if(isMax?z>bestZ:z<bestZ){bestZ=z;best=v;}});
+  var fmt=function(v){return Math.round(v*100)/100;};
+  var el=document.getElementById('lpResult');
+  var h='<div class="at-kpi">';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(best.x)+'</div><div class="l">x₁ tối ưu</div></div>';
+  h+='<div class="at-kpi-card"><div class="v">'+fmt(best.y)+'</div><div class="l">x₂ tối ưu</div></div>';
+  h+='<div class="at-kpi-card"><div class="v" style="color:var(--green)">'+fmt(bestZ)+'</div><div class="l">Z '+(isMax?'max':'min')+'</div></div>';
+  h+='</div><div class="at-adv">';
+  h+='<div class="at-adv-item ok">Nghiệm tối ưu: x₁ = '+fmt(best.x)+', x₂ = '+fmt(best.y)+' → Z = '+fmt(bestZ)+'</div>';
+  cons.forEach(function(c,i){var slack=c.b-(c.a1*best.x+c.a2*best.y);h+='<div class="at-adv-item '+(Math.abs(slack)<0.01?'warn':'ok')+'">Ràng buộc '+(i+1)+': '+(Math.abs(slack)<0.01?'Ràng buộc chặt (binding) — tài nguyên sử dụng hết':'Slack = '+fmt(slack)+' — còn dư tài nguyên')+'</div>';});
+  h+='</div>';
+  el.innerHTML=h;el.classList.add('show');
+}
+
+function renderAlgoTool75(){
+  algoToolStyles();
+  var h='<div class="at-wrap">';
+  h+='<div class="at-head"><span style="font-size:28px">🌐</span><div><h2>Mô hình IS-LM</h2><p>Cân bằng đồng thời thị trường hàng hóa (IS) và tiền tệ (LM)</p></div></div>';
+  h+='<div class="at-ex"><span style="font-size:12px;color:var(--fg2)">Ví dụ:</span><button onclick="atIslmEx(1)">Kinh tế bình thường</button><button onclick="atIslmEx(2)">Mở rộng tài khóa</button><button onclick="atIslmEx(3)">Thắt chặt tiền tệ</button><button onclick="atIslmClear()">Xoá hết</button></div>';
+  h+='<div style="font-size:12px;font-weight:600;color:var(--fg2);margin-bottom:4px">Thị trường hàng hóa (IS)</div>';
+  h+='<div class="at-grid">';
+  h+='<div><label>C₀ (tiêu dùng tự định)</label><input id="islmC0" type="number" value="100"></div>';
+  h+='<div><label>c (xu hướng tiêu dùng biên)</label><input id="islmC" type="number" step="0.01" min="0" max="1" value="0.8"></div>';
+  h+='<div><label>I₀ (đầu tư tự định)</label><input id="islmI0" type="number" value="200"></div>';
+  h+='<div><label>b (nhạy cảm đầu tư/lãi suất)</label><input id="islmB" type="number" value="50"></div>';
+  h+='<div><label>G (chi tiêu chính phủ)</label><input id="islmG" type="number" value="150"></div>';
+  h+='<div><label>T (thuế ròng)</label><input id="islmT" type="number" value="100"></div>';
+  h+='</div>';
+  h+='<div style="font-size:12px;font-weight:600;color:var(--fg2);margin:10px 0 4px">Thị trường tiền tệ (LM)</div>';
+  h+='<div class="at-grid">';
+  h+='<div><label>M/P (cung tiền thực)</label><input id="islmMP" type="number" value="500"></div>';
+  h+='<div><label>k (nhạy cảm cầu tiền/Y)</label><input id="islmK" type="number" step="0.01" value="0.25"></div>';
+  h+='<div><label>h (nhạy cảm cầu tiền/r)</label><input id="islmH" type="number" value="50"></div>';
+  h+='</div>';
+  h+='<button class="at-btn" onclick="atIslmCalc()">Phân tích IS-LM</button>';
+  h+='<div class="at-result" id="islmResult"></div>';
+  h+='</div>';
+  return h;
+}
+function atIslmEx(n){
+  var d={1:{c0:100,c:0.8,i0:200,b:50,g:150,t:100,mp:500,k:0.25,h:50},2:{c0:100,c:0.8,i0:200,b:50,g:250,t:100,mp:500,k:0.25,h:50},3:{c0:100,c:0.8,i0:200,b:50,g:150,t:100,mp:350,k:0.25,h:50}};
+  var e=d[n];document.getElementById('islmC0').value=e.c0;document.getElementById('islmC').value=e.c;document.getElementById('islmI0').value=e.i0;document.getElementById('islmB').value=e.b;document.getElementById('islmG').value=e.g;document.getElementById('islmT').value=e.t;document.getElementById('islmMP').value=e.mp;document.getElementById('islmK').value=e.k;document.getElementById('islmH').value=e.h;
+}
+function atIslmClear(){['islmC0','islmI0','islmG','islmT','islmMP'].forEach(function(id){document.getElementById(id).value=0;});document.getElementById('islmC').value=0.8;document.getElementById('islmB').value=50;document.getElementById('islmK').value=0.25;document.getElementById('islmH').value=50;document.getElementById('islmResult').classList.remove('show');}
+function atIslmCalc(){
+  var c0=+document.getElementById('islmC0').value,c=+document.getElementById('islmC').value,i0=+document.getElementById('islmI0').value,b=+document.getElementById('islmB').value,g=+document.getElementById('islmG').value,t=+document.getElementById('islmT').value,mp=+document.getElementById('islmMP').value,k=+document.getElementById('islmK').value,h=+document.getElementById('islmH').value;
+  if(c>=1||c<0){toast('c phải trong khoảng (0,1)');return;}
+  var A=c0-c*t+i0+g;
+  var mult=1/(1-c);
+  var det=(1-c)+b*k/h;
+  if(Math.abs(det)<1e-10){toast('Hệ phương trình vô nghiệm');return;}
+  var Ye=(h*A+b*mp)/(h*(1-c)+b*k);
+  var re=(k*A-(1-c)*mp)/(h*(1-c)+b*k);
+  var Ce=c0+c*(Ye-t);
+  var Ie=i0-b*re;
+  var fiscalMult=h/(h*(1-c)+b*k);
+  var moneyMult=b/(h*(1-c)+b*k);
+  var fmt=function(v){return Math.round(v).toLocaleString('vi-VN');};
+  var el=document.getElementById('islmResult');
+  var rh='<div class="at-kpi">';
+  rh+='<div class="at-kpi-card"><div class="v">'+fmt(Ye)+'</div><div class="l">Y* (sản lượng cân bằng)</div></div>';
+  rh+='<div class="at-kpi-card"><div class="v">'+(re*100).toFixed(2)+'%</div><div class="l">r* (lãi suất cân bằng)</div></div>';
+  rh+='<div class="at-kpi-card"><div class="v">'+fmt(Ce)+'</div><div class="l">C* (tiêu dùng)</div></div>';
+  rh+='<div class="at-kpi-card"><div class="v">'+fmt(Ie)+'</div><div class="l">I* (đầu tư)</div></div>';
+  rh+='<div class="at-kpi-card"><div class="v">'+fiscalMult.toFixed(2)+'</div><div class="l">Số nhân tài khóa</div></div>';
+  rh+='<div class="at-kpi-card"><div class="v">'+moneyMult.toFixed(4)+'</div><div class="l">Số nhân tiền tệ</div></div>';
+  rh+='</div><div class="at-adv">';
+  if(re<0)rh+='<div class="at-adv-item warn">Lãi suất cân bằng âm ('+(re*100).toFixed(2)+'%) — có thể rơi vào "bẫy thanh khoản", chính sách tiền tệ kém hiệu lực.</div>';
+  if(fiscalMult>2)rh+='<div class="at-adv-item ok">Số nhân tài khóa cao ('+fiscalMult.toFixed(2)+') — mở rộng chi tiêu CP có tác động mạnh lên sản lượng.</div>';
+  if(b/h>0.5)rh+='<div class="at-adv-item ok">Chính sách tiền tệ hiệu quả cao (b/h = '+(b/h).toFixed(2)+') — cung tiền tác động mạnh lên Y.</div>';
+  else rh+='<div class="at-adv-item warn">Chính sách tiền tệ kém hiệu quả (b/h = '+(b/h).toFixed(2)+') — nên ưu tiên chính sách tài khóa.</div>';
+  var crowding=b*k/h;
+  rh+='<div class="at-adv-item '+(crowding>0.5?'warn':'ok')+'">Hiệu ứng lấn át (crowding-out) '+(crowding>0.5?'đáng kể':'thấp')+' — '+((crowding/(1-c+crowding))*100).toFixed(1)+'% tác động tài khóa bị triệt tiêu bởi tăng lãi suất.</div>';
+  rh+='</div>';
+  el.innerHTML=rh;el.classList.add('show');
+}
+
+/* ===== Algo Seed ===== */
+function algoSeedRepos(){
+  if(D._algoSeeded)return;
+  var repos=[
+    {sec:'7.1',name:'managerial-accounting-dashboard',desc:'Dashboard CVP: break-even, contribution margin, DOL, margin of safety, sensitivity analysis, PDF export. React ~2500 LOC.',url:'https://github.com/azaldeen-alkhatib/managerial-accounting-dashboard',stars:0,lang:'JavaScript (React)'},
+    {sec:'7.1',name:'Budget-vs-Actual Variance Analysis',desc:'Python script tạo dữ liệu variance analysis sản xuất: Price/Rate/Volume/Usage/Efficiency Variance. Seeded randomization + scripted business events.',url:'https://github.com/dany-ni/Budget-vs-Actual-Variance-Analysis-Power-BI-Dashboard',stars:0,lang:'Python + Power BI'},
+    {sec:'7.1',name:'CostPriceCalculator',desc:'Tính giá vốn 5 phương pháp: FIFO, LIFO, Highest Cost, Lowest Cost, Weighted Average. OOP Strategy pattern, ICosting interface.',url:'https://github.com/mohammadnadeem/CostPriceCalculator',stars:3,lang:'C#'},
+    {sec:'7.1',name:'financial-ratio-analyzer',desc:'8 tỷ số tài chính: ROE, ROA, Gross/Net Margin, Current/Quick Ratio, Debt-to-Assets, Equity Multiplier + DuPont. FastAPI + Chart.js + pytest.',url:'https://github.com/YueCai335/financial-ratio-analyzer',stars:0,lang:'Python'},
+    {sec:'7.2',name:'python-accounting',desc:'IFRS/GAAP double-entry bookkeeping: income statements, balance sheets, cashflow statements, multi-entity, tax. 212 stars.',url:'https://github.com/ekmungai/python-accounting',stars:212,lang:'Python'},
+    {sec:'7.2',name:'beancount',desc:'Double-entry accounting from text files, v3 stable, web interface, comprehensive reporting. 6.1k stars, production-grade.',url:'https://github.com/beancount/beancount',stars:6100,lang:'Python'},
+    {sec:'7.2',name:'Accounting-System (GAAP)',desc:'Hệ thống kế toán tuân thủ GAAP: chart of accounts (6 loại), general journal, ledger, trial balance. Python 3.7 + SQLite3.',url:'https://github.com/medmatix/Accounting-System',stars:104,lang:'Python/SQLite'},
+    {sec:'7.2',name:'pyluca',desc:'Headless double-entry accounting package. Plug-and-play, không cần server/database riêng. 68 stars, pip install.',url:'https://github.com/datasignstech/pyluca',stars:68,lang:'Python'},
+    {sec:'7.3',name:'FinanceToolkit',desc:'500+ financial calculations: ratios, DuPont 5-component, options pricing, risk metrics, technicals, econometrics. 5.4k stars.',url:'https://github.com/JerBouma/FinanceToolkit',stars:5400,lang:'Python'},
+    {sec:'7.3',name:'cashflows',desc:'Thư viện kinh tế kỹ thuật: NPV, IRR, bond valuation, khấu hao, loan amortization, currency, inflation. 14 Python modules.',url:'https://github.com/jdvelasq/cashflows',stars:97,lang:'Python'},
+    {sec:'7.3',name:'dcf (sonntagsgesicht)',desc:'Banking-grade DCF library: annuity, amortization, CashFlowList, discount curves, FX, interpolation. Apache-2.0.',url:'https://github.com/sonntagsgesicht/dcf',stars:24,lang:'Python'},
+    {sec:'7.3',name:'cashflow-rate-calculator',desc:'Loan analysis: IRR, APR, EAR, PMT, NPV, PV, FV, amortization schedules via numpy_financial.',url:'https://github.com/sjbahmani/cashflow-rate-calculator',stars:0,lang:'Python'},
+    {sec:'7.3',name:'feasflow',desc:'Feasibility study năng lượng tái tạo: IRR/NPV/DSCR/LCOE/WACC-CAPM, Monte Carlo, Excel/PDF export. Live tại feasflow.streamlit.app.',url:'https://github.com/alongkorn271-lgtm/feasflow',stars:0,lang:'Python/Streamlit'},
+    {sec:'7.4',name:'Optimization-LinearProgramming-Python',desc:'LP optimization (ví dụ sản xuất ô tô): graphical, PuLP solver, SciPy minimize — 3 cách giải. 13 stars.',url:'https://github.com/Atul-Anand-Jha/Optimization-LinearProgramming-Python',stars:13,lang:'Python/Jupyter'},
+    {sec:'7.4',name:'Linear-Programming-Optimization',desc:'8 mini-problems: LP, MILP, DP, NLP dùng PuLP, Pyomo, SciPy, OR-Tools, Gurobi, CPLEX.',url:'https://github.com/tstran155/Linear-Programming-Optimization-With-Python',stars:6,lang:'Python/Jupyter'},
+    {sec:'7.4',name:'PuLP Optimization Tutorial',desc:'Tutorial từ cơ bản đến nâng cao: production planning, supply chain, portfolio, transport. PuLP/SciPy/CVXPY/Pyomo. 31 stars.',url:'https://github.com/Harrypatria/Basic-to-Advanced-Optimization-Tutorial-with-PuLP-Python',stars:31,lang:'Python/Jupyter'},
+    {sec:'7.5',name:'iotables (Input-Output)',desc:'Input-output analysis: ma trận Leontief & Ghosh, dữ liệu OECD/Figaro/ExioBase, mô phỏng cú sốc cung/cầu. 45 ngành, 66 nước.',url:'https://github.com/WWakker/iotables',stars:20,lang:'Python'},
+    {sec:'7.5',name:'macroeconomics-islm',desc:'Mô hình IS-LM: cân bằng sản lượng - lãi suất, mô phỏng cú sốc tài khóa/tiền tệ, interactive visualization.',url:'https://github.com/pablo-reyes8/macroeconomics-islm',stars:8,lang:'Python/Jupyter'},
+    {sec:'7.5',name:'Time-Series-Forecasting VAR',desc:'ARIMA, VAR, VECM cho tham số kinh tế vĩ mô, Granger causality, spectral analysis. 11 stars.',url:'https://github.com/jashshah-dev/Time-Series-Forecasting-of-Macro-Economic-Parameters',stars:11,lang:'Python'},
+    {sec:'7.5',name:'pyrb (Risk Budgeting)',desc:'Phân bổ ngân sách rủi ro: ERC, risk parity, constrained optimization. 132 stars, 53 forks, academic-backed, MIT.',url:'https://github.com/jcrichard/pyrb',stars:132,lang:'Python'}
+  ];
+  var now=Date.now();
+  repos.forEach(function(r,i){
+    var list=its(r.sec);
+    if(list.some(function(x){return x.name===r.name;}))return;
+    list.push({id:gid(),name:r.name,desc:r.desc+'\n\n🔗 '+r.url+'\n⭐ '+r.stars+' stars | 🛠️ '+r.lang,status:'active',type:'algo',priority:'normal',url:r.url,stars:r.stars,lang:r.lang,createdAt:now-i*1000,updatedAt:now-i*1000});
+    D[r.sec]=list;
+  });
+  D._algoSeeded=true;
+  sv();
+}
+
 /* ===== Init ===== */
 ld();
 eduEnsureData();htEnsureNewData();
@@ -5847,6 +6219,7 @@ if(!D._trainingMeta||!D._trainingMeta.seed2026v3)eduSeed2026WorkItems();
 eduSeedProcesses();
 eduSeedTemplates();
 eduSeedAutomationRules();
+algoSeedRepos();
 purgeOldTrash();refresh();ideaUpdateCount();autoBackup();scheduleReminders();requestNotifPermission();
 setTimeout(eduGenerateLeadNotifications,3000);
 setTimeout(eduRunAutomation,5000);
@@ -5864,6 +6237,7 @@ setInterval(function(){scheduleReminders();},60000);
     if(data&&typeof data==='object'&&Object.keys(data).length>0){
       D=data;
       try{localStorage.setItem('qlcv4',JSON.stringify(D));}catch(e){}
+      algoSeedRepos();
       purgeOldTrash();refresh();ideaUpdateCount();
     }else if(Object.keys(D).length>0){
       pushToServer();
