@@ -817,6 +817,234 @@ body.idea-open .idea-panel{display:flex}
   .qf-bar{margin-left:-4px;margin-right:-4px;padding-left:4px;padding-right:4px}
   .dl-tag{font-size:10px}
 }
+
+/* ===== Beneish Bubble ===== */
+.beneish-fab{position:fixed;right:144px;bottom:24px;width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;font-size:20px;
+  cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.4);z-index:59;display:flex;align-items:center;
+  justify-content:center;transition:transform .15s,box-shadow .15s}
+.beneish-fab:hover{transform:scale(1.1);box-shadow:0 5px 18px rgba(124,58,237,.5)}
+.beneish-fab:active{transform:scale(.93)}
+@media(max-width:560px){
+  .beneish-fab{right:78px;bottom:78px;width:44px;height:44px;font-size:18px}
+}
+
+/* ===== Beneish inline tool ===== */
+.bn-tool{max-width:820px;margin:0 auto}
+.bn-tool h2{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--accent)}
+.bn-tool .bn-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.bn-tool .bn-formula{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-s);padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;overflow-x:auto;line-height:1.8;margin:6px 0}
+.bn-tool .bn-preset-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.bn-tool .bn-preset{padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer;font-family:inherit}
+.bn-tool .bn-preset:hover{border-color:var(--accent);color:var(--accent)}
+.bn-tool .bn-preset.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bn-tool .bn-grid{display:grid;grid-template-columns:1fr;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.bn-tool .bn-hdr{display:grid;grid-template-columns:1fr .7fr .7fr;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--fg2)}
+.bn-tool .bn-hdr>div,.bn-tool .bn-irow>div{padding:6px 8px}
+.bn-tool .bn-irow{display:grid;grid-template-columns:1fr .7fr .7fr;border-top:1px solid var(--border);align-items:center}
+.bn-tool .bn-irow label{font-size:12px;color:var(--fg2)}
+.bn-tool .bn-irow input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--fg);text-align:right}
+.bn-tool .bn-irow input:focus{outline:none;border-color:var(--accent)}
+.bn-tool .bn-calc{display:block;width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-s);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px}
+.bn-tool .bn-calc:hover{opacity:.9}
+.bn-tool .bn-verdict{text-align:center;padding:18px;border-radius:var(--radius);margin:10px 0}
+.bn-tool .bn-verdict.safe{background:var(--green-s);border:2px solid var(--green)}
+.bn-tool .bn-verdict.danger{background:var(--red-s);border:2px solid var(--red)}
+.bn-tool .bn-verdict.warning{background:var(--amber-s);border:2px solid var(--amber)}
+.bn-tool .bn-score{font-size:2rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.bn-tool .bn-label{font-size:14px;font-weight:600;margin-top:4px}
+.bn-tool .bn-desc{font-size:12px;color:var(--fg2);margin-top:4px}
+.bn-tool .bn-ratio-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.bn-tool .bn-ratio-tbl th{text-align:left;padding:6px 8px;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;color:var(--fg2);border-bottom:2px solid var(--border)}
+.bn-tool .bn-ratio-tbl td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.bn-tool .bn-ratio-tbl tr:last-child td{border-bottom:none}
+.bn-tool .bn-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px}
+.bn-tool .bn-bar-lbl{width:42px;text-align:right;font-weight:600;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.bn-tool .bn-bar-track{flex:1;height:18px;background:var(--border);border-radius:3px;overflow:hidden;position:relative;min-width:0}
+.bn-tool .bn-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.bn-tool .bn-bar-val{width:60px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0}
+.bn-tool .bn-gauge{width:100%;max-width:420px;margin:8px auto;display:block}
+.bn-tool .bn-adv-title{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.bn-tool .bn-adv-item{padding:10px 12px;border-radius:var(--radius-s);margin-bottom:8px;border-left:3px solid var(--accent)}
+.bn-tool .bn-adv-item.high{border-left-color:var(--red);background:var(--red-s)}
+.bn-tool .bn-adv-item.med{border-left-color:var(--amber);background:var(--amber-s)}
+.bn-tool .bn-adv-item.low{border-left-color:var(--green);background:var(--green-s)}
+.bn-tool .bn-adv-item h4{font-size:12px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:5px}
+.bn-tool .bn-adv-item p{font-size:12px;margin:0;color:var(--fg2);line-height:1.5}
+.bn-tool .bn-adv-item .bn-adv-where{font-size:11px;margin-top:4px;padding:4px 8px;background:rgba(0,0,0,.04);border-radius:4px;color:var(--fg);font-weight:500}
+.bn-tool .bn-adv-summary{font-size:12px;color:var(--fg2);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:var(--radius-s)}
+@media(max-width:560px){
+  .bn-tool .bn-hdr{grid-template-columns:1fr .5fr .5fr;font-size:10px}
+  .bn-tool .bn-irow{grid-template-columns:1fr .5fr .5fr}
+  .bn-tool .bn-irow label{font-size:11px}
+  .bn-tool .bn-irow input{font-size:16px;padding:8px 6px;border-radius:6px}
+  .bn-tool .bn-hdr>div,.bn-tool .bn-irow>div{padding:6px 4px}
+  .bn-tool .bn-preset{padding:8px 14px;font-size:13px}
+  .bn-tool .bn-ratio-tbl{font-size:11px}
+  .bn-tool .bn-ratio-tbl th,.bn-tool .bn-ratio-tbl td{padding:5px 4px}
+  .bn-tool .bn-score{font-size:1.6rem}
+}
+
+/* ===== Risk Assessment Tool v0.2 ===== */
+.rk-tool{max-width:860px;margin:0 auto}
+.rk-tool h2{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--teal)}
+.rk-tool .rk-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.rk-tool .rk-preset-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rk-tool .rk-preset{padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer;font-family:inherit}
+.rk-tool .rk-preset:hover{border-color:var(--teal);color:var(--teal)}
+.rk-tool .rk-preset.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.rk-tool .rk-grid{display:grid;grid-template-columns:1fr;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.rk-tool .rk-hdr{display:grid;grid-template-columns:1fr .7fr;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--fg2)}
+.rk-tool .rk-hdr>div,.rk-tool .rk-irow>div{padding:6px 8px}
+.rk-tool .rk-irow{display:grid;grid-template-columns:1fr .7fr;border-top:1px solid var(--border);align-items:center}
+.rk-tool .rk-irow label{font-size:12px;color:var(--fg2)}
+.rk-tool .rk-irow input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--fg);text-align:right}
+.rk-tool .rk-irow input:focus{outline:none;border-color:var(--teal)}
+.rk-tool .rk-calc{display:block;width:100%;padding:10px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius-s);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px}
+.rk-tool .rk-calc:hover{opacity:.9}
+.rk-tool .rk-verdict{text-align:center;padding:18px;border-radius:var(--radius);margin:10px 0}
+.rk-tool .rk-verdict.safe{background:var(--green-s);border:2px solid var(--green)}
+.rk-tool .rk-verdict.danger{background:var(--red-s);border:2px solid var(--red)}
+.rk-tool .rk-verdict.warning{background:var(--amber-s);border:2px solid var(--amber)}
+.rk-tool .rk-score{font-size:2rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.rk-tool .rk-label{font-size:14px;font-weight:600;margin-top:4px}
+.rk-tool .rk-desc{font-size:12px;color:var(--fg2);margin-top:4px}
+.rk-tool .rk-ratio-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.rk-tool .rk-ratio-tbl th{text-align:left;padding:6px 8px;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;color:var(--fg2);border-bottom:2px solid var(--border)}
+.rk-tool .rk-ratio-tbl td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.rk-tool .rk-ratio-tbl tr:last-child td{border-bottom:none}
+.rk-tool .rk-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px}
+.rk-tool .rk-bar-lbl{width:90px;text-align:right;font-weight:600;font-size:11px;flex-shrink:0}
+.rk-tool .rk-bar-track{flex:1;height:18px;background:var(--border);border-radius:3px;overflow:hidden;position:relative;min-width:0}
+.rk-tool .rk-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.rk-tool .rk-bar-val{width:68px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0}
+.rk-tool .rk-gauge{width:100%;max-width:420px;margin:8px auto;display:block}
+.rk-tool .rk-dims{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:10px 0}
+.rk-tool .rk-dim{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.rk-tool .rk-dim-val{font-size:1.5rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.rk-tool .rk-dim-name{font-size:11px;color:var(--fg2);margin-top:2px}
+.rk-tool .rk-dim-bar{height:6px;background:var(--border);border-radius:3px;margin-top:6px;overflow:hidden}
+.rk-tool .rk-dim-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.rk-tool .rk-adv-title{font-size:14px;font-weight:700;margin-bottom:10px}
+.rk-tool .rk-adv-item{padding:10px 12px;border-radius:var(--radius-s);margin-bottom:8px;border-left:3px solid var(--teal)}
+.rk-tool .rk-adv-item.high{border-left-color:var(--red);background:var(--red-s)}
+.rk-tool .rk-adv-item.med{border-left-color:var(--amber);background:var(--amber-s)}
+.rk-tool .rk-adv-item.low{border-left-color:var(--green);background:var(--green-s)}
+.rk-tool .rk-adv-item h4{font-size:12px;font-weight:700;margin:0 0 4px}
+.rk-tool .rk-adv-item p{font-size:12px;margin:0;color:var(--fg2);line-height:1.5}
+@media(max-width:560px){
+  .rk-tool .rk-hdr{font-size:10px}
+  .rk-tool .rk-irow label{font-size:11px}
+  .rk-tool .rk-irow input{font-size:16px;padding:8px 6px;border-radius:6px}
+  .rk-tool .rk-dims{grid-template-columns:repeat(2,1fr)}
+  .rk-tool .rk-score{font-size:1.6rem}
+}
+
+/* ===== Piotroski F-Score Tool v0.3 ===== */
+.ps-tool{max-width:860px;margin:0 auto}
+.ps-tool h2{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--accent)}
+.ps-tool .ps-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ps-tool .ps-preset-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ps-tool .ps-preset{padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer;font-family:inherit}
+.ps-tool .ps-preset:hover{border-color:var(--accent);color:var(--accent)}
+.ps-tool .ps-preset.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ps-tool .ps-grid{display:grid;grid-template-columns:1fr;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.ps-tool .ps-hdr{display:grid;grid-template-columns:1fr .5fr .5fr;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--fg2)}
+.ps-tool .ps-hdr>div,.ps-tool .ps-irow>div{padding:6px 8px}
+.ps-tool .ps-irow{display:grid;grid-template-columns:1fr .5fr .5fr;border-top:1px solid var(--border);align-items:center}
+.ps-tool .ps-irow label{font-size:12px;color:var(--fg2)}
+.ps-tool .ps-irow input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--fg);text-align:right}
+.ps-tool .ps-irow input:focus{outline:none;border-color:var(--accent)}
+.ps-tool .ps-calc{display:block;width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-s);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px}
+.ps-tool .ps-calc:hover{opacity:.9}
+.ps-tool .ps-verdict{text-align:center;padding:18px;border-radius:var(--radius);margin:10px 0}
+.ps-tool .ps-verdict.strong{background:var(--green-s);border:2px solid var(--green)}
+.ps-tool .ps-verdict.weak{background:var(--red-s);border:2px solid var(--red)}
+.ps-tool .ps-verdict.neutral{background:var(--amber-s);border:2px solid var(--amber)}
+.ps-tool .ps-score{font-size:2.2rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.ps-tool .ps-label{font-size:14px;font-weight:600;margin-top:4px}
+.ps-tool .ps-desc{font-size:12px;color:var(--fg2);margin-top:4px}
+.ps-tool .ps-cat{margin-bottom:10px}
+.ps-tool .ps-cat-hdr{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ps-tool .ps-sig{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius-s);margin-bottom:4px;font-size:12px;background:var(--bg);border:1px solid var(--border)}
+.ps-tool .ps-sig .ps-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.ps-tool .ps-sig .ps-dot.pass{background:var(--green-s);color:var(--green)}
+.ps-tool .ps-sig .ps-dot.fail{background:var(--red-s);color:var(--red)}
+.ps-tool .ps-sig-name{flex:1;font-weight:500}
+.ps-tool .ps-sig-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg2)}
+.ps-tool .ps-gauge{width:100%;max-width:400px;margin:8px auto;display:block}
+.ps-tool .ps-ratio-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.ps-tool .ps-ratio-tbl th{text-align:left;padding:6px 8px;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;color:var(--fg2);border-bottom:2px solid var(--border)}
+.ps-tool .ps-ratio-tbl td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ps-tool .ps-ratio-tbl tr:last-child td{border-bottom:none}
+.ps-tool .ps-adv-item{padding:10px 12px;border-radius:var(--radius-s);margin-bottom:8px;border-left:3px solid var(--accent)}
+.ps-tool .ps-adv-item.high{border-left-color:var(--red);background:var(--red-s)}
+.ps-tool .ps-adv-item.med{border-left-color:var(--amber);background:var(--amber-s)}
+.ps-tool .ps-adv-item.low{border-left-color:var(--green);background:var(--green-s)}
+.ps-tool .ps-adv-item h4{font-size:12px;font-weight:700;margin:0 0 4px}
+.ps-tool .ps-adv-item p{font-size:12px;margin:0;color:var(--fg2);line-height:1.5}
+@media(max-width:560px){
+  .ps-tool .ps-hdr{grid-template-columns:1fr .5fr .5fr;font-size:10px}
+  .ps-tool .ps-irow{grid-template-columns:1fr .5fr .5fr}
+  .ps-tool .ps-irow label{font-size:11px}
+  .ps-tool .ps-irow input{font-size:16px;padding:8px 6px;border-radius:6px}
+  .ps-tool .ps-score{font-size:1.6rem}
+  .ps-tool .ps-sig{flex-wrap:wrap}
+}
+
+/* ===== DuPont Analysis Tool v0.4 ===== */
+.dp-tool{max-width:860px;margin:0 auto}
+.dp-tool h2{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--purple,#7c3aed)}
+.dp-tool .dp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.dp-tool .dp-preset-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.dp-tool .dp-preset{padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg);color:var(--fg);font-size:12px;cursor:pointer;font-family:inherit}
+.dp-tool .dp-preset:hover{border-color:var(--purple,#7c3aed);color:var(--purple,#7c3aed)}
+.dp-tool .dp-preset.active{background:var(--purple,#7c3aed);color:#fff;border-color:var(--purple,#7c3aed)}
+.dp-tool .dp-grid{display:grid;grid-template-columns:1fr;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.dp-tool .dp-hdr{display:grid;grid-template-columns:1fr .7fr;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--fg2)}
+.dp-tool .dp-hdr>div,.dp-tool .dp-irow>div{padding:6px 8px}
+.dp-tool .dp-irow{display:grid;grid-template-columns:1fr .7fr;border-top:1px solid var(--border);align-items:center}
+.dp-tool .dp-irow label{font-size:12px;color:var(--fg2)}
+.dp-tool .dp-irow input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--fg);text-align:right}
+.dp-tool .dp-irow input:focus{outline:none;border-color:var(--purple,#7c3aed)}
+.dp-tool .dp-calc{display:block;width:100%;padding:10px;background:var(--purple,#7c3aed);color:#fff;border:none;border-radius:var(--radius-s);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px}
+.dp-tool .dp-calc:hover{opacity:.9}
+.dp-tool .dp-roe-box{text-align:center;padding:20px;border-radius:var(--radius);margin:10px 0;background:var(--card);border:2px solid var(--purple,#7c3aed)}
+.dp-tool .dp-roe-val{font-size:2.2rem;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--purple,#7c3aed);line-height:1.2}
+.dp-tool .dp-roe-lbl{font-size:14px;font-weight:600;margin-top:4px}
+.dp-tool .dp-tree{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.dp-tool .dp-tree-row{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+.dp-tool .dp-node{flex:1;min-width:120px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center}
+.dp-tool .dp-node-val{font-size:1.1rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.dp-tool .dp-node-lbl{font-size:11px;color:var(--fg2);margin-top:2px}
+.dp-tool .dp-op{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--fg2);width:24px;flex-shrink:0}
+.dp-tool .dp-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px}
+.dp-tool .dp-bar-lbl{width:130px;text-align:right;font-weight:600;font-size:11px;flex-shrink:0}
+.dp-tool .dp-bar-track{flex:1;height:18px;background:var(--border);border-radius:3px;overflow:hidden;position:relative;min-width:0}
+.dp-tool .dp-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.dp-tool .dp-bar-val{width:68px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0}
+.dp-tool .dp-ratio-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.dp-tool .dp-ratio-tbl th{text-align:left;padding:6px 8px;background:var(--bg);font-weight:600;font-size:11px;text-transform:uppercase;color:var(--fg2);border-bottom:2px solid var(--border)}
+.dp-tool .dp-ratio-tbl td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.dp-tool .dp-ratio-tbl tr:last-child td{border-bottom:none}
+.dp-tool .dp-adv-item{padding:10px 12px;border-radius:var(--radius-s);margin-bottom:8px;border-left:3px solid var(--purple,#7c3aed)}
+.dp-tool .dp-adv-item.high{border-left-color:var(--red);background:var(--red-s)}
+.dp-tool .dp-adv-item.med{border-left-color:var(--amber);background:var(--amber-s)}
+.dp-tool .dp-adv-item.low{border-left-color:var(--green);background:var(--green-s)}
+.dp-tool .dp-adv-item h4{font-size:12px;font-weight:700;margin:0 0 4px}
+.dp-tool .dp-adv-item p{font-size:12px;margin:0;color:var(--fg2);line-height:1.5}
+.dp-tool .dp-mode-bar{display:flex;gap:0;margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-s);overflow:hidden}
+.dp-tool .dp-mode-btn{flex:1;padding:8px;border:none;background:var(--bg);color:var(--fg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.dp-tool .dp-mode-btn.active{background:var(--purple,#7c3aed);color:#fff}
+@media(max-width:560px){
+  .dp-tool .dp-hdr{font-size:10px}
+  .dp-tool .dp-irow label{font-size:11px}
+  .dp-tool .dp-irow input{font-size:16px;padding:8px 6px;border-radius:6px}
+  .dp-tool .dp-roe-val{font-size:1.6rem}
+  .dp-tool .dp-tree-row{flex-direction:column}
+  .dp-tool .dp-op{width:auto;height:24px}
+  .dp-tool .dp-bar-lbl{width:90px;font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -937,6 +1165,7 @@ body.idea-open .idea-panel{display:flex}
   <div class="pomo-task"><label>Gắn vào task:</label><select id="pomoTask"><option value="">-- Không --</option></select></div>
 </div>
 <button class="pomo-fab" onclick="togglePomoPanel()" title="Pomodoro Timer">🍅</button>
+<button class="beneish-fab" onclick="nav('6.1')" aria-label="Test v0.1" title="Mở công cụ Test v0.1">🔬</button>
 
 <!-- Global Search -->
 <div class="gs-modal" id="gsModal" onclick="if(event.target===this)closeGSearch()">
@@ -1063,6 +1292,12 @@ const TREE=[
     {id:'5.3',label:'Năm 2027',icon:'📅',type:'hs'},
     {id:'5.4',label:'Ý tưởng',icon:'💡',type:'idea'},
   {id:'_trash',label:'Thùng rác',icon:'🗑️',children:[]}
+  ]},
+  {id:'6',label:'Test',icon:'🧪',children:[
+    {id:'6.1',label:'Test v0.1',icon:'🔬'},
+    {id:'6.2',label:'Test v0.2',icon:'🛡️'},
+    {id:'6.3',label:'Test v0.3',icon:'📊'},
+    {id:'6.4',label:'Test v0.4',icon:'🔎'}
   ]},
   {id:'7',label:'Thư viện thuật toán',icon:'📐',oicon:'📐',children:[
     {id:'7.1',label:'Kế toán quản trị',icon:'📊',type:'algo'},
@@ -1380,6 +1615,10 @@ function render(){
   if(cur==='0'){el.innerHTML=renderDash();return;}
   if(cur==='_trash'){el.innerHTML=renderTrashPage();return;}
   if(cur===IDEA_SEC){el.innerHTML=renderIdeasPage();return;}
+  if(cur==='6.1'){if(!el.querySelector('.bn-tool'))el.innerHTML=renderBeneishPage();return;}
+  if(cur==='6.2'){if(!el.querySelector('.rk-tool'))el.innerHTML=renderRiskPage();return;}
+  if(cur==='6.3'){if(!el.querySelector('.ps-tool'))el.innerHTML=renderPiotroskiPage();return;}
+  if(cur==='6.4'){if(!el.querySelector('.dp-tool'))el.innerHTML=renderDupontPage();return;}
   if(isCSec(cur)&&cur!=='2'){el.innerHTML=renderCustomerList();return;}
   var _algoToolHtml='';
   if(cur==='7.1')_algoToolHtml=renderAlgoTool71();
@@ -5882,6 +6121,935 @@ document.addEventListener('click',function(e){
   if(e.target.closest&&e.target.closest('.status-menu,.crm-action-menu,.crm-message-btn,.crm-activity-btn,.status-quick-badge'))return;
   htCloseFloatingMenus();
 });
+
+/* ===== Beneish M-Score Tool ===== */
+var BN_FIELDS=[
+  {key:'revenue',label:'Doanh thu (Revenue)'},
+  {key:'cogs',label:'Giá vốn hàng bán (COGS)'},
+  {key:'sga',label:'Chi phí BH & QLDN (SGA)'},
+  {key:'depreciation',label:'Khấu hao (Depreciation)'},
+  {key:'netIncome',label:'LNST (Net Income)'},
+  {key:'receivables',label:'Phải thu KH (Receivables)'},
+  {key:'currentAssets',label:'TS ngắn hạn (Current Assets)'},
+  {key:'ppe',label:'TSCĐ hữu hình (PP&E)'},
+  {key:'securities',label:'Đầu tư dài hạn (Securities)'},
+  {key:'totalAssets',label:'Tổng tài sản (Total Assets)'},
+  {key:'currentLiabilities',label:'Nợ ngắn hạn (Current Liab.)'},
+  {key:'longTermDebt',label:'Nợ dài hạn (LT Debt)'},
+  {key:'cfo',label:'Dòng tiền HĐKD (CFO)'}
+];
+var BN_PRESETS={
+  'VN Minh bạch':{t:{revenue:56000,cogs:39000,sga:8500,depreciation:3100,netIncome:4600,receivables:5200,currentAssets:22000,ppe:18000,securities:4500,totalAssets:52000,currentLiabilities:11500,longTermDebt:7800,cfo:5500},t1:{revenue:54000,cogs:38500,sga:8100,depreciation:3000,netIncome:4400,receivables:5400,currentAssets:20500,ppe:17000,securities:4200,totalAssets:48000,currentLiabilities:11000,longTermDebt:7500,cfo:5200}},
+  'VN Nghi ngờ':{t:{revenue:42000,cogs:26000,sga:5600,depreciation:1800,netIncome:6500,receivables:9800,currentAssets:19000,ppe:11000,securities:7200,totalAssets:45000,currentLiabilities:14000,longTermDebt:12000,cfo:2100},t1:{revenue:30000,cogs:18500,sga:5200,depreciation:2200,netIncome:3000,receivables:4200,currentAssets:14500,ppe:10500,securities:3800,totalAssets:35000,currentLiabilities:10000,longTermDebt:8000,cfo:4500}},
+  'Enron 2000':{t:{revenue:100789,cogs:94517,sga:3184,depreciation:855,netIncome:979,receivables:10396,currentAssets:30381,ppe:11743,securities:18143,totalAssets:65503,currentLiabilities:28406,longTermDebt:8550,cfo:4779},t1:{revenue:40112,cogs:34761,sga:3045,depreciation:870,netIncome:893,receivables:3030,currentAssets:7255,ppe:10681,securities:14828,totalAssets:33381,currentLiabilities:6759,longTermDebt:7151,cfo:3009}},
+  'Apple 2023':{t:{revenue:383285,cogs:214137,sga:24932,depreciation:11519,netIncome:96995,receivables:60932,currentAssets:143566,ppe:43715,securities:100544,totalAssets:352583,currentLiabilities:145308,longTermDebt:95281,cfo:110543},t1:{revenue:394328,cogs:223546,sga:25094,depreciation:11104,netIncome:99803,receivables:60932,currentAssets:135405,ppe:42117,securities:120805,totalAssets:352755,currentLiabilities:153982,longTermDebt:98959,cfo:122151}}
+};
+var BN_RATIOS=[
+  {key:'DSRI',name:'Days Sales in Receivables',w:0.920,meaning:'Phải thu tăng nhanh hơn doanh thu'},
+  {key:'GMI',name:'Gross Margin Index',w:0.528,meaning:'Biên gộp suy giảm → áp lực thổi phồng'},
+  {key:'AQI',name:'Asset Quality Index',w:0.404,meaning:'Tài sản "mềm" tăng bất thường'},
+  {key:'SGI',name:'Sales Growth Index',w:0.892,meaning:'Tăng trưởng doanh thu quá nóng'},
+  {key:'DEPI',name:'Depreciation Index',w:0.115,meaning:'Khấu hao giảm → kéo dài đời TSCĐ'},
+  {key:'SGAI',name:'SGA Expense Index',w:-0.172,meaning:'SGA/doanh thu thay đổi'},
+  {key:'TATA',name:'Total Accruals / Total Assets',w:4.679,meaning:'LN giấy >> dòng tiền thật'},
+  {key:'LVGI',name:'Leverage Index',w:-0.327,meaning:'Đòn bẩy tài chính thay đổi'}
+];
+
+function bnV(key,sfx){var el=document.getElementById('bn_'+key+'_'+sfx);return el?parseFloat(el.value)||0:0;}
+function bnSafe(n,d){return d!==0?n/d:0;}
+
+function bnComputeRatios(){
+  var g=function(k,s){return bnV(k,s);};
+  var dsri=bnSafe(bnSafe(g('receivables','t'),g('revenue','t')),bnSafe(g('receivables','t1'),g('revenue','t1')));
+  var gm_t1=bnSafe(g('revenue','t1')-g('cogs','t1'),g('revenue','t1'));
+  var gm_t=bnSafe(g('revenue','t')-g('cogs','t'),g('revenue','t'));
+  var gmi=bnSafe(gm_t1,gm_t);
+  var aq_t=1-bnSafe(g('currentAssets','t')+g('ppe','t')+g('securities','t'),g('totalAssets','t'));
+  var aq_t1=1-bnSafe(g('currentAssets','t1')+g('ppe','t1')+g('securities','t1'),g('totalAssets','t1'));
+  var aqi=bnSafe(aq_t,aq_t1);
+  var sgi=bnSafe(g('revenue','t'),g('revenue','t1'));
+  var depi=bnSafe(bnSafe(g('depreciation','t1'),g('depreciation','t1')+g('ppe','t1')),bnSafe(g('depreciation','t'),g('depreciation','t')+g('ppe','t')));
+  var sgai=bnSafe(bnSafe(g('sga','t'),g('revenue','t')),bnSafe(g('sga','t1'),g('revenue','t1')));
+  var tata=bnSafe(g('netIncome','t')-g('cfo','t'),g('totalAssets','t'));
+  var lvgi=bnSafe(bnSafe(g('currentLiabilities','t')+g('longTermDebt','t'),g('totalAssets','t')),bnSafe(g('currentLiabilities','t1')+g('longTermDebt','t1'),g('totalAssets','t1')));
+  return [dsri,gmi,aqi,sgi,depi,sgai,tata,lvgi];
+}
+
+function bnCalc(){
+  var r=bnComputeRatios();
+  var ws=[0.920,0.528,0.404,0.892,0.115,-0.172,4.679,-0.327];
+  var m=-4.84;for(var i=0;i<8;i++)m+=ws[i]*r[i];
+  var contribs=r.map(function(v,i){return ws[i]*v;});
+
+  var cls,lbl,desc,sc;
+  if(m>-1.78){cls='danger';lbl='NGHI NGỜ GIAN LẬN CAO';desc='M > -1.78: xác suất gian lận rất cao';sc='var(--red)';}
+  else if(m>-2.22){cls='danger';lbl='NGHI NGỜ GIAN LẬN';desc='M > -2.22: có khả năng thao túng lợi nhuận';sc='var(--red)';}
+  else if(m>-2.50){cls='warning';lbl='VÙNG XÁM';desc='Gần ngưỡng -2.22, cần kiểm tra thêm';sc='var(--amber)';}
+  else{cls='safe';lbl='BÌNH THƯỜNG';desc='M ≤ -2.50: không có dấu hiệu thao túng lợi nhuận';sc='var(--green)';}
+
+  var vEl=document.getElementById('bnVerdict');
+  vEl.className='bn-verdict bn-card '+cls;
+  vEl.innerHTML='<div class="bn-score" style="color:'+sc+'">'+m.toFixed(3)+'</div><div class="bn-label" style="color:'+sc+'">'+lbl+'</div><div class="bn-desc">'+desc+' | Ngưỡng: -2.22</div>';
+
+  var gEl=document.getElementById('bnGauge');
+  var clamped=Math.max(-6,Math.min(0,m));var pct=(clamped+6)/6;
+  var cx=220,cy=140,ra=110;
+  function pp(a){return{x:cx+ra*Math.cos(a),y:cy-ra*Math.sin(a)};}
+  function ap(s,e){var a1=Math.PI-s*Math.PI,a2=Math.PI-e*Math.PI,p1=pp(a1),p2=pp(a2),lg=e-s>.5?1:0;return 'M '+p1.x+' '+p1.y+' A '+ra+' '+ra+' 0 '+lg+' 1 '+p2.x+' '+p2.y;}
+  var tp=(-2.22+6)/6,wp=(-2.50+6)/6;
+  var na=Math.PI-pct*Math.PI,np=pp(na);
+  gEl.innerHTML='<svg class="bn-gauge" viewBox="0 0 440 170"><path d="'+ap(0,wp)+'" fill="none" stroke="var(--green)" stroke-width="14" stroke-linecap="round"/><path d="'+ap(wp,tp)+'" fill="none" stroke="var(--amber)" stroke-width="14"/><path d="'+ap(tp,1)+'" fill="none" stroke="var(--red)" stroke-width="14" stroke-linecap="round"/><line x1="'+cx+'" y1="'+cy+'" x2="'+np.x+'" y2="'+np.y+'" stroke="var(--fg)" stroke-width="2.5" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="var(--fg)"/><text x="'+(cx-ra-8)+'" y="'+(cy+18)+'" fill="var(--fg2)" font-size="10" text-anchor="middle" font-family="JetBrains Mono">-6</text><text x="'+(cx+ra+8)+'" y="'+(cy+18)+'" fill="var(--fg2)" font-size="10" text-anchor="middle" font-family="JetBrains Mono">0</text></svg>';
+
+  var tEl=document.getElementById('bnRatioBody');
+  var th='';
+  BN_RATIOS.forEach(function(ri,i){
+    var cc=contribs[i]>0?'var(--accent)':'var(--green)';
+    th+='<tr><td style="font-weight:500">'+ri.key+'<br><span style="font-size:10px;color:var(--fg3);font-weight:400">'+ri.name+'</span></td><td style="text-align:right;font-family:JetBrains Mono;font-weight:500">'+r[i].toFixed(4)+'</td><td style="text-align:right;font-family:JetBrains Mono;color:var(--fg3);font-size:11px">'+(ws[i]>0?'+':'')+ws[i].toFixed(3)+'</td><td style="text-align:right;font-family:JetBrains Mono;font-weight:600;color:'+cc+'">'+(contribs[i]>0?'+':'')+contribs[i].toFixed(3)+'</td></tr>';
+  });
+  th+='<tr style="background:var(--bg);font-weight:700"><td>Hằng số</td><td></td><td></td><td style="text-align:right;font-family:JetBrains Mono">-4.840</td></tr>';
+  th+='<tr style="background:var(--accent-s);font-weight:700"><td style="color:var(--accent)">M-SCORE</td><td></td><td></td><td style="text-align:right;font-family:JetBrains Mono;color:var(--accent);font-size:14px">'+m.toFixed(3)+'</td></tr>';
+  tEl.innerHTML=th;
+
+  var bEl=document.getElementById('bnBars');
+  var maxAbs=Math.max.apply(null,contribs.map(Math.abs).concat([0.001]));
+  var bh='';
+  BN_RATIOS.forEach(function(ri,i){
+    var v=contribs[i],wp2=Math.min(Math.abs(v)/maxAbs*80,80);
+    bh+='<div class="bn-bar-row"><span class="bn-bar-lbl">'+ri.key+'</span><div class="bn-bar-track"><div class="bn-bar-fill" style="width:'+wp2+'%;background:'+(v>=0?'var(--accent)':'var(--green)')+'"></div></div><span class="bn-bar-val" style="color:'+(v>=0?'var(--accent)':'var(--green)')+'">'+(v>=0?'+':'')+v.toFixed(3)+'</span></div>';
+  });
+  bh+='<div class="bn-bar-row" style="margin-top:4px;padding-top:4px;border-top:1px solid var(--border)"><span class="bn-bar-lbl" style="color:var(--fg3)">Const</span><div class="bn-bar-track"><div class="bn-bar-fill" style="width:80%;background:var(--green)"></div></div><span class="bn-bar-val" style="color:var(--green)">-4.840</span></div>';
+  bEl.innerHTML=bh;
+
+  var advEl=document.getElementById('bnAdvice');
+  var advItems=[];
+  var BN_ADVICE=[
+    {key:'DSRI',idx:0,thresh:1.05,pri:'high',
+     title:'Phải thu KH tăng bất thường',
+     desc:'DSRI > 1.05 cho thấy khoản phải thu tăng nhanh hơn doanh thu — dấu hiệu phổ biến nhất của ghi nhận doanh thu ảo hoặc chưa thực hiện.',
+     where:'Kiểm tra: Sổ chi tiết công nợ phải thu ▸ Hợp đồng & đơn hàng cuối kỳ ▸ Biên bản đối chiếu công nợ ▸ Doanh thu ghi nhận sát ngày khoá sổ'},
+    {key:'GMI',idx:1,thresh:1.04,pri:'med',
+     title:'Biên lợi nhuận gộp suy giảm',
+     desc:'GMI > 1.04 cho thấy biên lợi nhuận gộp đang xấu đi — tạo áp lực thao túng chi phí/doanh thu để duy trì hình ảnh tài chính.',
+     where:'Kiểm tra: Chính sách giá bán ▸ Biến động giá vốn ▸ Phân bổ chi phí sản xuất ▸ Hàng tồn kho chậm luân chuyển'},
+    {key:'AQI',idx:2,thresh:1.05,pri:'med',
+     title:'Chất lượng tài sản giảm',
+     desc:'AQI > 1.05 cho thấy tỷ trọng tài sản phi vật chất tăng — có thể do vốn hoá chi phí không hợp lý hoặc tài sản ảo.',
+     where:'Kiểm tra: Chi phí trả trước dài hạn ▸ Lợi thế thương mại ▸ Quyết định vốn hoá vs. chi phí hoá ▸ Đánh giá lại tài sản'},
+    {key:'SGI',idx:3,thresh:1.10,pri:'high',
+     title:'Tăng trưởng doanh thu cao bất thường',
+     desc:'SGI > 1.10: doanh nghiệp tăng trưởng nhanh chịu áp lực duy trì tốc độ, dễ ghi nhận doanh thu sớm hoặc ảo.',
+     where:'Kiểm tra: Hợp đồng mới cuối kỳ ▸ Giao dịch bên liên quan ▸ Điều khoản ghi nhận doanh thu ▸ Doanh thu bán hàng trả lại'},
+    {key:'DEPI',idx:4,thresh:1.05,pri:'low',
+     title:'Tốc độ khấu hao chậm lại',
+     desc:'DEPI > 1.05: doanh nghiệp có thể đã kéo dài thời gian khấu hao để giảm chi phí, tăng lợi nhuận giả tạo.',
+     where:'Kiểm tra: Thay đổi chính sách khấu hao ▸ Thuyết minh BCTC mục TSCĐ ▸ So sánh thời gian khấu hao với ngành'},
+    {key:'SGAI',idx:5,thresh:1.05,pri:'low',
+     title:'Chi phí BH&QLDN tăng nhanh',
+     desc:'SGAI > 1.05: chi phí bán hàng và quản lý tăng nhanh hơn doanh thu — có thể che giấu chi phí qua các khoản mục khác.',
+     where:'Kiểm tra: Chi tiết chi phí quản lý ▸ Hoa hồng, chi phí tư vấn ▸ Giao dịch bên liên quan trong chi phí'},
+    {key:'TATA',idx:6,thresh:0.05,pri:'high',
+     title:'Dồn tích cao — lợi nhuận không từ tiền thật',
+     desc:'TATA > 0.05: khoảng cách lớn giữa lợi nhuận kế toán và dòng tiền thực — chỉ báo mạnh nhất về thao túng.',
+     where:'Kiểm tra: Báo cáo lưu chuyển tiền tệ ▸ So sánh LNST vs. CFO ▸ Biến động hàng tồn kho & phải thu ▸ Các khoản dự phòng'},
+    {key:'LVGI',idx:7,thresh:1.10,pri:'med',
+     title:'Đòn bẩy tài chính tăng mạnh',
+     desc:'LVGI > 1.10: nợ tăng nhanh, có thể che giấu khó khăn tài chính hoặc tạo áp lực thao túng số liệu để đáp ứng covenant.',
+     where:'Kiểm tra: Hợp đồng vay — điều kiện ràng buộc (covenants) ▸ Nợ ngắn hạn đáo hạn ▸ Khả năng thanh toán lãi vay'}
+  ];
+  BN_ADVICE.forEach(function(a){
+    if(r[a.idx]>a.thresh) advItems.push(a);
+  });
+  if(advItems.length>0||m>-2.50){
+    var ah='<div class="bn-adv-title">🔍 Đề xuất kiểm tra</div>';
+    if(advItems.length===0){
+      ah+='<div class="bn-adv-summary">Không có chỉ số nào vượt ngưỡng cảnh báo riêng lẻ. Tuy nhiên M-Score nằm trong vùng xám — nên rà soát tổng thể BCTC và thuyết minh.</div>';
+    } else {
+      advItems.sort(function(a,b){var po={high:0,med:1,low:2};return po[a.pri]-po[b.pri];});
+      advItems.forEach(function(a){
+        ah+='<div class="bn-adv-item '+a.pri+'"><h4>'+(a.pri==='high'?'🔴':a.pri==='med'?'🟡':'🟢')+' '+a.key+': '+a.title+'</h4><p>'+a.desc+'</p><div class="bn-adv-where">📋 '+a.where+'</div></div>';
+      });
+      ah+='<div class="bn-adv-summary">💡 <strong>Lưu ý:</strong> M-Score là công cụ sàng lọc thống kê, không phải kết luận gian lận. Các chỉ số trên chỉ ra <em>khu vực có rủi ro cao</em> cần kiểm tra sâu hơn bằng kiểm toán thực tế, đối chiếu chứng từ gốc và phỏng vấn ban lãnh đạo.</div>';
+    }
+    advEl.innerHTML=ah;
+    advEl.hidden=false;
+  } else {
+    advEl.hidden=true;
+  }
+
+  document.getElementById('bnResults').hidden=false;
+  document.getElementById('bnResults').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function bnLoadPreset(name,btn){
+  var p=BN_PRESETS[name];if(!p)return;
+  document.querySelectorAll('.bn-preset').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  BN_FIELDS.forEach(function(f){
+    var et=document.getElementById('bn_'+f.key+'_t');
+    var et1=document.getElementById('bn_'+f.key+'_t1');
+    if(et)et.value=p.t[f.key];if(et1)et1.value=p.t1[f.key];
+  });
+  bnCalc();
+}
+
+function bnReset(){
+  BN_FIELDS.forEach(function(f){
+    var et=document.getElementById('bn_'+f.key+'_t');
+    var et1=document.getElementById('bn_'+f.key+'_t1');
+    if(et)et.value='';if(et1)et1.value='';
+  });
+  document.querySelectorAll('.bn-preset').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('bnResults').hidden=true;
+}
+
+/* ===== Risk Assessment Tool v0.2 ===== */
+var RK_FIELDS=[
+  {key:'totalAssets',label:'Tổng tài sản (Total Assets)'},
+  {key:'currentAssets',label:'TS ngắn hạn (Current Assets)'},
+  {key:'currentLiab',label:'Nợ ngắn hạn (Current Liabilities)'},
+  {key:'totalLiab',label:'Tổng nợ phải trả (Total Liabilities)'},
+  {key:'equity',label:'Vốn chủ sở hữu (Equity)'},
+  {key:'retainedEarnings',label:'LN chưa phân phối (Retained Earnings)'},
+  {key:'ebit',label:'EBIT (LN trước lãi & thuế)'},
+  {key:'revenue',label:'Doanh thu thuần (Revenue)'},
+  {key:'netIncome',label:'Lợi nhuận sau thuế (Net Income)'},
+  {key:'cfo',label:'Dòng tiền HĐKD (CFO)'},
+  {key:'marketCap',label:'Vốn hoá thị trường (Market Cap)'},
+  {key:'equityVol',label:'Biến động vốn hoá (%/năm, VD: 35)'},
+  {key:'interestExp',label:'Chi phí lãi vay (Interest Expense)'},
+  {key:'cash',label:'Tiền & tương đương tiền (Cash)'},
+  {key:'inventory',label:'Hàng tồn kho (Inventory)'},
+  {key:'opExpenses',label:'Chi phí hoạt động (Operating Expenses)'}
+];
+
+var RK_PRESETS={
+  'VN Khoẻ mạnh':{totalAssets:120000,currentAssets:45000,currentLiab:22000,totalLiab:48000,equity:72000,retainedEarnings:18000,ebit:16000,revenue:95000,netIncome:11500,cfo:14000,marketCap:160000,equityVol:28,interestExp:2800,cash:12000,inventory:8000,opExpenses:72000},
+  'VN Rủi ro':{totalAssets:80000,currentAssets:18000,currentLiab:35000,totalLiab:68000,equity:12000,retainedEarnings:-5000,ebit:2000,revenue:55000,netIncome:-3000,cfo:1500,marketCap:15000,equityVol:65,interestExp:6500,cash:2000,inventory:14000,opExpenses:56000},
+  'Lehman 2007':{totalAssets:691063,currentAssets:310000,currentLiab:280000,totalLiab:668574,equity:22490,retainedEarnings:5200,ebit:6013,revenue:59003,netIncome:4192,cfo:2100,marketCap:34400,equityVol:45,interestExp:21600,cash:7286,inventory:0,opExpenses:51000},
+  'Apple 2023':{totalAssets:352583,currentAssets:143566,currentLiab:145308,totalLiab:290437,equity:62146,retainedEarnings:-214,ebit:114301,revenue:383285,netIncome:96995,cfo:110543,marketCap:2800000,equityVol:22,interestExp:3933,cash:29965,inventory:6331,opExpenses:268984}
+};
+
+function rkV(key){var el=document.getElementById('rk_'+key);return el?parseFloat(el.value)||0:0;}
+function rkSafe(n,d){return d!==0?n/d:0;}
+
+function rkCalcZScore(){
+  var ta=rkV('totalAssets');if(ta===0)return null;
+  var wc=rkV('currentAssets')-rkV('currentLiab');
+  var x1=wc/ta;
+  var x2=rkV('retainedEarnings')/ta;
+  var x3=rkV('ebit')/ta;
+  var x4=rkSafe(rkV('marketCap'),rkV('totalLiab'));
+  var x5=rkV('revenue')/ta;
+  var z=1.2*x1+1.4*x2+3.3*x3+0.6*x4+1.0*x5;
+  return{z:z,x1:x1,x2:x2,x3:x3,x4:x4,x5:x5,
+    label:z>2.99?'AN TOÀN':z>1.81?'VÙNG XÁM':'NGUY HIỂM',
+    cls:z>2.99?'safe':z>1.81?'warning':'danger',
+    desc:z>2.99?'Z > 2.99: xác suất phá sản rất thấp':z>1.81?'1.81 < Z < 2.99: cần theo dõi sát':'Z < 1.81: nguy cơ phá sản cao'};
+}
+
+function rkCalcMertonPD(){
+  var E=rkV('marketCap'),sigE=rkV('equityVol')/100,D=rkV('totalLiab'),r=0.05,T=1;
+  if(E<=0||sigE<=0||D<=0)return null;
+  var V=E+D,sig=sigE*E/V;
+  for(var i=0;i<100;i++){
+    var d1=(Math.log(V/D)+(r+0.5*sig*sig)*T)/(sig*Math.sqrt(T));
+    var nd1=normCDF(d1);
+    var newV=E+D*Math.exp(-r*T)*normCDF(d1-sig*Math.sqrt(T));
+    if(Math.abs(newV-V)<1e-6)break;
+    V=newV;sig=sigE*E/V;
+  }
+  var d2=(Math.log(V/D)+(r-0.5*sig*sig)*T)/(sig*Math.sqrt(T));
+  var dd=d2;
+  var pd=normCDF(-dd);
+  return{pd:pd,dd:dd,assetVol:sig,assetVal:V,
+    label:pd<0.01?'RẤT AN TOÀN':pd<0.05?'AN TOÀN':pd<0.15?'CẦN THEO DÕI':pd<0.30?'RỦI RO CAO':'NGUY HIỂM',
+    cls:pd<0.05?'safe':pd<0.15?'warning':'danger'};
+}
+
+function normCDF(x){
+  var a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  var sign=x<0?-1:1;x=Math.abs(x)/Math.sqrt(2);
+  var t=1/(1+p*x);
+  var y=1-((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return 0.5*(1+sign*y);
+}
+
+function rkCalcLiquidity(){
+  var ca=rkV('currentAssets'),cl=rkV('currentLiab'),cash=rkV('cash'),inv=rkV('inventory');
+  if(cl===0)return null;
+  var cr=ca/cl;
+  var qr=(ca-inv)/cl;
+  var cashR=cash/cl;
+  var avg=(Math.min(cr/2,1)*40+Math.min(qr/1,1)*35+Math.min(cashR/0.5,1)*25);
+  return{cr:cr,qr:qr,cashR:cashR,score:avg,
+    label:avg>=70?'THANH KHOẢN TỐT':avg>=40?'THANH KHOẢN TRUNG BÌNH':'THANH KHOẢN YẾU',
+    cls:avg>=70?'safe':avg>=40?'warning':'danger'};
+}
+
+function rkCalcOperational(){
+  var ta=rkV('totalAssets'),ni=rkV('netIncome'),cfo=rkV('cfo'),rev=rkV('revenue'),
+      opex=rkV('opExpenses'),intx=rkV('interestExp'),ebit=rkV('ebit');
+  var flags=[];var score=0;var maxS=0;
+  var accrual=ta>0?Math.abs(ni-cfo)/ta:0;
+  maxS+=25;if(accrual>0.10){score+=25;flags.push({name:'Dồn tích cao',val:accrual,thresh:0.10,pri:'high',desc:'|LNST - CFO| / Tổng TS > 10% — lợi nhuận không từ tiền thật'});}
+  else if(accrual>0.05){score+=12;flags.push({name:'Dồn tích vừa',val:accrual,thresh:0.05,pri:'med',desc:'|LNST - CFO| / Tổng TS > 5%'});}
+  var icr=intx>0?ebit/intx:999;
+  maxS+=25;if(icr<1.5){score+=25;flags.push({name:'Khả năng trả lãi yếu',val:icr,thresh:1.5,pri:'high',desc:'EBIT/Chi phí lãi < 1.5 — khó trả lãi vay'});}
+  else if(icr<3){score+=12;flags.push({name:'Khả năng trả lãi trung bình',val:icr,thresh:3,pri:'med',desc:'EBIT/Chi phí lãi < 3'});}
+  var opM=rev>0?(ebit/rev):0;
+  maxS+=25;if(opM<0){score+=25;flags.push({name:'Lỗ hoạt động',val:opM,thresh:0,pri:'high',desc:'Biên EBIT âm — doanh nghiệp lỗ từ hoạt động chính'});}
+  else if(opM<0.05){score+=12;flags.push({name:'Biên lợi nhuận mỏng',val:opM,thresh:0.05,pri:'med',desc:'Biên EBIT < 5%'});}
+  var cfoR=rev>0?cfo/rev:0;
+  maxS+=25;if(cfoR<0){score+=25;flags.push({name:'Dòng tiền âm',val:cfoR,thresh:0,pri:'high',desc:'CFO/Doanh thu âm — doanh nghiệp đốt tiền'});}
+  else if(cfoR<0.05){score+=12;flags.push({name:'Dòng tiền yếu',val:cfoR,thresh:0.05,pri:'med',desc:'CFO/Doanh thu < 5%'});}
+  var pct=maxS>0?score/maxS*100:0;
+  return{score:pct,flags:flags,
+    label:pct<25?'VẬN HÀNH TỐT':pct<50?'CẦN CẢI THIỆN':'VẬN HÀNH RỦI RO',
+    cls:pct<25?'safe':pct<50?'warning':'danger'};
+}
+
+function rkCalcLeverage(){
+  var ta=rkV('totalAssets'),tl=rkV('totalLiab'),eq=rkV('equity');
+  if(ta===0)return null;
+  var debtR=tl/ta;
+  var deRatio=eq>0?tl/eq:999;
+  var eqR=eq/ta;
+  var score=0;
+  if(debtR>0.7)score+=40;else if(debtR>0.5)score+=20;
+  if(deRatio>3)score+=35;else if(deRatio>1.5)score+=15;
+  if(eqR<0.2)score+=25;else if(eqR<0.35)score+=10;
+  return{debtR:debtR,deRatio:deRatio,eqR:eqR,score:Math.min(score,100),
+    label:score<25?'CẤU TRÚC VỐN TỐT':score<50?'ĐÒN BẨY TRUNG BÌNH':'ĐÒN BẨY CAO',
+    cls:score<25?'safe':score<50?'warning':'danger'};
+}
+
+function rkCalcAll(){
+  var z=rkCalcZScore(),m=rkCalcMertonPD(),l=rkCalcLiquidity(),o=rkCalcOperational(),lv=rkCalcLeverage();
+  if(!z||!m||!l||!lv){alert('Vui lòng nhập đủ dữ liệu (Tổng tài sản, Nợ, Vốn hoá > 0)');return;}
+
+  var dims=[
+    {name:'Phá sản (Z-Score)',score:z.cls==='safe'?15:z.cls==='warning'?50:90,cls:z.cls,val:z.z.toFixed(2),label:z.label},
+    {name:'Vỡ nợ (Merton PD)',score:m.cls==='safe'?15:m.cls==='warning'?50:90,cls:m.cls,val:(m.pd*100).toFixed(2)+'%',label:m.label},
+    {name:'Thanh khoản',score:l.cls==='safe'?15:l.cls==='warning'?50:90,cls:l.cls,val:l.score.toFixed(0)+'/100',label:l.label},
+    {name:'Vận hành',score:o.cls==='safe'?15:o.cls==='warning'?50:90,cls:o.cls,val:o.score.toFixed(0)+'/100',label:o.label},
+    {name:'Đòn bẩy',score:lv.cls==='safe'?15:lv.cls==='warning'?50:90,cls:lv.cls,val:lv.score.toFixed(0)+'/100',label:lv.label}
+  ];
+
+  var totalRisk=dims.reduce(function(s,d){return s+d.score;},0)/dims.length;
+  var overCls=totalRisk<30?'safe':totalRisk<60?'warning':'danger';
+  var overLabel=totalRisk<30?'RỦI RO THẤP':totalRisk<60?'RỦI RO TRUNG BÌNH':'RỦI RO CAO';
+  var overDesc=totalRisk<30?'Doanh nghiệp có sức khoẻ tài chính tốt trên 5 chiều đánh giá':totalRisk<60?'Một số chỉ số cần theo dõi, nên rà soát chi tiết':'Nhiều chỉ số rủi ro cảnh báo, cần hành động khẩn cấp';
+
+  var vEl=document.getElementById('rkVerdict');
+  var sc=overCls==='safe'?'var(--green)':overCls==='warning'?'var(--amber)':'var(--red)';
+  vEl.className='rk-verdict rk-card '+overCls;
+  vEl.innerHTML='<div class="rk-score" style="color:'+sc+'">'+totalRisk.toFixed(0)+'/100</div><div class="rk-label" style="color:'+sc+'">'+overLabel+'</div><div class="rk-desc">'+overDesc+'</div>';
+
+  var dEl=document.getElementById('rkDims');
+  var dh='';
+  dims.forEach(function(d){
+    var dc=d.cls==='safe'?'var(--green)':d.cls==='warning'?'var(--amber)':'var(--red)';
+    dh+='<div class="rk-dim"><div class="rk-dim-val" style="color:'+dc+'">'+d.val+'</div><div class="rk-dim-name">'+d.name+'</div><div style="font-size:10px;font-weight:600;color:'+dc+';margin-top:2px">'+d.label+'</div><div class="rk-dim-bar"><div class="rk-dim-bar-fill" style="width:'+d.score+'%;background:'+dc+'"></div></div></div>';
+  });
+  dEl.innerHTML=dh;
+
+  var tEl=document.getElementById('rkDetailBody');
+  var th='';
+  var ZR=[{name:'X1: Vốn lưu động/TS',val:z.x1,w:1.2},{name:'X2: LN giữ lại/TS',val:z.x2,w:1.4},{name:'X3: EBIT/TS',val:z.x3,w:3.3},{name:'X4: Vốn hoá/Nợ',val:z.x4,w:0.6},{name:'X5: Doanh thu/TS',val:z.x5,w:1.0}];
+  th+='<tr style="background:var(--teal-s)"><td colspan="4" style="font-weight:700;color:var(--teal)">Altman Z-Score = '+z.z.toFixed(3)+'</td></tr>';
+  ZR.forEach(function(r){
+    th+='<tr><td style="padding-left:20px">'+r.name+'</td><td style="text-align:right;font-family:JetBrains Mono">'+r.val.toFixed(4)+'</td><td style="text-align:right;font-family:JetBrains Mono;color:var(--fg3)">×'+r.w.toFixed(1)+'</td><td style="text-align:right;font-family:JetBrains Mono;font-weight:600">'+(r.val*r.w).toFixed(3)+'</td></tr>';
+  });
+
+  th+='<tr style="background:var(--teal-s)"><td colspan="4" style="font-weight:700;color:var(--teal)">Merton PD = '+(m.pd*100).toFixed(2)+'%</td></tr>';
+  th+='<tr><td style="padding-left:20px">Distance to Default (DD)</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+m.dd.toFixed(4)+'</td></tr>';
+  th+='<tr><td style="padding-left:20px">Biến động tài sản (σ_A)</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+(m.assetVol*100).toFixed(2)+'%</td></tr>';
+  th+='<tr><td style="padding-left:20px">Giá trị tài sản ước tính</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+m.assetVal.toFixed(0)+'</td></tr>';
+
+  th+='<tr style="background:var(--teal-s)"><td colspan="4" style="font-weight:700;color:var(--teal)">Thanh khoản — Điểm '+l.score.toFixed(0)+'/100</td></tr>';
+  th+='<tr><td style="padding-left:20px">Current Ratio</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+l.cr.toFixed(3)+'</td></tr>';
+  th+='<tr><td style="padding-left:20px">Quick Ratio</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+l.qr.toFixed(3)+'</td></tr>';
+  th+='<tr><td style="padding-left:20px">Cash Ratio</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+l.cashR.toFixed(3)+'</td></tr>';
+
+  th+='<tr style="background:var(--teal-s)"><td colspan="4" style="font-weight:700;color:var(--teal)">Đòn bẩy — Rủi ro '+lv.score.toFixed(0)+'/100</td></tr>';
+  th+='<tr><td style="padding-left:20px">Tỷ lệ nợ (D/A)</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+(lv.debtR*100).toFixed(1)+'%</td></tr>';
+  th+='<tr><td style="padding-left:20px">D/E Ratio</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+lv.deRatio.toFixed(2)+'</td></tr>';
+  th+='<tr><td style="padding-left:20px">Tỷ lệ vốn CSH</td><td colspan="3" style="text-align:right;font-family:JetBrains Mono">'+(lv.eqR*100).toFixed(1)+'%</td></tr>';
+
+  tEl.innerHTML=th;
+
+  var bEl=document.getElementById('rkBars');
+  var maxB=100;
+  var bh='';
+  dims.forEach(function(d){
+    var dc=d.cls==='safe'?'var(--green)':d.cls==='warning'?'var(--amber)':'var(--red)';
+    bh+='<div class="rk-bar-row"><span class="rk-bar-lbl">'+d.name.split('(')[0].trim()+'</span><div class="rk-bar-track"><div class="rk-bar-fill" style="width:'+d.score+'%;background:'+dc+'"></div></div><span class="rk-bar-val" style="color:'+dc+'">'+d.val+'</span></div>';
+  });
+  bEl.innerHTML=bh;
+
+  var advEl=document.getElementById('rkAdvice');
+  var advItems=[];
+  if(z.cls==='danger')advItems.push({pri:'high',title:'Altman Z-Score dưới ngưỡng an toàn ('+z.z.toFixed(2)+')',desc:'Doanh nghiệp nằm trong vùng nguy hiểm phá sản theo mô hình Altman. Cần cải thiện vốn lưu động, tăng lợi nhuận giữ lại và giảm nợ.'});
+  else if(z.cls==='warning')advItems.push({pri:'med',title:'Z-Score nằm trong vùng xám ('+z.z.toFixed(2)+')',desc:'Cần theo dõi sát các chỉ số tài chính, đặc biệt vốn lưu động và khả năng sinh lời.'});
+  if(m.pd>0.15)advItems.push({pri:'high',title:'Xác suất vỡ nợ cao ('+(m.pd*100).toFixed(1)+'%)',desc:'Mô hình Merton ước tính rủi ro vỡ nợ > 15%. Khoảng cách đến vỡ nợ (DD) chỉ '+m.dd.toFixed(2)+'. Cần giảm nợ hoặc tăng giá trị tài sản.'});
+  else if(m.pd>0.05)advItems.push({pri:'med',title:'Xác suất vỡ nợ cần theo dõi ('+(m.pd*100).toFixed(1)+'%)',desc:'DD = '+m.dd.toFixed(2)+'. Nên kiểm soát biến động vốn và cơ cấu nợ.'});
+  if(l.cls==='danger')advItems.push({pri:'high',title:'Thanh khoản yếu',desc:'Current Ratio '+l.cr.toFixed(2)+', Quick Ratio '+l.qr.toFixed(2)+'. Rủi ro không đủ tiền trả nợ ngắn hạn.'});
+  o.flags.forEach(function(f){advItems.push({pri:f.pri,title:f.name+' ('+f.val.toFixed(3)+')',desc:f.desc});});
+  if(lv.cls==='danger')advItems.push({pri:'high',title:'Đòn bẩy quá cao',desc:'Tỷ lệ nợ '+(lv.debtR*100).toFixed(1)+'%, D/E '+lv.deRatio.toFixed(1)+'. Doanh nghiệp phụ thuộc quá nhiều vào nợ vay.'});
+
+  if(advItems.length>0){
+    var ah='<div class="rk-adv-title">🔍 Đề xuất quản trị rủi ro</div>';
+    advItems.sort(function(a,b){var po={high:0,med:1,low:2};return po[a.pri]-po[b.pri];});
+    advItems.forEach(function(a){
+      ah+='<div class="rk-adv-item '+a.pri+'"><h4>'+(a.pri==='high'?'🔴':a.pri==='med'?'🟡':'🟢')+' '+a.title+'</h4><p>'+a.desc+'</p></div>';
+    });
+    ah+='<div style="font-size:12px;color:var(--fg2);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:var(--radius-s)">💡 <strong>Lưu ý:</strong> Đánh giá dựa trên 5 mô hình: Altman Z-Score, Merton Structural, thanh khoản, vận hành và đòn bẩy. Đây là công cụ sàng lọc, cần kết hợp phân tích chuyên sâu.</div>';
+    advEl.innerHTML=ah;advEl.hidden=false;
+  } else {
+    advEl.innerHTML='<div style="text-align:center;color:var(--green);font-weight:600;font-size:14px">✅ Không phát hiện rủi ro đáng kể trên 5 chiều đánh giá</div>';
+    advEl.hidden=false;
+  }
+
+  document.getElementById('rkResults').hidden=false;
+  document.getElementById('rkResults').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function rkLoadPreset(name,btn){
+  var p=RK_PRESETS[name];if(!p)return;
+  document.querySelectorAll('.rk-preset').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  RK_FIELDS.forEach(function(f){
+    var el=document.getElementById('rk_'+f.key);
+    if(el&&p[f.key]!==undefined)el.value=p[f.key];
+  });
+  rkCalcAll();
+}
+
+function rkReset(){
+  RK_FIELDS.forEach(function(f){
+    var el=document.getElementById('rk_'+f.key);if(el)el.value='';
+  });
+  document.querySelectorAll('.rk-preset').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('rkResults').hidden=true;
+}
+
+function renderRiskPage(){
+  var h='<div class="rk-tool">';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:28px">🛡️</span><div><h2 style="margin:0;font-size:18px;color:var(--fg)">Test v0.2</h2><p style="font-size:12px;color:var(--fg2);margin:2px 0 0">Đánh giá rủi ro quản trị doanh nghiệp đa chiều</p></div></div>';
+
+  h+='<h2>Nhập dữ liệu tài chính</h2>';
+  h+='<div class="rk-card">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+  h+='<span style="font-weight:600;font-size:12px">Chọn ví dụ hoặc nhập tay:</span>';
+  h+='<button class="rk-preset" onclick="rkReset()" style="color:var(--red);border-color:var(--red)">Xoá hết</button>';
+  h+='</div>';
+  h+='<div class="rk-preset-bar">';
+  Object.keys(RK_PRESETS).forEach(function(name){
+    h+='<button class="rk-preset" onclick="rkLoadPreset(\''+name+'\',this)">'+esc(name)+'</button>';
+  });
+  h+='</div>';
+
+  h+='<div class="rk-grid">';
+  h+='<div class="rk-hdr"><div>Khoản mục</div><div style="text-align:right">Giá trị</div></div>';
+  RK_FIELDS.forEach(function(f){
+    h+='<div class="rk-irow"><label>'+esc(f.label)+'</label><div><input type="number" id="rk_'+f.key+'" placeholder="0" step="any"></div></div>';
+  });
+  h+='</div>';
+  h+='<button class="rk-calc" onclick="rkCalcAll()">Đánh giá rủi ro</button>';
+  h+='</div>';
+
+  h+='<div id="rkResults" hidden>';
+  h+='<h2>Tổng quan rủi ro</h2>';
+  h+='<div id="rkVerdict" class="rk-verdict rk-card"></div>';
+  h+='<div id="rkDims" class="rk-dims"></div>';
+
+  h+='<div class="rk-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Biểu đồ rủi ro theo chiều</h3><div id="rkBars"></div></div>';
+
+  h+='<div class="rk-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Chi tiết các mô hình</h3><div style="overflow-x:auto"><table class="rk-ratio-tbl"><thead><tr><th>Chỉ số</th><th style="text-align:right">Giá trị</th><th style="text-align:right">Trọng số</th><th style="text-align:right">Đóng góp</th></tr></thead><tbody id="rkDetailBody"></tbody></table></div></div>';
+
+  h+='<div id="rkAdvice" class="rk-card" hidden></div>';
+  h+='</div>';
+
+  h+='</div>';
+  return h;
+}
+
+/* ===== DuPont Analysis v0.4 ===== */
+var DP_FIELDS=[
+  {k:'netIncome',l:'Lợi nhuận ròng (Net Income)'},
+  {k:'revenue',l:'Doanh thu (Revenue)'},
+  {k:'totalAssets',l:'Tổng tài sản (Total Assets)'},
+  {k:'equity',l:'Vốn chủ sở hữu (Equity)'},
+  {k:'ebt',l:'Lợi nhuận trước thuế (EBT)'},
+  {k:'ebit',l:'EBIT (Lợi nhuận trước lãi & thuế)'}
+];
+var DP_PRESETS={
+  'VN Khoẻ mạnh':{netIncome:500,revenue:4000,totalAssets:5000,equity:2500,ebt:650,ebit:800},
+  'VN Yếu':{netIncome:50,revenue:2800,totalAssets:3000,equity:800,ebt:80,ebit:200},
+  'Apple 2023':{netIncome:96995,revenue:383285,totalAssets:352583,equity:62146,ebt:113736,ebit:114301},
+  'Toyota 2023':{netIncome:2451,revenue:31379,totalAssets:67688,equity:24354,ebt:3668,ebit:2725}
+};
+var dpMode=3;
+
+function dpGetVal(id){var el=document.getElementById(id);return el?parseFloat(el.value):NaN;}
+function dpLoadPreset(name,btn){
+  var p=DP_PRESETS[name];if(!p)return;
+  document.querySelectorAll('.dp-tool .dp-preset').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  DP_FIELDS.forEach(function(f){
+    var el=document.getElementById('dp_'+f.k);
+    if(el&&p[f.k]!=null)el.value=p[f.k];
+  });
+}
+function dpReset(){
+  DP_FIELDS.forEach(function(f){
+    var el=document.getElementById('dp_'+f.k);
+    if(el)el.value='';
+  });
+  document.querySelectorAll('.dp-tool .dp-preset').forEach(function(b){b.classList.remove('active');});
+  var r=document.getElementById('dpResult');if(r)r.hidden=true;
+  var a=document.getElementById('dpAdvice');if(a)a.hidden=true;
+}
+function dpSetMode(m){
+  dpMode=m;
+  document.querySelectorAll('.dp-tool .dp-mode-btn').forEach(function(b,i){
+    b.classList.toggle('active',i===(m===3?0:1));
+  });
+  var extra=document.getElementById('dpExtra5');
+  if(extra)extra.style.display=m===5?'':'none';
+}
+
+function dpCalc(){
+  var ni=dpGetVal('dp_netIncome'),rev=dpGetVal('dp_revenue'),ta=dpGetVal('dp_totalAssets'),eq=dpGetVal('dp_equity');
+  var ebt=dpGetVal('dp_ebt'),ebit=dpGetVal('dp_ebit');
+
+  var npm=ni/rev;
+  var at=rev/ta;
+  var em=ta/eq;
+  var roe3=npm*at*em;
+
+  var tb=ni/ebt;
+  var ib=ebt/ebit;
+  var opm=ebit/rev;
+  var roe5=tb*ib*opm*at*em;
+
+  var useROE=dpMode===3?roe3:roe5;
+
+  var el=document.getElementById('dpResult');
+  if(el){
+    var h='';
+
+    h+='<div class="dp-roe-box"><div class="dp-roe-val">'+(useROE*100).toFixed(2)+'%</div><div class="dp-roe-lbl">ROE (Return on Equity)</div><div style="font-size:12px;color:var(--fg2);margin-top:4px">Phân tích '+(dpMode===3?'3 thành phần':'5 thành phần')+'</div></div>';
+
+    if(dpMode===3){
+      h+='<div class="dp-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:10px">ROE = Biên LN ròng × Vòng quay TS × Hệ số đòn bẩy</h3>';
+      h+='<div class="dp-tree">';
+      h+='<div class="dp-tree-row">';
+      h+='<div class="dp-node" style="border-color:var(--purple,#7c3aed)"><div class="dp-node-val" style="color:var(--purple,#7c3aed)">'+(roe3*100).toFixed(2)+'%</div><div class="dp-node-lbl">ROE</div></div>';
+      h+='</div>';
+      h+='<div class="dp-tree-row">';
+      h+='<div class="dp-node"><div class="dp-node-val">'+(npm*100).toFixed(2)+'%</div><div class="dp-node-lbl">Biên LN ròng<br><span style="font-size:10px">NI / Revenue</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+at.toFixed(3)+'</div><div class="dp-node-lbl">Vòng quay TS<br><span style="font-size:10px">Revenue / Assets</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+em.toFixed(3)+'</div><div class="dp-node-lbl">Đòn bẩy TC<br><span style="font-size:10px">Assets / Equity</span></div></div>';
+      h+='</div></div></div>';
+    }else{
+      h+='<div class="dp-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:10px">ROE = TB × IB × OPM × AT × EM</h3>';
+      h+='<div class="dp-tree">';
+      h+='<div class="dp-tree-row">';
+      h+='<div class="dp-node" style="border-color:var(--purple,#7c3aed)"><div class="dp-node-val" style="color:var(--purple,#7c3aed)">'+(roe5*100).toFixed(2)+'%</div><div class="dp-node-lbl">ROE</div></div>';
+      h+='</div>';
+      h+='<div class="dp-tree-row">';
+      h+='<div class="dp-node"><div class="dp-node-val">'+tb.toFixed(3)+'</div><div class="dp-node-lbl">Tax Burden<br><span style="font-size:10px">NI / EBT</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+ib.toFixed(3)+'</div><div class="dp-node-lbl">Interest Burden<br><span style="font-size:10px">EBT / EBIT</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+(opm*100).toFixed(2)+'%</div><div class="dp-node-lbl">OPM<br><span style="font-size:10px">EBIT / Revenue</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+at.toFixed(3)+'</div><div class="dp-node-lbl">Asset Turnover<br><span style="font-size:10px">Rev / Assets</span></div></div>';
+      h+='<div class="dp-op">×</div>';
+      h+='<div class="dp-node"><div class="dp-node-val">'+em.toFixed(3)+'</div><div class="dp-node-lbl">Equity Multi<br><span style="font-size:10px">Assets / Equity</span></div></div>';
+      h+='</div></div></div>';
+    }
+
+    var components=dpMode===3?[
+      {name:'Biên LN ròng (NPM)',val:npm*100,unit:'%'},
+      {name:'Vòng quay TS (AT)',val:at,unit:'x'},
+      {name:'Đòn bẩy TC (EM)',val:em,unit:'x'}
+    ]:[
+      {name:'Tax Burden (TB)',val:tb,unit:'x'},
+      {name:'Interest Burden (IB)',val:ib,unit:'x'},
+      {name:'Biên LN HĐ (OPM)',val:opm*100,unit:'%'},
+      {name:'Vòng quay TS (AT)',val:at,unit:'x'},
+      {name:'Đòn bẩy TC (EM)',val:em,unit:'x'}
+    ];
+    var maxBar=0;
+    components.forEach(function(c){var av=Math.abs(c.val);if(av>maxBar)maxBar=av;});
+    if(maxBar===0)maxBar=1;
+
+    h+='<div class="dp-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">So sánh thành phần</h3>';
+    components.forEach(function(c){
+      var pct=Math.min(Math.abs(c.val)/maxBar*100,100);
+      var clr=c.val>=0?'var(--green)':'var(--red)';
+      h+='<div class="dp-bar-row"><div class="dp-bar-lbl">'+c.name+'</div><div class="dp-bar-track"><div class="dp-bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+clr+'"></div></div><div class="dp-bar-val">'+(c.unit==='%'?c.val.toFixed(2)+'%':c.val.toFixed(3)+'x')+'</div></div>';
+    });
+    h+='</div>';
+
+    h+='<div class="dp-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Chi tiết phân tích</h3><div style="overflow-x:auto"><table class="dp-ratio-tbl"><thead><tr><th>Thành phần</th><th>Công thức</th><th style="text-align:right">Giá trị</th><th>Ý nghĩa</th></tr></thead><tbody>';
+    if(dpMode===3){
+      h+='<tr><td style="font-weight:600">Biên LN ròng</td><td>NI / Revenue</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+(npm*100).toFixed(2)+'%</td><td style="font-size:11px;color:var(--fg2)">Khả năng quản lý chi phí</td></tr>';
+      h+='<tr><td style="font-weight:600">Vòng quay TS</td><td>Revenue / Assets</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+at.toFixed(3)+'x</td><td style="font-size:11px;color:var(--fg2)">Hiệu quả sử dụng tài sản</td></tr>';
+      h+='<tr><td style="font-weight:600">Đòn bẩy TC</td><td>Assets / Equity</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+em.toFixed(3)+'x</td><td style="font-size:11px;color:var(--fg2)">Mức độ sử dụng nợ</td></tr>';
+    }else{
+      h+='<tr><td style="font-weight:600">Tax Burden</td><td>NI / EBT</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+tb.toFixed(3)+'</td><td style="font-size:11px;color:var(--fg2)">Tỷ lệ lợi nhuận giữ lại sau thuế</td></tr>';
+      h+='<tr><td style="font-weight:600">Interest Burden</td><td>EBT / EBIT</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+ib.toFixed(3)+'</td><td style="font-size:11px;color:var(--fg2)">Tác động của chi phí lãi vay</td></tr>';
+      h+='<tr><td style="font-weight:600">Biên LN hoạt động</td><td>EBIT / Revenue</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+(opm*100).toFixed(2)+'%</td><td style="font-size:11px;color:var(--fg2)">Hiệu quả hoạt động kinh doanh</td></tr>';
+      h+='<tr><td style="font-weight:600">Vòng quay TS</td><td>Revenue / Assets</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+at.toFixed(3)+'x</td><td style="font-size:11px;color:var(--fg2)">Hiệu quả sử dụng tài sản</td></tr>';
+      h+='<tr><td style="font-weight:600">Đòn bẩy TC</td><td>Assets / Equity</td><td style="text-align:right;font-family:JetBrains Mono,monospace">'+em.toFixed(3)+'x</td><td style="font-size:11px;color:var(--fg2)">Mức độ sử dụng nợ</td></tr>';
+    }
+    h+='<tr style="background:var(--bg);font-weight:700"><td>ROE</td><td>'+(dpMode===3?'NPM × AT × EM':'TB × IB × OPM × AT × EM')+'</td><td style="text-align:right;font-family:JetBrains Mono,monospace;color:var(--purple,#7c3aed)">'+(useROE*100).toFixed(2)+'%</td><td style="font-size:11px">Lợi nhuận trên vốn chủ sở hữu</td></tr>';
+    h+='</tbody></table></div></div>';
+
+    el.innerHTML=h;
+    el.hidden=false;
+  }
+
+  var advEl=document.getElementById('dpAdvice');
+  if(advEl){
+    var adv=[];
+    if(npm<0.05)adv.push({pri:'high',title:'Biên lợi nhuận ròng thấp ('+(npm*100).toFixed(2)+'%)',advice:'Biên LN ròng dưới 5% cho thấy doanh nghiệp giữ lại ít lợi nhuận trên mỗi đồng doanh thu. Kiểm tra chi phí hoạt động, giá vốn hàng bán, và chi phí tài chính có đang ăn mòn lợi nhuận không.'});
+    else if(npm>0.20)adv.push({pri:'low',title:'Biên lợi nhuận ròng cao ('+(npm*100).toFixed(2)+'%)',advice:'Biên LN ròng trên 20% — doanh nghiệp có lợi thế cạnh tranh mạnh hoặc vị thế định giá tốt. Kiểm tra tính bền vững: do thương hiệu, bằng sáng chế, hay yếu tố tạm thời.'});
+
+    if(at<0.5)adv.push({pri:'med',title:'Vòng quay tài sản thấp ('+at.toFixed(3)+'x)',advice:'Doanh nghiệp cần nhiều tài sản để tạo ra doanh thu. Bình thường với ngành vốn nặng (bất động sản, tiện ích), nhưng cần kiểm tra nếu là ngành thương mại/dịch vụ.'});
+    else if(at>2)adv.push({pri:'low',title:'Vòng quay tài sản cao ('+at.toFixed(3)+'x)',advice:'Hiệu quả sử dụng tài sản rất tốt — mô hình asset-light. Kiểm tra có phải do tài sản bị khấu hao quá mức hay doanh thu tăng đột biến tạm thời.'});
+
+    if(em>3)adv.push({pri:'high',title:'Đòn bẩy tài chính cao ('+em.toFixed(3)+'x)',advice:'Hệ số nhân vốn > 3 — doanh nghiệp phụ thuộc nhiều vào nợ. ROE cao nhờ đòn bẩy có thể bền vững nếu EBIT ổn định, nhưng rủi ro rất lớn khi lãi suất tăng hoặc doanh thu giảm.'});
+    else if(em<1.5)adv.push({pri:'low',title:'Đòn bẩy tài chính thấp ('+em.toFixed(3)+'x)',advice:'Ít sử dụng nợ — rủi ro tài chính thấp nhưng ROE có thể thấp hơn tiềm năng. Xem xét tối ưu cấu trúc vốn nếu chi phí nợ thấp hơn ROA.'});
+
+    if(dpMode===5){
+      if(tb<0.65)adv.push({pri:'med',title:'Gánh nặng thuế cao (TB='+tb.toFixed(3)+')',advice:'Tax Burden dưới 0.65 — thuế suất hiệu lực cao. Kiểm tra có khoản thuế bổ sung, phạt thuế, hoặc thuế TNDN từ các chi nhánh nước ngoài. So sánh với thuế suất danh nghĩa.'});
+      if(ib<0.70)adv.push({pri:'high',title:'Gánh nặng lãi vay cao (IB='+ib.toFixed(3)+')',advice:'Interest Burden dưới 0.70 — chi phí lãi vay ăn mòn đáng kể lợi nhuận. Đây là tín hiệu rủi ro tài chính khi kết hợp với đòn bẩy cao. Xem xét tái cơ cấu nợ.'});
+    }
+
+    if(useROE<0)adv.push({pri:'high',title:'ROE âm ('+(useROE*100).toFixed(2)+'%)',advice:'Doanh nghiệp đang lỗ — phân tích DuPont mất ý nghĩa thông thường khi ROE âm. Tập trung vào nguyên nhân: doanh thu giảm, chi phí vượt kiểm soát, hay gánh nặng lãi vay/thuế.'});
+
+    adv.sort(function(a,b){var p={high:0,med:1,low:2};return (p[a.pri]||1)-(p[b.pri]||1);});
+
+    if(adv.length){
+      var ah='<div style="font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">💡 Nhận xét & Khuyến nghị</div>';
+      adv.forEach(function(a){
+        ah+='<div class="dp-adv-item '+a.pri+'"><h4>'+a.title+'</h4><p>'+a.advice+'</p></div>';
+      });
+      advEl.innerHTML=ah;
+      advEl.hidden=false;
+    }else{
+      advEl.innerHTML='<div style="font-size:14px;font-weight:700;margin-bottom:6px">✅ Các thành phần DuPont ở mức cân bằng</div><p style="font-size:12px;color:var(--fg2);margin:0">Không phát hiện dấu hiệu bất thường trong các thành phần phân tích DuPont.</p>';
+      advEl.hidden=false;
+    }
+  }
+}
+
+function renderDupontPage(){
+  var h='<div class="dp-tool">';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:28px">🔎</span><div><h2 style="margin:0;font-size:18px">Test v0.4 — Phân tích DuPont</h2><p style="font-size:12px;color:var(--fg2);margin:2px 0 0">Phân rã ROE thành các thành phần để chẩn đoán hiệu quả</p></div></div>';
+
+  h+='<div class="dp-card"><div class="dp-mode-bar">';
+  h+='<button class="dp-mode-btn active" onclick="dpSetMode(3)">3 thành phần</button>';
+  h+='<button class="dp-mode-btn" onclick="dpSetMode(5)">5 thành phần</button>';
+  h+='</div></div>';
+
+  h+='<h2>Nhập dữ liệu BCTC</h2>';
+  h+='<div class="dp-card">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+  h+='<span style="font-weight:600;font-size:12px">Chọn ví dụ hoặc nhập tay:</span>';
+  h+='<button class="dp-preset" onclick="dpReset()" style="color:var(--red);border-color:var(--red)">Xoá hết</button>';
+  h+='</div>';
+  h+='<div class="dp-preset-bar">';
+  Object.keys(DP_PRESETS).forEach(function(name){
+    h+='<button class="dp-preset" onclick="dpLoadPreset(\''+name+'\',this)">'+esc(name)+'</button>';
+  });
+  h+='</div>';
+
+  h+='<div class="dp-grid">';
+  h+='<div class="dp-hdr"><div>Khoản mục</div><div style="text-align:right">Giá trị</div></div>';
+  DP_FIELDS.forEach(function(f,i){
+    var extra=i>=4?' id="dpExtra5" style="display:none"':'';
+    if(i===4)h+='<div'+extra+'>';
+    h+='<div class="dp-irow"><label>'+f.l+'</label>';
+    h+='<div><input type="number" id="dp_'+f.k+'" step="any" inputmode="decimal" placeholder="0"></div>';
+    h+='</div>';
+    if(i===DP_FIELDS.length-1&&i>=4)h+='</div>';
+  });
+  h+='</div>';
+  h+='<button class="dp-calc" onclick="dpCalc()">Phân tích DuPont</button>';
+  h+='</div>';
+
+  h+='<div id="dpResult" class="dp-card" hidden></div>';
+  h+='<div id="dpAdvice" class="dp-card" hidden></div>';
+  h+='</div>';
+  return h;
+}
+
+/* ===== Piotroski F-Score v0.3 ===== */
+var PS_FIELDS=[
+  {k:'netIncome',l:'Lợi nhuận ròng (Net Income)'},
+  {k:'cfo',l:'Dòng tiền hoạt động (CFO)'},
+  {k:'totalAssets',l:'Tổng tài sản'},
+  {k:'totalAssetsP',l:'Tổng tài sản (T-1)',onlyP:true},
+  {k:'longTermDebt',l:'Nợ dài hạn'},
+  {k:'currentAssets',l:'Tài sản ngắn hạn'},
+  {k:'currentLiab',l:'Nợ ngắn hạn'},
+  {k:'sharesOut',l:'Số cổ phiếu lưu hành'},
+  {k:'grossProfit',l:'Lợi nhuận gộp'},
+  {k:'revenue',l:'Doanh thu'},
+  {k:'assetTurnover',l:'Vòng quay tổng tài sản',computed:true}
+];
+var PS_PRESETS={
+  'VN Tốt':{t:{netIncome:500,cfo:600,totalAssets:5000,longTermDebt:800,currentAssets:2500,currentLiab:1200,sharesOut:100,grossProfit:1200,revenue:4000},p:{netIncome:400,cfo:450,totalAssets:4800,totalAssetsP:4500,longTermDebt:900,currentAssets:2200,currentLiab:1300,sharesOut:100,grossProfit:1050,revenue:3600}},
+  'VN Yếu':{t:{netIncome:-50,cfo:80,totalAssets:3000,longTermDebt:1500,currentAssets:900,currentLiab:1100,sharesOut:150,grossProfit:400,revenue:2800},p:{netIncome:100,cfo:200,totalAssets:3200,totalAssetsP:3000,longTermDebt:1200,currentAssets:1000,currentLiab:900,sharesOut:120,grossProfit:500,revenue:2500}},
+  'Enron 2000':{t:{netIncome:979,cfo:-154,totalAssets:65503,longTermDebt:8550,currentAssets:30381,currentLiab:28406,sharesOut:752,grossProfit:4766,revenue:100789},p:{netIncome:893,cfo:1228,totalAssets:33381,totalAssetsP:29350,longTermDebt:7151,currentAssets:7255,currentLiab:6759,sharesOut:716,grossProfit:4598,revenue:40112}},
+  'Apple 2023':{t:{netIncome:96995,cfo:110543,totalAssets:352583,longTermDebt:95281,currentAssets:143566,currentLiab:145308,sharesOut:15744,grossProfit:169148,revenue:383285},p:{netIncome:99803,cfo:122151,totalAssets:352755,totalAssetsP:351002,longTermDebt:98959,currentAssets:135405,currentLiab:153982,sharesOut:16215,grossProfit:170782,revenue:394328}}
+};
+
+function psGetVal(id){var el=document.getElementById(id);return el?parseFloat(el.value):NaN;}
+function psLoadPreset(name,btn){
+  var p=PS_PRESETS[name];if(!p)return;
+  document.querySelectorAll('.ps-tool .ps-preset').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  PS_FIELDS.forEach(function(f){
+    if(f.computed)return;
+    var vt=document.getElementById('ps_t_'+f.k);
+    var vp=document.getElementById('ps_p_'+f.k);
+    if(vt&&p.t[f.k]!=null)vt.value=p.t[f.k];
+    if(vp&&p.p[f.k]!=null)vp.value=p.p[f.k];
+  });
+}
+function psReset(){
+  PS_FIELDS.forEach(function(f){
+    if(f.computed)return;
+    var vt=document.getElementById('ps_t_'+f.k);
+    var vp=document.getElementById('ps_p_'+f.k);
+    if(vt)vt.value='';
+    if(vp)vp.value='';
+  });
+  document.querySelectorAll('.ps-tool .ps-preset').forEach(function(b){b.classList.remove('active');});
+  var r=document.getElementById('psResult');if(r)r.hidden=true;
+  var a=document.getElementById('psAdvice');if(a)a.hidden=true;
+}
+
+function psCalc(){
+  var t={},p={};
+  PS_FIELDS.forEach(function(f){
+    if(f.computed)return;
+    if(!f.onlyP)t[f.k]=psGetVal('ps_t_'+f.k);
+    p[f.k]=psGetVal('ps_p_'+f.k);
+  });
+
+  var signals=[];
+
+  var roa_t=t.netIncome/t.totalAssets;
+  signals.push({cat:'Khả năng sinh lời',name:'ROA dương',pass:roa_t>0,val:roa_t,fmt:(roa_t*100).toFixed(2)+'%',desc:'Lợi nhuận ròng / Tổng tài sản > 0'});
+
+  signals.push({cat:'Khả năng sinh lời',name:'CFO dương',pass:t.cfo>0,val:t.cfo,fmt:t.cfo.toLocaleString(),desc:'Dòng tiền hoạt động > 0'});
+
+  var roa_p=p.netIncome/(p.totalAssetsP||p.totalAssets);
+  var dRoa=roa_t-roa_p;
+  signals.push({cat:'Khả năng sinh lời',name:'Δ ROA tăng',pass:dRoa>0,val:dRoa,fmt:(dRoa*100).toFixed(2)+'%',desc:'ROA năm T cao hơn năm T-1'});
+
+  var accrual=(t.cfo-t.netIncome)/t.totalAssets;
+  signals.push({cat:'Khả năng sinh lời',name:'Accrual (CFO > NI)',pass:t.cfo>t.netIncome,val:accrual,fmt:(accrual*100).toFixed(2)+'%',desc:'CFO / Tổng tài sản > ROA → thu nhập bền vững'});
+
+  var lev_t=t.longTermDebt/t.totalAssets;
+  var lev_p=p.longTermDebt/(p.totalAssetsP||p.totalAssets);
+  var dLev=lev_t-lev_p;
+  signals.push({cat:'Đòn bẩy & Thanh khoản',name:'Δ Đòn bẩy giảm',pass:dLev<0,val:dLev,fmt:(dLev*100).toFixed(2)+'%',desc:'Nợ dài hạn/Tổng tài sản giảm so với T-1'});
+
+  var cr_t=t.currentAssets/t.currentLiab;
+  var cr_p=p.currentAssets/p.currentLiab;
+  var dCr=cr_t-cr_p;
+  signals.push({cat:'Đòn bẩy & Thanh khoản',name:'Δ Thanh khoản tăng',pass:dCr>0,val:dCr,fmt:dCr.toFixed(3),desc:'Current Ratio năm T cao hơn T-1'});
+
+  var dShares=t.sharesOut-p.sharesOut;
+  signals.push({cat:'Đòn bẩy & Thanh khoản',name:'Không pha loãng',pass:dShares<=0,val:dShares,fmt:dShares.toLocaleString(),desc:'Số cổ phiếu lưu hành không tăng'});
+
+  var gm_t=t.grossProfit/t.revenue;
+  var gm_p=p.grossProfit/p.revenue;
+  var dGm=gm_t-gm_p;
+  signals.push({cat:'Hiệu quả hoạt động',name:'Δ Biên lợi nhuận gộp tăng',pass:dGm>0,val:dGm,fmt:(dGm*100).toFixed(2)+'%',desc:'Gross Margin năm T cao hơn T-1'});
+
+  var at_t=t.revenue/t.totalAssets;
+  var at_p=p.revenue/(p.totalAssetsP||p.totalAssets);
+  var dAt=at_t-at_p;
+  signals.push({cat:'Hiệu quả hoạt động',name:'Δ Vòng quay tài sản tăng',pass:dAt>0,val:dAt,fmt:dAt.toFixed(3),desc:'Asset Turnover năm T cao hơn T-1'});
+
+  var score=0;
+  signals.forEach(function(s){if(s.pass)score++;});
+
+  var cls=score>=7?'strong':score>=4?'neutral':'weak';
+  var lbl=score>=7?'Sức khoẻ tài chính TỐT':score>=4?'Sức khoẻ tài chính TRUNG BÌNH':'Sức khoẻ tài chính YẾU';
+  var descTxt=score>=7?'Doanh nghiệp có nền tảng tài chính vững chắc, tín hiệu tích cực trên đa số tiêu chí.':score>=4?'Doanh nghiệp có một số điểm mạnh nhưng cần cải thiện ở các tiêu chí chưa đạt.':'Doanh nghiệp có nhiều dấu hiệu tài chính yếu kém, cần xem xét kỹ trước khi đầu tư.';
+
+  var el=document.getElementById('psResult');
+  if(el){
+    var h='';
+
+    var cx=220,cy=140,ra=120;
+    function pspp(a){return{x:cx+ra*Math.cos(a),y:cy-ra*Math.sin(a)};}
+    var pct=score/9;
+    var seg1=3/9,seg2=7/9;
+    function psArc(s,e){var a1=Math.PI-s*Math.PI,a2=Math.PI-e*Math.PI,p1=pspp(a1),p2=pspp(a2),lg=e-s>.5?1:0;return 'M '+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A '+ra+' '+ra+' 0 '+lg+' 1 '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);}
+    var na=Math.PI-pct*Math.PI,np=pspp(na);
+    h+='<svg class="ps-gauge" viewBox="0 0 440 170">';
+    h+='<path d="'+psArc(0,seg1)+'" fill="none" stroke="var(--red)" stroke-width="14" stroke-linecap="round"/>';
+    h+='<path d="'+psArc(seg1,seg2)+'" fill="none" stroke="var(--amber)" stroke-width="14"/>';
+    h+='<path d="'+psArc(seg2,1)+'" fill="none" stroke="var(--green)" stroke-width="14" stroke-linecap="round"/>';
+    h+='<line x1="'+cx+'" y1="'+cy+'" x2="'+np.x.toFixed(1)+'" y2="'+np.y.toFixed(1)+'" stroke="var(--fg)" stroke-width="2.5" stroke-linecap="round"/>';
+    h+='<circle cx="'+cx+'" cy="'+cy+'" r="5" fill="var(--fg)"/>';
+    h+='<text x="'+(cx-ra-8)+'" y="'+(cy+18)+'" fill="var(--fg2)" font-size="10" text-anchor="middle" font-family="JetBrains Mono">0</text>';
+    h+='<text x="'+(cx+ra+8)+'" y="'+(cy+18)+'" fill="var(--fg2)" font-size="10" text-anchor="middle" font-family="JetBrains Mono">9</text>';
+    h+='</svg>';
+
+    h+='<div class="ps-verdict '+cls+'"><div class="ps-score">'+score+' / 9</div><div class="ps-label">'+lbl+'</div><div class="ps-desc">'+descTxt+'</div></div>';
+
+    var cats=['Khả năng sinh lời','Đòn bẩy & Thanh khoản','Hiệu quả hoạt động'];
+    var catIcons=['💰','⚖️','⚙️'];
+    cats.forEach(function(cat,ci){
+      var csigs=signals.filter(function(s){return s.cat===cat;});
+      var catScore=csigs.filter(function(s){return s.pass;}).length;
+      h+='<div class="ps-cat"><div class="ps-cat-hdr">'+catIcons[ci]+' '+cat+' ('+catScore+'/'+csigs.length+')</div>';
+      csigs.forEach(function(s){
+        h+='<div class="ps-sig"><div class="ps-dot '+(s.pass?'pass':'fail')+'">'+(s.pass?'✓':'✗')+'</div>';
+        h+='<div class="ps-sig-name">'+s.name+'</div>';
+        h+='<div class="ps-sig-val">'+s.fmt+'</div></div>';
+      });
+      h+='</div>';
+    });
+
+    h+='<div class="ps-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Chi tiết tín hiệu</h3><div style="overflow-x:auto"><table class="ps-ratio-tbl"><thead><tr><th>#</th><th>Tín hiệu</th><th>Điều kiện</th><th style="text-align:center">Kết quả</th></tr></thead><tbody>';
+    signals.forEach(function(s,i){
+      h+='<tr><td>F'+(i+1)+'</td><td>'+s.name+'</td><td style="font-size:11px;color:var(--fg2)">'+s.desc+'</td><td style="text-align:center;font-weight:700;color:'+(s.pass?'var(--green)':'var(--red)')+'">'+(s.pass?'✓ Đạt':'✗ Không đạt')+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+
+    el.innerHTML=h;
+    el.hidden=false;
+  }
+
+  var advEl=document.getElementById('psAdvice');
+  if(advEl){
+    var adv=[];
+    signals.forEach(function(s,i){
+      if(!s.pass){
+        var pri=s.cat==='Khả năng sinh lời'?'high':(s.cat==='Đòn bẩy & Thanh khoản'?'med':'med');
+        var advice='';
+        if(i===0)advice='ROA âm cho thấy doanh nghiệp không tạo ra lợi nhuận từ tài sản. Kiểm tra chi phí hoạt động, khấu hao bất thường, và doanh thu giảm sút.';
+        else if(i===1)advice='Dòng tiền hoạt động âm là tín hiệu nguy hiểm — doanh nghiệp có thể đang "lãi trên giấy" nhưng không thu được tiền thật. So sánh CFO với lợi nhuận ròng qua nhiều kỳ.';
+        else if(i===2)advice='ROA giảm qua các kỳ cho thấy hiệu quả sử dụng tài sản đang đi xuống. Kiểm tra tài sản tăng nhanh hơn lợi nhuận hay lợi nhuận sụt giảm.';
+        else if(i===3)advice='CFO thấp hơn Net Income → lợi nhuận chủ yếu từ accrual (kế toán dồn tích), chất lượng thu nhập kém. Kiểm tra các khoản phải thu, hàng tồn kho bất thường.';
+        else if(i===4)advice='Đòn bẩy tăng cho thấy doanh nghiệp đang vay thêm nợ dài hạn. Kiểm tra mục đích vay (đầu tư sinh lời hay bù đắp thua lỗ) và khả năng trả nợ.';
+        else if(i===5)advice='Thanh khoản giảm — khả năng thanh toán nợ ngắn hạn đang xấu đi. Kiểm tra hàng tồn kho tăng bất thường, phải thu khó đòi, hoặc nợ ngắn hạn tái cơ cấu.';
+        else if(i===6)advice='Phát hành thêm cổ phiếu gây pha loãng quyền lợi cổ đông. Kiểm tra lý do: huy động vốn đầu tư hay do thiếu hụt tiền mặt. Nếu kèm ROA giảm, đây là tín hiệu xấu.';
+        else if(i===7)advice='Biên lợi nhuận gộp giảm cho thấy sức cạnh tranh hoặc quyền định giá đang yếu đi. Kiểm tra chi phí nguyên vật liệu, áp lực giảm giá bán, hoặc thay đổi cơ cấu sản phẩm.';
+        else if(i===8)advice='Vòng quay tài sản giảm — doanh nghiệp kém hiệu quả hơn trong việc dùng tài sản tạo doanh thu. Kiểm tra tài sản không sử dụng, dự án dang dở, hoặc doanh thu sụt giảm.';
+        adv.push({pri:pri,title:'F'+(i+1)+': '+s.name,advice:advice});
+      }
+    });
+    if(adv.length){
+      var ah='<div style="font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">🔍 Khuyến nghị kiểm tra ('+adv.length+' tín hiệu chưa đạt)</div>';
+      adv.forEach(function(a){
+        ah+='<div class="ps-adv-item '+a.pri+'"><h4>'+a.title+'</h4><p>'+a.advice+'</p></div>';
+      });
+      if(score<=3)ah+='<div style="font-size:12px;color:var(--fg2);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:var(--radius-s)">⚠️ F-Score ≤ 3: Doanh nghiệp có nhiều dấu hiệu suy yếu tài chính nghiêm trọng. Theo nghiên cứu Piotroski (2000), nhóm này có xác suất cao bị giảm giá cổ phiếu hoặc gặp khó khăn tài chính. Cần thẩm định kỹ trước mọi quyết định đầu tư.</div>';
+      advEl.innerHTML=ah;
+      advEl.hidden=false;
+    }else{
+      advEl.innerHTML='<div style="font-size:14px;font-weight:700;margin-bottom:6px">✅ Tất cả 9 tín hiệu đều đạt</div><p style="font-size:12px;color:var(--fg2);margin:0">Doanh nghiệp đạt điểm tối đa 9/9 — sức khoẻ tài chính rất tốt trên mọi tiêu chí của mô hình Piotroski.</p>';
+      advEl.hidden=false;
+    }
+  }
+}
+
+function renderPiotroskiPage(){
+  var h='<div class="ps-tool">';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:28px">📊</span><div><h2 style="margin:0;font-size:18px">Test v0.3 — Piotroski F-Score</h2><p style="font-size:12px;color:var(--fg2);margin:2px 0 0">Đánh giá sức khoẻ tài chính doanh nghiệp (Piotroski 2000)</p></div></div>';
+
+  h+='<h2>Nhập dữ liệu BCTC</h2>';
+  h+='<div class="ps-card">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+  h+='<span style="font-weight:600;font-size:12px">Chọn ví dụ hoặc nhập tay:</span>';
+  h+='<button class="ps-preset" onclick="psReset()" style="color:var(--red);border-color:var(--red)">Xoá hết</button>';
+  h+='</div>';
+  h+='<div class="ps-preset-bar">';
+  Object.keys(PS_PRESETS).forEach(function(name){
+    h+='<button class="ps-preset" onclick="psLoadPreset(\''+name+'\',this)">'+esc(name)+'</button>';
+  });
+  h+='</div>';
+
+  h+='<div class="ps-grid">';
+  h+='<div class="ps-hdr"><div>Khoản mục</div><div style="text-align:right">Năm T</div><div style="text-align:right">Năm T-1</div></div>';
+  PS_FIELDS.forEach(function(f){
+    if(f.computed)return;
+    h+='<div class="ps-irow"><label>'+f.l+'</label>';
+    if(!f.onlyP){
+      h+='<div><input type="number" id="ps_t_'+f.k+'" step="any" inputmode="decimal" placeholder="0"></div>';
+    }else{
+      h+='<div></div>';
+    }
+    h+='<div><input type="number" id="ps_p_'+f.k+'" step="any" inputmode="decimal" placeholder="0"></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<button class="ps-calc" onclick="psCalc()">Tính F-Score</button>';
+  h+='</div>';
+
+  h+='<div id="psResult" class="ps-card" hidden></div>';
+  h+='<div id="psAdvice" class="ps-card" hidden></div>';
+  h+='</div>';
+  return h;
+}
+
+function renderBeneishPage(){
+  var h='<div class="bn-tool">';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:28px">🔬</span><div><h2 style="margin:0;font-size:18px">Test v0.1</h2><p style="font-size:12px;color:var(--fg2);margin:2px 0 0">Phát hiện gian lận BCTC</p></div></div>';
+
+  h+='';
+
+  h+='<h2>Nhập dữ liệu BCTC</h2>';
+  h+='<div class="bn-card">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+  h+='<span style="font-weight:600;font-size:12px">Chọn ví dụ hoặc nhập tay:</span>';
+  h+='<button class="bn-preset" onclick="bnReset()" style="color:var(--red);border-color:var(--red)">Xoá hết</button>';
+  h+='</div>';
+  h+='<div class="bn-preset-bar">';
+  Object.keys(BN_PRESETS).forEach(function(name){
+    h+='<button class="bn-preset" onclick="bnLoadPreset(\''+name+'\',this)">'+esc(name)+'</button>';
+  });
+  h+='</div>';
+
+  h+='<div class="bn-grid">';
+  h+='<div class="bn-hdr"><div>Khoản mục</div><div style="text-align:right">Năm T</div><div style="text-align:right">Năm T-1</div></div>';
+  BN_FIELDS.forEach(function(f){
+    h+='<div class="bn-irow"><label>'+esc(f.label)+'</label><div><input type="number" id="bn_'+f.key+'_t" placeholder="0" step="any"></div><div><input type="number" id="bn_'+f.key+'_t1" placeholder="0" step="any"></div></div>';
+  });
+  h+='</div>';
+  h+='<button class="bn-calc" onclick="bnCalc()">Tính M-Score</button>';
+  h+='</div>';
+
+  h+='<div id="bnResults" hidden>';
+  h+='<h2>Kết quả</h2>';
+  h+='<div id="bnVerdict" class="bn-verdict bn-card"></div>';
+  h+='<div class="bn-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Đồng hồ M-Score</h3><div id="bnGauge"></div></div>';
+
+  h+='<div class="bn-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Chi tiết 8 chỉ số</h3><div style="overflow-x:auto"><table class="bn-ratio-tbl"><thead><tr><th>Chỉ số</th><th style="text-align:right">Giá trị</th><th style="text-align:right">Trọng số</th><th style="text-align:right">Đóng góp</th></tr></thead><tbody id="bnRatioBody"></tbody></table></div></div>';
+
+  h+='<div class="bn-card"><h3 style="font-size:13px;font-weight:600;margin-bottom:8px">Biểu đồ đóng góp</h3><div id="bnBars"></div></div>';
+  h+='<div id="bnAdvice" class="bn-card" hidden></div>';
+  h+='</div>';
+
+  h+='</div>';
+  return h;
+}
 
 /* ===== Algo Interactive Tools (7.1-7.5) ===== */
 var _algoToolCSS=false;
