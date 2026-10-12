@@ -1,10 +1,10 @@
 {
-  "name": "Đồng Đội - Quản lý công việc",
-  "short_name": "Đồng Đội",
-  "description": "Ứng dụng quản lý công việc nhóm",
+  "name": "EFTI Group — Ứng dụng nội bộ",
+  "short_name": "EFTI Group",
+  "description": "Cổng ứng dụng nội bộ EFTI Group",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#f0f4f8",
   "theme_color": "#2563eb",
   "orientation": "any",
   "icons": [
